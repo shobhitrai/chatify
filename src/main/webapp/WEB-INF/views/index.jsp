@@ -9,11 +9,11 @@
 		<meta name="description" content="#">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<!-- Bootstrap core CSS -->
-		<link href="${path}/resources/static/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
+		<link href="${path}/static/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
 		<!-- Swipe core CSS -->
-		<link href="${path}/resources/static/css/swipe.min.css" type="text/css" rel="stylesheet">
+		<link href="${path}/static/css/swipe.min.css" type="text/css" rel="stylesheet">
 		<!-- Favicon -->
-		<link href="${path}/resources/static/image/favicon.png" type="image/png" rel="icon">
+		<link href="${path}/static/image/favicon.png" type="image/png" rel="icon">
 	</head>
 	<body>
 		<main>
@@ -23,7 +23,7 @@
 					<div class="container">
 						<div class="inside">
 							<div class="nav nav-tab menu">
-								<button class="btn"><img class="avatar-xl" src="${path}/resources/static/image/avatars/avatar-male-1.jpg" alt="avatar"></button>
+								<button class="btn"><img class="avatar-xl" src="${path}/static/image/avatars/avatar-male-1.jpg" alt="avatar"></button>
 								<a href="#members" data-toggle="tab"><i class="material-icons">account_circle</i></a>
 								<a href="#discussions" data-toggle="tab" class="active"><i class="material-icons active">chat_bubble_outline</i></a>
 								<a href="#notifications" data-toggle="tab" class="f-grow1"><i class="material-icons">notifications_none</i></a>
@@ -58,7 +58,7 @@
 										<h1>Contacts</h1>
 										<div class="list-group" id="contacts" role="tablist">
 											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -71,7 +71,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -84,7 +84,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -97,7 +97,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -110,7 +110,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -123,7 +123,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all offline contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -136,7 +136,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all offline contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -149,7 +149,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all offline contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -162,7 +162,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterMembers all offline contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -196,7 +196,7 @@
 										<h1>Discussions</h1>
 										<div class="list-group" id="chats" role="tablist">
 											<a href="#list-chat" class="filterDiscussions all unread single active" id="list-chat-list" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -210,7 +210,7 @@
 												</div>
 											</a>									
 											<a href="#list-empty" class="filterDiscussions all unread single" id="list-empty-list" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -224,7 +224,7 @@
 												</div>
 											</a>									
 											<a href="#list-chat" class="filterDiscussions all read single" id="list-chat-list2" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -235,7 +235,7 @@
 												</div>
 											</a>
 											<a href="#list-empty" class="filterDiscussions all read single" id="list-empty-list2" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -246,7 +246,7 @@
 												</div>
 											</a>
 											<a href="#list-chat" class="filterDiscussions all read single" id="list-chat-list3" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -257,7 +257,7 @@
 												</div>
 											</a>
 											<a href="#list-empty" class="filterDiscussions all read single" id="list-empty-list3" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -268,7 +268,7 @@
 												</div>
 											</a>
 											<a href="#list-request" class="filterDiscussions all unread single" id="list-request-list" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -282,7 +282,7 @@
 												</div>
 											</a>
 											<a href="#list-empty" class="filterDiscussions all read single" id="list-empty-list4" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -293,7 +293,7 @@
 												</div>
 											</a>
 											<a href="#list-chat" class="filterDiscussions all unread single" id="list-chat-list5" data-toggle="list" role="tab">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -327,7 +327,7 @@
 										<h1>Notifications</h1>
 										<div class="list-group" id="alerts" role="tablist">
 											<a href="#" class="filterNotifications all latest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -337,7 +337,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all latest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -347,7 +347,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all latest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -357,7 +357,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all latest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -367,7 +367,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all latest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -377,7 +377,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -387,7 +387,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -397,7 +397,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -407,7 +407,7 @@
 												</div>
 											</a>
 											<a href="#" class="filterNotifications all oldest notification" data-toggle="list">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -424,7 +424,7 @@
 								<div class="tab-pane fade" id="settings">			
 									<div class="settings">
 										<div class="profile">
-											<img class="avatar-xl" src="${path}/resources/static/image/avatars/avatar-male-1.jpg" alt="avatar">
+											<img class="avatar-xl" src="${path}/static/image/avatars/avatar-male-1.jpg" alt="avatar">
 											<h1><a href="#">Michael Knudsen</a></h1>
 											<span>Helena, Montana</span>
 											<div class="stats">
@@ -458,7 +458,7 @@
 													<div class="content">
 														<div class="upload">
 															<div class="data">
-																<img class="avatar-xl" src="${path}/resources/static/image/avatars/avatar-male-1.jpg" alt="image">
+																<img class="avatar-xl" src="${path}/static/image/avatars/avatar-male-1.jpg" alt="image">
 																<label>
 																	<input type="file">
 																	<span class="btn button">Upload avatar</span>
@@ -614,7 +614,7 @@
 												<div class="collapse" id="collapseFour" aria-labelledby="headingFour" data-parent="#accordionSettings">
 													<div class="content">
 														<div class="app">
-															<img src="${path}/resources/static/image/integrations/slack.svg" alt="app">
+															<img src="${path}/static/image/integrations/slack.svg" alt="app">
 															<div class="permissions">
 																<h5>Skrill</h5>
 																<p>Read, Write, Comment</p>
@@ -625,7 +625,7 @@
 															</label>
 														</div>
 														<div class="app">
-															<img src="${path}/resources/static/image/integrations/dropbox.svg" alt="app">
+															<img src="${path}/static/image/integrations/dropbox.svg" alt="app">
 															<div class="permissions">
 																<h5>Dropbox</h5>
 																<p>Read, Write, Upload</p>
@@ -636,7 +636,7 @@
 															</label>
 														</div>
 														<div class="app">
-															<img src="${path}/resources/static/image/integrations/drive.svg" alt="app">
+															<img src="${path}/static/image/integrations/drive.svg" alt="app">
 															<div class="permissions">
 																<h5>Google Drive</h5>
 																<p>No permissions set</p>
@@ -647,7 +647,7 @@
 															</label>
 														</div>
 														<div class="app">
-															<img src="${path}/resources/static/image/integrations/trello.svg" alt="app">
+															<img src="${path}/static/image/integrations/trello.svg" alt="app">
 															<div class="permissions">
 																<h5>Trello</h5>
 																<p>No permissions set</p>
@@ -822,7 +822,7 @@
 										<label for="user">Username:</label>
 										<input type="text" class="form-control" id="user" placeholder="Add recipient..." required>
 										<div class="user" id="contact">
-											<img class="avatar-sm" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" alt="avatar">
+											<img class="avatar-sm" src="${path}/static/image/avatars/avatar-female-5.jpg" alt="avatar">
 											<h5>Keith Morris</h5>
 											<button class="btn"><i class="material-icons">close</i></button>
 										</div>
@@ -852,7 +852,7 @@
 										<label for="participant">Recipient:</label>
 										<input type="text" class="form-control" id="participant" placeholder="Add recipient..." required>
 										<div class="user" id="recipient">
-											<img class="avatar-sm" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" alt="avatar">
+											<img class="avatar-sm" src="${path}/static/image/avatars/avatar-female-5.jpg" alt="avatar">
 											<h5>Keith Morris</h5>
 											<button class="btn"><i class="material-icons">close</i></button>
 										</div>
@@ -882,7 +882,7 @@
 									<div class="container">
 										<div class="col-md-12">
 											<div class="inside">
-												<a href="#"><img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
+												<a href="#"><img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar"></a>
 												<div class="status">
 													<i class="material-icons online">fiber_manual_record</i>
 												</div>
@@ -917,7 +917,7 @@
 												<hr>
 											</div>
 											<div class="message">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="text-main">
 													<div class="text-group">
 														<div class="text">
@@ -938,7 +938,7 @@
 												</div>
 											</div>
 											<div class="message">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="text-main">
 													<div class="text-group">
 														<div class="text">
@@ -964,7 +964,7 @@
 												</div>
 											</div>
 											<div class="message">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="text-main">
 													<div class="text-group">
 														<div class="text">
@@ -990,7 +990,7 @@
 												</div>
 											</div>
 											<div class="message">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="text-main">
 													<div class="text-group">
 														<div class="text">
@@ -1017,7 +1017,7 @@
 												</div>
 											</div>
 											<div class="message">
-												<img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
+												<img class="avatar-md" src="${path}/static/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
 												<div class="text-main">
 													<div class="text-group">
 														<div class="text typing">
@@ -1058,7 +1058,7 @@
 											<div class="inside">
 												<div class="panel">
 													<div class="participant">
-														<img class="avatar-xxl" src="${path}/resources/static/image/avatars/avatar-female-5.jpg" alt="avatar">
+														<img class="avatar-xxl" src="${path}/static/image/avatars/avatar-female-5.jpg" alt="avatar">
 														<span>Connecting</span>
 													</div>							
 													<div class="options">
@@ -1086,7 +1086,7 @@
 									<div class="container">
 										<div class="col-md-12">
 											<div class="inside">
-												<a href="#"><img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar"></a>
+												<a href="#"><img class="avatar-md" src="${path}/static/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar"></a>
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -1147,7 +1147,7 @@
 											<div class="inside">
 												<div class="panel">
 													<div class="participant">
-														<img class="avatar-xxl" src="${path}/resources/static/image/avatars/avatar-female-2.jpg" alt="avatar">
+														<img class="avatar-xxl" src="${path}/static/image/avatars/avatar-female-2.jpg" alt="avatar">
 														<span>Connecting</span>
 													</div>							
 													<div class="options">
@@ -1175,7 +1175,7 @@
 									<div class="container">
 										<div class="col-md-12">
 											<div class="inside">
-												<a href="#"><img class="avatar-md" src="${path}/resources/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar"></a>
+												<a href="#"><img class="avatar-md" src="${path}/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar"></a>
 												<div class="status">
 													<i class="material-icons offline">fiber_manual_record</i>
 												</div>
@@ -1205,7 +1205,7 @@
 									<div class="container">
 										<div class="col-md-12">
 											<div class="no-messages request">
-												<a href="#"><img class="avatar-xl" src="${path}/resources/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar"></a>
+												<a href="#"><img class="avatar-xl" src="${path}/static/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar"></a>
 												<h5>Louis Martinez would like to add you as a contact. <span>Hi Keith, I'd like to add you as a contact.</span></h5>
 												<div class="options">
 													<button class="btn button"><i class="material-icons">check</i></button>
@@ -1241,11 +1241,11 @@
 		<!-- Bootstrap/Swipe core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="${path}/resources/static/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		<script>window.jQuery || document.write('<script src="${path}/resources/static/js/vendor/jquery-slim.min.js"><\/script>')</script>
-		<script src="${path}/resources/static/js/vendor/popper.min.js"></script>
-		<script src="${path}/resources/static/js/swipe.min.js"></script>
-		<script src="${path}/resources/static/js/bootstrap.min.js"></script>
+		<script src="${path}/static/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script>window.jQuery || document.write('<script src="${path}/static/js/vendor/jquery-slim.min.js"><\/script>')</script>
+		<script src="${path}/static/js/vendor/popper.min.js"></script>
+		<script src="${path}/static/js/swipe.min.js"></script>
+		<script src="${path}/static/js/bootstrap.min.js"></script>
 		<script>
 			function scrollToBottom(el) { el.scrollTop = el.scrollHeight; }
 			scrollToBottom(document.getElementById('content'));
