@@ -9,19 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Slf4j
 public class UserController {
 
-    @GetMapping("/")
-    public String root() {
-        return PageConstant.REDIRECT_LOGIN;
-    }
 
-    @GetMapping("login")
-    public String login() {
-        return PageConstant.LOGIN;
-    }
-
-    @GetMapping("signup")
-    public String signup() {
-        return PageConstant.SIGN_UP;
-    }
 
 }
