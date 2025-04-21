@@ -39,7 +39,7 @@
 										</button>
 									</div>
 									<p>or use your email for registration:</p>
-									<form class="signup">
+									<form action="signup" class="signup" id="signup-form" method="post">
 										<div class="form-parent">
 											<div class="form-group">
 												<input type="text" id="inputName" class="form-control" placeholder="Username" required>
@@ -54,9 +54,9 @@
 											<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
 											<button class="btn icon"><i class="material-icons">lock_outline</i></button>
 										</div>
-										<button type="submit" class="btn button" formaction="index-2.html">Sign Up</button>
+										<button type="submit" class="btn button">Sign Up</button>
 										<div class="callout">
-											<span>Already a member? <a href="sign-in.jsp">Sign In</a></span>
+											<span>Already a member? <a href="login">Sign In</a></span>
 										</div>
 									</form>
 								</div>
@@ -72,7 +72,7 @@
 							<div class="preference">
 								<h2>Welcome Back!</h2>
 								<p>To keep connected with your friends please login with your personal info.</p>
-								<a href="sign-in.jsp" class="btn button">Sign In</a>
+								<a href="login" class="btn button">Sign In</a>
 							</div>
 						</div>
 					</div>

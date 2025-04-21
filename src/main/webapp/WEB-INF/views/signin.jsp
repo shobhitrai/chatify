@@ -39,7 +39,7 @@
 										</button>
 									</div>
 									<p>or use your email account:</p>
-									<form>
+									<form action="login" id="login-form" method="post">
 										<div class="form-group">
 											<input type="email" id="inputEmail" class="form-control" placeholder="Email Address" required>
 											<button class="btn icon"><i class="material-icons">mail_outline</i></button>
@@ -48,9 +48,9 @@
 											<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
 											<button class="btn icon"><i class="material-icons">lock_outline</i></button>
 										</div>
-										<button type="submit" class="btn button" formaction="index-2.html">Sign In</button>
+										<button type="submit" class="btn button">Sign In</button>
 										<div class="callout">
-											<span>Don't have account? <a href="sign-up.html">Create Account</a></span>
+											<span>Dont have account? <a href="signup">Create Account</a></span>
 										</div>
 									</form>
 								</div>
@@ -66,7 +66,7 @@
 							<div class="preference">
 								<h2>Hello, Friend!</h2>
 								<p>Enter your personal details and start your journey with Swipe today.</p>
-								<a href="sign-up.html" class="btn button">Sign Up</a>
+								<a href="signup" class="btn button">Sign Up</a>
 							</div>
 						</div>
 					</div>
