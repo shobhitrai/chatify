@@ -1,11 +1,8 @@
 package com.sbit.chatify.constant;
 
-public class PageConstant {
+public interface PageConstant {
     String SIGN_UP = "signup";
-    String WALL = "wall";
     String ERROR ="error";
-    String LOGIN = "login";
+    String LOGIN = "signin";
     String REDIRECT_LOGIN = "redirect:login";
-    String REDIRECT_SIGNUP = "redirect:signin";
-    String REDIRECT_WALL = "redirect:wall";
 }

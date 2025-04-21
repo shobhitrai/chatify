@@ -1,17 +1,21 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<c:set var="path" value="${pageContext.servletContext.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 		<meta charset="utf-8">
-		<title>Sign In – Swipe</title>
+		<title>Chatify</title>
 		<meta name="description" content="#">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<!-- Bootstrap core CSS -->
-		<link href="dist/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
+		<link href="${path}/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
 		<!-- Swipe core CSS -->
-		<link href="dist/css/swipe.min.css" type="text/css" rel="stylesheet">
+		<link href="${path}/css/swipe.min.css" type="text/css" rel="stylesheet">
 		<!-- Favicon -->
-		<link href="dist/img/favicon.png" type="image/png" rel="icon">
+		<link href="${path}/image/favicon.png" type="image/png" rel="icon">
 	</head>
 	<body class="start">
 		<main>
@@ -22,7 +26,7 @@
 						<div class="container">
 							<div class="col-md-12">
 								<div class="content">
-									<h1>Sign in to Swipe</h1>
+									<h1>Sign in to Chatify</h1>
 									<div class="third-party">
 										<button class="btn item bg-blue">
 											<i class="material-icons">pages</i>
@@ -73,10 +77,10 @@
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="dist/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		<script>window.jQuery || document.write('<script src="dist/js/vendor/jquery-slim.min.js"><\/script>')</script>
-		<script src="dist/js/vendor/popper.min.js"></script>
-		<script src="dist/js/bootstrap.min.js"></script>
+		<script src="${path}/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script>window.jQuery || document.write('<script src="${path}/js/vendor/jquery-slim.min.js"><\/script>')</script>
+		<script src="${path}/js/vendor/popper.min.js"></script>
+		<script src="${path}/js/bootstrap.min.js"></script>
 	</body>
 
 </html>
