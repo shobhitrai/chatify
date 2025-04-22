@@ -12,4 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response {
+    private Integer status;
+    private Object data;
+    private String message;
 }

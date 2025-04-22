@@ -2,6 +2,7 @@ package com.sbit.chatify.controller;
 
 import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.constant.UrlConstant;
+import com.sbit.chatify.model.Response;
 import com.sbit.chatify.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +36,13 @@ public class AuthController {
 
     @GetMapping(UrlConstant.CHECK_EMAIL_UNIQUENESS)
     @ResponseBody
-    public ResponseEntity<?> isEmailUnique(@RequestParam String email) throws Exception {
+    public ResponseEntity<Response> isEmailUnique(@RequestParam String email) throws Exception {
         try {
             return ResponseEntity.ok().body(userService.isEmailUnique(email));
         } catch (Exception e) {
             log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(Response.builder()
+                    .status(105).message(e.getMessage()).build());
         }
 
     }
