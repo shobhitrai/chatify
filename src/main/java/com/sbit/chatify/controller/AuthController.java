@@ -5,14 +5,13 @@ import com.sbit.chatify.constant.UrlConstant;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpSession;
 
 @Controller
 @Slf4j
@@ -35,6 +34,10 @@ public class AuthController {
     public String signup() {
         return PageConstant.SIGN_UP;
     }
+
+    @GetMapping("wall")
+    public String wall() { return PageConstant.WALL;}
+
 
     @GetMapping(UrlConstant.CHECK_EMAIL_EXIST)
     @ResponseBody

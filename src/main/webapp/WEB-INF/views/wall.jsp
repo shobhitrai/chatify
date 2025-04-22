@@ -1,6 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="path" value="${pageContext.servletContext.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,84 +71,6 @@
 													<i class="material-icons">person</i>
 												</div>
 											</a>
-											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/image/avatars/avatar-male-1.jpg" data-toggle="tooltip" data-placement="top" title="Michael" alt="avatar">
-												<div class="status">
-													<i class="material-icons online">fiber_manual_record</i>
-												</div>
-												<div class="data">
-													<h5>Michael Knudsen</h5>
-													<p>Washington, USA</p>
-												</div>
-												<div class="person-add">
-													<i class="material-icons">person</i>
-												</div>
-											</a>
-											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/image/avatars/avatar-female-2.jpg" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar">
-												<div class="status">
-													<i class="material-icons online">fiber_manual_record</i>
-												</div>
-												<div class="data">
-													<h5>Lean Avent</h5>
-													<p>Shanghai, China</p>
-												</div>
-												<div class="person-add">
-													<i class="material-icons">person</i>
-												</div>
-											</a>
-											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/image/avatars/avatar-male-2.jpg" data-toggle="tooltip" data-placement="top" title="Mariette" alt="avatar">
-												<div class="status">
-													<i class="material-icons online">fiber_manual_record</i>
-												</div>
-												<div class="data">
-													<h5>Mariette Toles</h5>
-													<p>Helena, Montana</p>
-												</div>
-												<div class="person-add">
-													<i class="material-icons">person</i>
-												</div>
-											</a>
-											<a href="#" class="filterMembers all online contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/image/avatars/avatar-female-3.jpg" data-toggle="tooltip" data-placement="top" title="Harmony" alt="avatar">
-												<div class="status">
-													<i class="material-icons online">fiber_manual_record</i>
-												</div>
-												<div class="data">
-													<h5>Harmony Otero</h5>
-													<p>Indore, India</p>
-												</div>
-												<div class="person-add">
-													<i class="material-icons">person</i>
-												</div>
-											</a>
-											<a href="#" class="filterMembers all offline contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/image/avatars/avatar-female-5.jpg" data-toggle="tooltip" data-placement="top" title="Keith" alt="avatar">
-												<div class="status">
-													<i class="material-icons offline">fiber_manual_record</i>
-												</div>
-												<div class="data">
-													<h5>Keith Morris</h5>
-													<p>Chisinau, Moldova</p>
-												</div>
-												<div class="person-add">
-													<i class="material-icons">person</i>
-												</div>
-											</a>
-											<a href="#" class="filterMembers all offline contact" data-toggle="list">
-												<img class="avatar-md" src="${path}/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
-												<div class="status">
-													<i class="material-icons offline">fiber_manual_record</i>
-												</div>
-												<div class="data">
-													<h5>Louis Martinez</h5>
-													<p>Vienna, Austria</p>
-												</div>
-												<div class="person-add">
-													<i class="material-icons">person</i>
-												</div>
-											</a>
 											<a href="#" class="filterMembers all offline contact" data-toggle="list">
 												<img class="avatar-md" src="${path}/image/avatars/avatar-male-3.jpg" data-toggle="tooltip" data-placement="top" title="Ryan" alt="avatar">
 												<div class="status">
@@ -175,6 +97,21 @@
 													<i class="material-icons">person</i>
 												</div>
 											</a>
+											<c:forEach items="${contacts}" var="contact">
+											    <a href="#" class="filterMembers all offline contact" data-toggle="list">
+                                                    <img class="avatar-md" src="${path}/image/avatars/avatar-male-4.jpg" data-toggle="tooltip" data-placement="top" title="Mildred" alt="avatar">
+                                                    <div class="status">
+                                                        <i class="material-icons offline">fiber_manual_record</i>
+                                                    </div>
+                                                    <div class="data">
+                                                        <h5>Mildred Bennett</h5>
+                                                        <p>London, United Kingdom</p>
+                                                    </div>
+                                                    <div class="person-add">
+                                                        <i class="material-icons">person</i>
+                                                    </div>
+                                                </a>
+											</c:forEach>
 										</div>
 									</div>
 								</div>
@@ -1242,7 +1179,7 @@
 		<!-- Bootstrap/Swipe core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="${path}/js/jquery-3.6.0.min.js"></script>
+		<script src="${path}/js/jquery-3.3.1.min.js"></script>
 		<script src="${path}/js/vendor/popper.min.js"></script>
 		<script src="${path}/js/swipe.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>

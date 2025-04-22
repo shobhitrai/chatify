@@ -6,7 +6,8 @@ import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.entity.User;
-import com.sbit.chatify.entity.UserDetails;
+import com.sbit.chatify.entity.UserDetail;
+import jakarta.servlet.http.HttpSession;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.UserService;
@@ -15,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.Objects;
 
 @Service
@@ -56,9 +57,10 @@ public class UserServiceImpl implements UserService {
             return PageConstant.REDIRECT_SIGNUP;
         try {
             User user = mapper.convertValue(userDto, User.class);
+            user.setCreatedAt(new Date());
             user = userDao.save(user);
-            UserDetails userDetails = new UserDetails();
-            userDetails.setUserId(user.getId());
+            UserDetail userDetails = new UserDetail();
+            userDetails.setUserId(user.getId().toString());
             userDetails.setName(userDto.getName());
             userDao.save(userDetails);
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.USER_REGISTERED_SUCCESSFULLY);

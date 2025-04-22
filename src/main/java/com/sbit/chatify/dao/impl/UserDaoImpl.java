@@ -2,7 +2,7 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.entity.User;
-import com.sbit.chatify.entity.UserDetails;
+import com.sbit.chatify.entity.UserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -28,7 +28,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public UserDetails save(UserDetails userDetails) {
+    public UserDetail save(UserDetail userDetails) {
         return mongoTemplate.save(userDetails);
     }
 

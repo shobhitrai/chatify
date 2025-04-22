@@ -1,6 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="path" value="${pageContext.servletContext.contextPath}"></c:set>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,7 +80,7 @@
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="${path}/js/jquery-3.6.0.min.js"></script>
+		<script src="${path}/js/jquery-3.3.1.min.js"></script>
 		<script src="${path}/js/vendor/popper.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>
 		<script src="${path}/chatify-js/login.js"></script>
