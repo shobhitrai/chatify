@@ -16,13 +16,13 @@ function processSignUp() {
         $('#signup-submit-error').text("Email is required.");
         return;
     }
-     if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email)) {
         $('#signup-submit-error').text("Invalid email format.");
         return;
-     }
-     if (!password) {
+    }
+    if (!password) {
         $('#signup-submit-error').text("Password is required.");
         return;
-     }
-     $('#signup-form').submit();
+    }
+    $('#signup-form').submit();
 }
