@@ -1,7 +1,7 @@
 package com.sbit.chatify.constant;
 
 public interface UrlConstant {
-    String CHECK_EMAIL_EXIST = "check-email-exist";
+    String CHECK_EMAIL_EXIST = "check-email-exist/{email}";
     String LOGIN = "login";
     String SIGNUP = "signup";
     String LOGOUT = "logout";
