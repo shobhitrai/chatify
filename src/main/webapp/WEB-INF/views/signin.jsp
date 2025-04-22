@@ -41,14 +41,17 @@
 									<p>or use your email account:</p>
 									<form action="login" id="login-form" method="post">
 										<div class="form-group">
-											<input type="email" id="inputEmail" class="form-control" placeholder="Email Address" required>
+											<input type="email" id="email" name="email" class="form-control" placeholder="Email Address">
 											<button class="btn icon"><i class="material-icons">mail_outline</i></button>
 										</div>
 										<div class="form-group">
-											<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+											<input type="password" id="password" name="password" class="form-control" placeholder="Password">
 											<button class="btn icon"><i class="material-icons">lock_outline</i></button>
 										</div>
 										<button type="submit" class="btn button">Sign In</button>
+										<div>
+                                            <p style="margin-top: 5px; color: red;" id="login-submit-error">Error</p>
+                                        </div>
 										<div class="callout">
 											<span>Dont have account? <a href="signup">Create Account</a></span>
 										</div>

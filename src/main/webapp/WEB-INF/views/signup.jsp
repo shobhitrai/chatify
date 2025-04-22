@@ -42,19 +42,22 @@
 									<form action="signup" class="signup" id="signup-form" method="post">
 										<div class="form-parent">
 											<div class="form-group">
-												<input type="text" id="inputName" class="form-control" placeholder="Username" required>
+												<input type="text" id="name" name="name" class="form-control" placeholder="Name">
 												<button class="btn icon"><i class="material-icons">person_outline</i></button>
 											</div>
 											<div class="form-group">
-												<input type="email" id="inputEmail" class="form-control" placeholder="Email Address" required>
+												<input type="email" id="email" name="email" class="form-control" placeholder="Email Address">
 												<button class="btn icon"><i class="material-icons">mail_outline</i></button>
 											</div>
 										</div>
 										<div class="form-group">
-											<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+											<input type="password" id="password" name="password" class="form-control" placeholder="Password">
 											<button class="btn icon"><i class="material-icons">lock_outline</i></button>
 										</div>
-										<button type="submit" class="btn button">Sign Up</button>
+										<button type="button" class="btn button" id="submit-signup-btn">Sign Up</button>
+										<div>
+                                           <p style="margin-top: 5px; color: red;" id="signup-submit-error">${error}</p>
+                                        </div>
 										<div class="callout">
 											<span>Already a member? <a href="login">Sign In</a></span>
 										</div>
@@ -87,6 +90,7 @@
 		<script>window.jQuery || document.write('<script src="${path}/js/vendor/jquery-slim.min.js"><\/script>')</script>
 		<script src="${path}/js/vendor/popper.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>
+		<script src="${path}/chatify-js/signup.js"></script>
 	</body>
 
 
