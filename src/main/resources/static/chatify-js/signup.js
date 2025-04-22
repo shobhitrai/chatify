@@ -29,7 +29,8 @@ function processSignUp() {
     		type : 'GET',
     		contentType : 'application/json',
     		success : function(response) {
-    			if (response.code == 100) {
+    		    console.log(JSON.stringify(response));
+    			if (response.status == 100) {
     				$('#signup-form').submit();
     			} else {
                     $('#signup-submit-error').text("Email already exists.");

@@ -48,9 +48,9 @@
 											<input type="password" id="password" name="password" class="form-control" placeholder="Password">
 											<button class="btn icon"><i class="material-icons">lock_outline</i></button>
 										</div>
-										<button type="submit" class="btn button">Sign In</button>
+										<button type="button" class="btn button" id="submit-login-btn">Sign In</button>
 										<div>
-                                            <p style="margin-top: 5px; color: red;" id="login-submit-error">Error</p>
+                                            <p style="margin-top: 5px; color: red;" id="login-submit-error">&nbsp;${error}</p>
                                         </div>
 										<div class="callout">
 											<span>Dont have account? <a href="signup">Create Account</a></span>
@@ -83,6 +83,7 @@
 		<script src="${path}/js/jquery-3.6.0.min.js"></script>
 		<script src="${path}/js/vendor/popper.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>
+		<script src="${path}/chatify-js/login.js"></script>
 	</body>
 
 </html>

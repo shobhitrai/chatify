@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "user")
+@Document(collection = "UserDetail")
 public class UserDetails implements Serializable {
 
     @Serial
@@ -26,4 +26,6 @@ public class UserDetails implements Serializable {
     private ObjectId id;
     private String name;
     private Integer age;
+    private ObjectId userId;
+    private String profileImage;
 }

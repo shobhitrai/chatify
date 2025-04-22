@@ -2,6 +2,7 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.entity.User;
+import com.sbit.chatify.entity.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -19,5 +20,22 @@ public class UserDaoImpl implements UserDao {
         Query query = new Query();
         query.addCriteria(Criteria.where("email").is(email));
         return mongoTemplate.exists(query, User.class);
+    }
+
+    @Override
+    public User save(User user) {
+        return mongoTemplate.save(user);
+    }
+
+    @Override
+    public UserDetails save(UserDetails userDetails) {
+        return mongoTemplate.save(userDetails);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("email").is(email));
+        return mongoTemplate.findOne(query, User.class);
     }
 }

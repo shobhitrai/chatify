@@ -16,7 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "user")
+@Document(collection = "User")
 public class User implements Serializable {
 
     @Serial
@@ -27,6 +27,4 @@ public class User implements Serializable {
     @Indexed(unique = true)
     private String email;
     private String password;
-    @Indexed(unique = true)
-    private ObjectId userDetailsId;
 }
