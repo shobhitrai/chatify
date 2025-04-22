@@ -36,15 +36,8 @@ public class AuthController {
 
     @GetMapping(UrlConstant.CHECK_EMAIL_UNIQUENESS)
     @ResponseBody
-    public ResponseEntity<Response> isEmailUnique(@RequestParam String email) throws Exception {
-        try {
-            return ResponseEntity.ok().body(userService.isEmailUnique(email));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body(Response.builder()
-                    .status(105).message(e.getMessage()).build());
-        }
-
+    public ResponseEntity<Response> isEmailExist(@RequestParam String email) {
+        return userService.isEmailExist(email);
     }
 
 
