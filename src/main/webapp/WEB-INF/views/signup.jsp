@@ -56,7 +56,7 @@
 										</div>
 										<button type="button" class="btn button" id="submit-signup-btn">Sign Up</button>
 										<div>
-                                           <p style="margin-top: 5px; color: red;" id="signup-submit-error">${error}</p>
+                                           <p style="margin-top: 5px; color: red;" id="signup-submit-error">&nbsp;${error}</p>
                                         </div>
 										<div class="callout">
 											<span>Already a member? <a href="login">Sign In</a></span>
@@ -86,8 +86,7 @@
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="${path}/js/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		<script>window.jQuery || document.write('<script src="${path}/js/vendor/jquery-slim.min.js"><\/script>')</script>
+		<script src="${path}/js/jquery-3.6.0.min.js"></script>
 		<script src="${path}/js/vendor/popper.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>
 		<script src="${path}/chatify-js/signup.js"></script>

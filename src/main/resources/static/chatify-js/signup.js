@@ -16,13 +16,30 @@ function processSignUp() {
         $('#signup-submit-error').text("Email is required.");
         return;
     }
-    if (!emailRegex.test(email)) {
-        $('#signup-submit-error').text("Invalid email format.");
-        return;
-    }
-    if (!password) {
-        $('#signup-submit-error').text("Password is required.");
-        return;
-    }
-    $('#signup-form').submit();
+//    if (!emailRegex.test(email)) {
+//       $('#signup-submit-error').text("Please provide a valid email address.");
+//        return;
+//    }
+    $.ajax({
+    		url : 'check-email-exist/' + email,
+    		type : 'GET',
+    		contentType : 'application/json',
+    		success : function(response) {
+    			alert(JSON.stringify(response));
+    			if (response.code == 101) {
+    				$('#signup-submit-error').text("Email already exists.");
+    			} else {
+    				   if (!password) {
+                            $('#signup-submit-error').text("Password is required.");
+                            return;
+                        }
+                        $('#signup-form').submit();
+    			}
+    		},
+    		error : function(errorThrown) {
+    			console.log(JSON.stringify(errorThrown));
+    			alert('Please refresh the page and try again.');
+    			return;
+    		}
+    	});
 }

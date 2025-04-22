@@ -34,7 +34,7 @@ public class AuthController {
         return PageConstant.SIGN_UP;
     }
 
-    @GetMapping(UrlConstant.CHECK_EMAIL_UNIQUENESS)
+    @GetMapping(UrlConstant.CHECK_EMAIL_EXIST)
     @ResponseBody
     public ResponseEntity<Response> isEmailExist(@RequestParam String email) {
         return userService.isEmailExist(email);
