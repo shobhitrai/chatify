@@ -42,6 +42,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                         .status(StatusConstant.ERROR_CODE)
                         .message(MessageConstant.USERNAME_IS_REQUIRED).build());
             }
+
             boolean isEmailExist = userDao.isMailExist(userDto.getEmail());
             if (isEmailExist)
                 return ResponseEntity.ok(Response.builder()
@@ -76,8 +77,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             user.setCreatedAt(new Date());
             user = userDao.save(user);
             UserDetail userDetails = new UserDetail();
-            userDetails.setUserId(user.getId().toString());
-            userDetails.setName(userDto.getName());
+            userDetails.setUserId(user.getId());
+            userDetails.setFirstName(userDto.getFirstName());
+            userDetails.setLastName(userDto.getLastName());
+
             userDao.save(userDetails);
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.USER_REGISTERED_SUCCESSFULLY);
         } catch (Exception e) {
@@ -119,15 +122,17 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     private boolean validateSignUp(UserDto userDto, RedirectAttributes redirectAttributes) {
-
-        if (Objects.isNull(userDto.getUsername()) || userDto.getUsername().isBlank()) {
-            redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.USERNAME_IS_REQUIRED);
+        if (Objects.isNull(userDto.getFirstName()) || userDto.getFirstName().isBlank()) {
+            redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.FIRST_NAME_IS_REQUIRED);
             return false;
-        } else if (Objects.isNull(userDto.getFirstName()) || userDto.getLastName().isBlank()) {
-            redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.NAME_IS_REQUIRED);
+        } else if (Objects.isNull(userDto.getLastName()) || userDto.getLastName().isBlank()) {
+            redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.LAST_NAME_IS_REQUIRED);
             return false;
         } else if (Objects.isNull(userDto.getEmail()) || userDto.getEmail().isBlank()) {
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.EMAIL_IS_REQUIRED);
+            return false;
+        } else if (Objects.isNull(userDto.getUsername()) || userDto.getUsername().isBlank()) {
+            redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.USERNAME_IS_REQUIRED);
             return false;
         } else if (Objects.isNull(userDto.getPassword()) || userDto.getPassword().isBlank()) {
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.PASSWORD_IS_REQUIRED);

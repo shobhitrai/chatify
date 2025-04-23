@@ -27,6 +27,7 @@ public class User implements Serializable {
     @Id
     private ObjectId id;
     @Indexed(unique = true)
+    private String username;
     private String email;
     private String password;
     private Date createdAt;

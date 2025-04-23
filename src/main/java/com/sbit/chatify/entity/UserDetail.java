@@ -24,8 +24,8 @@ public class UserDetail implements Serializable {
 
     @Id
     private ObjectId id;
-    private String name;
-    private Integer age;
-    private String userId;
+    private String firstName;
+    private String lastName;
+    private ObjectId userId;
     private String profileImage;
 }
