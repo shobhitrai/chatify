@@ -27,10 +27,7 @@ public class UserDaoImpl implements UserDao {
         return mongoTemplate.save(user);
     }
 
-    @Override
-    public UserDetail save(UserDetail userDetails) {
-        return mongoTemplate.save(userDetails);
-    }
+
 
     @Override
     public User findByEmail(String email) {

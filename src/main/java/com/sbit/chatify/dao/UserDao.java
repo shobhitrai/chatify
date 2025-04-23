@@ -8,8 +8,6 @@ public interface UserDao {
 
     User save(User user);
 
-    UserDetail save(UserDetail userDetails);
-
     User findByEmail(String email);
 
     boolean isUsernameExist(String username);

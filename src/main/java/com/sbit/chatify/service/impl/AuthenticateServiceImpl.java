@@ -6,6 +6,7 @@ import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.constant.ServicesConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.UserDao;
+import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.User;
 import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.Response;
@@ -25,6 +26,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private UserDetailDao userDetailDao;
 
     @Autowired
     private ObjectMapper mapper;
@@ -83,7 +87,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             userDetails.setLastName(userDto.getLastName());
             userDetails.setProfileImage(ServicesConstant.DEFAULT_PROFILE_IMAGE);
 
-            userDao.save(userDetails);
+            userDetailDao.save(userDetails);
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.USER_REGISTERED_SUCCESSFULLY);
         } catch (Exception e) {
             e.printStackTrace();

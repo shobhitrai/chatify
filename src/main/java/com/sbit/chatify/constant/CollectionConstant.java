@@ -5,4 +5,5 @@ public interface CollectionConstant {
     String USERDETAIL = "UserDetail";
     String NOTIFICATION = "Notification";
     String CONTACT = "Contact";
+    String FRIEND_REQUEST = "FriendRequest";
 }
