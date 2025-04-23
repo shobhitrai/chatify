@@ -11,27 +11,27 @@ function processSignUp() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if(!firstName) {
-        $('#signup-submit-error').text("First name is required.");
+        $('#signup-submit-error').text("First name is required");
         return;
     }
     if(!lastName) {
-        $('#signup-submit-error').text("Last name is required.");
+        $('#signup-submit-error').text("Last name is required");
         return;
     }
     if (!email) {
-        $('#signup-submit-error').text("Email is required.");
+        $('#signup-submit-error').text("Email is required");
         return;
     }
     if (!emailRegex.test(email)) {
-       $('#signup-submit-error').text("Please provide a valid email address.");
+       $('#signup-submit-error').text("Please provide a valid email address");
         return;
     }
     if (!username) {
-        $('#signup-submit-error').text("Username is required.");
+        $('#signup-submit-error').text("Username is required");
         return;
     }
     if (!password) {
-        $('#signup-submit-error').text("Password is required.");
+        $('#signup-submit-error').text("Password is required");
         return;
     }
     let reqBody = {

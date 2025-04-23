@@ -42,11 +42,11 @@
 									<form action="signup" class="signup" id="signup-form" method="post">
 										<div class="form-parent">
 											<div class="form-group">
-												<input type="text" id="firstname" name="firstname" class="form-control" placeholder="First Name">
+												<input type="text" id="firstname" name="firstName" class="form-control" placeholder="First Name">
 												<button class="btn icon"><i class="material-icons">person_outline</i></button>
 											</div>
 											<div class="form-group">
-                                                <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Last Name">
+                                                <input type="text" id="lastname" name="lastName" class="form-control" placeholder="Last Name">
                                                 <button class="btn icon"><i class="material-icons">person_outline</i></button>
                                             </div>
 										</div>

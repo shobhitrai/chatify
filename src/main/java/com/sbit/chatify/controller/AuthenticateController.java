@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
-public class AuthController {
+public class AuthenticateController {
 
     @Autowired
     private AuthenticateService authenticateService;
@@ -39,23 +39,23 @@ public class AuthController {
     public String wall() { return PageConstant.WALL;}
 
 
-    @GetMapping(UrlConstant.VALIDATE_SIGNUP)
+    @PostMapping(UrlConstant.VALIDATE_SIGNUP)
     @ResponseBody
     public ResponseEntity<Response> validateSignUp(@RequestBody UserDto userDto) {
-        log.info("check-email-exist called {}", userDto);
+        log.info("validateSignUp called {}", userDto);
         return authenticateService.validateSignUp(userDto);
     }
 
     @PostMapping(UrlConstant.SIGNUP)
     public String signup(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes) {
-        log.info("Signup called {}", userDto.getEmail());
+        log.info("signup called {}", userDto.getEmail());
         return authenticateService.registerUser(userDto, redirectAttributes);
     }
 
     @PostMapping(UrlConstant.LOGIN)
     public String login(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes,
                         HttpSession session) {
-        log.info("Login called {}", userDto.getEmail());
+        log.info("login called {}", userDto.getEmail());
         return authenticateService.login(userDto, redirectAttributes, session);
     }
 
