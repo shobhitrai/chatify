@@ -82,7 +82,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             user.setCreatedAt(new Date());
             user = userDao.save(user);
             UserDetail userDetails = new UserDetail();
-            userDetails.setUserId(user.getId());
+            userDetails.setUserId(user.getId().toString());
             userDetails.setFirstName(userDto.getFirstName());
             userDetails.setLastName(userDto.getLastName());
             userDetails.setProfileImage(ServicesConstant.DEFAULT_PROFILE_IMAGE);
@@ -104,7 +104,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         try {
             User user = userDao.findByEmail(userDto.getEmail());
             if (Objects.isNull(user) || !userDto.getPassword().equals(user.getPassword())) {
-                redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.INVALID_CREDENTIALS);
+                redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.WRONG_LOGIN_OR_PASSWORD);
                 return PageConstant.REDIRECT_LOGIN;
             }
             return PageConstant.REDIRECT_WALL;

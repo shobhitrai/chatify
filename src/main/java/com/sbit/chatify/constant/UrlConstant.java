@@ -7,5 +7,6 @@ public interface UrlConstant {
     String LOGOUT = "logout";
     String FORGOT_PASSWORD = "forgot-password";
     String RESET_PASSWORD = "reset-password";
+    String SEND_FRIEND_REQUEST = "send-friend-request";
 
 }

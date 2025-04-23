@@ -26,6 +26,6 @@ public class UserDetail implements Serializable {
     private ObjectId id;
     private String firstName;
     private String lastName;
-    private ObjectId userId;
+    private String userId;
     private String profileImage;
 }

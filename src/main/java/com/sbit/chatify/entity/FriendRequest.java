@@ -23,8 +23,8 @@ public class FriendRequest implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private ObjectId id;
-    private ObjectId senderId;
-    private ObjectId receiverId;
+    private String senderId;
+    private String receiverId;
     private Date createdAt;
-    private boolean isAccepted;
+    private Boolean isAccepted;
 }
