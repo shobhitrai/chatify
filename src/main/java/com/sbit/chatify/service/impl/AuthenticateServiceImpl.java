@@ -3,6 +3,7 @@ package com.sbit.chatify.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.PageConstant;
+import com.sbit.chatify.constant.ServicesConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.entity.User;
@@ -80,6 +81,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             userDetails.setUserId(user.getId());
             userDetails.setFirstName(userDto.getFirstName());
             userDetails.setLastName(userDto.getLastName());
+            userDetails.setProfileImage(ServicesConstant.DEFAULT_PROFILE_IMAGE);
 
             userDao.save(userDetails);
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.USER_REGISTERED_SUCCESSFULLY);
