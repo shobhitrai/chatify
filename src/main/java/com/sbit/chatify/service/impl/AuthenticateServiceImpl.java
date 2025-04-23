@@ -13,6 +13,7 @@ import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.AuthenticateService;
 import com.sbit.chatify.utility.JwtService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Autowired
@@ -114,6 +116,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             }
 
             String jwtToken = getJwtToken(user);
+            log.info("JWT Token: {}", jwtToken);
             redirectAttributes.addFlashAttribute(MessageConstant.TOKEN, jwtToken);
             redirectAttributes.addFlashAttribute(MessageConstant.TOKEN_TIME, jwtService.getExpirationTime());
             return PageConstant.REDIRECT_WALL;

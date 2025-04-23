@@ -1,5 +1,6 @@
 package com.sbit.chatify.utility;
 
+import com.sbit.chatify.constant.ServicesConstant;
 import com.sbit.chatify.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,11 +19,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtService {
-    @Value("${security.jwt.secret-key}")
-    private String secretKey;
-
-    @Value("${security.jwt.expiration-time}")
-    private long jwtExpiration;
+//    @Value("${security.jwt.secret-key}")
+//    private String secretKey;
+//
+//    @Value("${security.jwt.expiration-time}")
+//    private long jwtExpiration;
 
     public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -38,11 +39,11 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, User user) {
-        return buildToken(extraClaims, user, jwtExpiration);
+        return buildToken(extraClaims, user, ServicesConstant.JWT_EXPIRATION_TIME);
     }
 
     public long getExpirationTime() {
-        return jwtExpiration;
+        return ServicesConstant.JWT_EXPIRATION_TIME;
     }
 
     private String buildToken(Map<String, Object> extraClaims, User user, long expiration) {
@@ -79,7 +80,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(ServicesConstant.JWT_SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
