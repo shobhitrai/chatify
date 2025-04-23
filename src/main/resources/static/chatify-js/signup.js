@@ -41,6 +41,9 @@ function processSignUp() {
     $.ajax({
     		url : 'validate-signup',
     		type : 'POST',
+//    		 headers: {
+//                'Authorization': 'Bearer ' + jwtToken
+//             ,
     		data : JSON.stringify(reqBody),
     		contentType : 'application/json',
     		success : function(response) {

@@ -6,5 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto);
+    ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto, String token);
 }

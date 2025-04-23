@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
@@ -26,9 +23,10 @@ public class UserController {
 
     @PostMapping(UrlConstant.SEND_FRIEND_REQUEST)
     @ResponseBody
-    public ResponseEntity<Response> sendFriendRequest(@RequestBody FriendRequestDto friendRequestDto) {
+    public ResponseEntity<Response> sendFriendRequest(@RequestBody FriendRequestDto friendRequestDto,
+                                                      @RequestHeader("Authorization") String token) {
         log.info("sendFriendRequest called {}", friendRequestDto);
-        return userService.sendFriendRequest(friendRequestDto);
+        return userService.sendFriendRequest(friendRequestDto, token);
     }
 
 }

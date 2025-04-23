@@ -36,7 +36,9 @@ public class AuthenticateController {
     }
 
     @GetMapping("wall")
-    public String wall() { return PageConstant.WALL;}
+    public String wall() {
+        return PageConstant.WALL;
+    }
 
 
     @PostMapping(UrlConstant.VALIDATE_SIGNUP)
@@ -53,10 +55,9 @@ public class AuthenticateController {
     }
 
     @PostMapping(UrlConstant.LOGIN)
-    public String login(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes,
-                        HttpSession session) {
+    public String login(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes) {
         log.info("login called {}", userDto.getEmail());
-        return authenticateService.login(userDto, redirectAttributes, session);
+        return authenticateService.login(userDto, redirectAttributes);
     }
 
 

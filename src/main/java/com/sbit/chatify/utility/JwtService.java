@@ -24,7 +24,7 @@ public class JwtService {
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
 
-    public String extractUsername(String token) {
+    public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -56,9 +56,9 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, User user) {
-        final String username = extractUsername(token);
-        return (username.equals(user.getEmail())) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, String userId) {
+        final String tokenUserId = extractUserId(token);
+        return (tokenUserId.equals(userId)) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {

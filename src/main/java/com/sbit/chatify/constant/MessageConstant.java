@@ -16,4 +16,7 @@ public interface MessageConstant {
     String FIRST_NAME_IS_REQUIRED = "First name is required";
     String LAST_NAME_IS_REQUIRED = "Last name is required";
     String SUCCESS = "Success";
+    String TOKEN = "token";
+    String TOKEN_TIME = "tokenTime";
+    String UNAUTHORIZED_ACCESS = "Unauthorized access";
 }

@@ -12,13 +12,15 @@ import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.AuthenticateService;
-import jakarta.servlet.http.HttpSession;
+import com.sbit.chatify.utility.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -32,6 +34,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Autowired
     private ObjectMapper mapper;
+
+    @Autowired
+    private JwtService jwtService;
 
 
     @Override
@@ -74,14 +79,14 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String registerUser(UserDto userDto, RedirectAttributes redirectAttributes) {
-        boolean status = validateSignUp(userDto, redirectAttributes);
+        var status = validateSignUp(userDto, redirectAttributes);
         if (!status)
             return PageConstant.REDIRECT_SIGNUP;
         try {
-            User user = mapper.convertValue(userDto, User.class);
+            var user = mapper.convertValue(userDto, User.class);
             user.setCreatedAt(new Date());
             user = userDao.save(user);
-            UserDetail userDetails = new UserDetail();
+            var userDetails = new UserDetail();
             userDetails.setUserId(user.getId().toString());
             userDetails.setFirstName(userDto.getFirstName());
             userDetails.setLastName(userDto.getLastName());
@@ -97,16 +102,20 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String login(UserDto userDto, RedirectAttributes redirectAttributes, HttpSession session) {
-        boolean status = validateLogin(userDto, redirectAttributes);
+    public String login(UserDto userDto, RedirectAttributes redirectAttributes) {
+        var status = validateLogin(userDto, redirectAttributes);
         if (!status)
             return PageConstant.REDIRECT_LOGIN;
         try {
-            User user = userDao.findByEmail(userDto.getEmail());
+            var user = userDao.findByEmail(userDto.getEmail());
             if (Objects.isNull(user) || !userDto.getPassword().equals(user.getPassword())) {
                 redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.WRONG_LOGIN_OR_PASSWORD);
                 return PageConstant.REDIRECT_LOGIN;
             }
+
+            String jwtToken = getJwtToken(user);
+            redirectAttributes.addFlashAttribute(MessageConstant.TOKEN, jwtToken);
+            redirectAttributes.addFlashAttribute(MessageConstant.TOKEN_TIME, jwtService.getExpirationTime());
             return PageConstant.REDIRECT_WALL;
 
         } catch (Exception e) {
@@ -114,6 +123,14 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.INTERNAL_SERVER_ERROR);
             return PageConstant.REDIRECT_LOGIN;
         }
+    }
+
+    private String getJwtToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", user.getEmail());
+        claims.put("userId", user.getId());
+        claims.put("userName", user.getUsername());
+        return jwtService.generateToken(claims, user);
     }
 
     private boolean validateLogin(UserDto userDto, RedirectAttributes redirectAttributes) {
