@@ -11,4 +11,6 @@ public interface UserDao {
     UserDetail save(UserDetail userDetails);
 
     User findByEmail(String email);
+
+    boolean isUsernameExist(String username);
 }

@@ -4,6 +4,7 @@ import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.constant.UrlConstant;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.service.AuthenticateService;
 import com.sbit.chatify.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
     @Autowired
-    private UserService userService;
+    private AuthenticateService authenticateService;
 
     @GetMapping("/")
     public String root() {
@@ -39,24 +40,24 @@ public class AuthController {
     public String wall() { return PageConstant.WALL;}
 
 
-    @GetMapping(UrlConstant.CHECK_EMAIL_EXIST)
+    @GetMapping(UrlConstant.VALIDATE_SIGNUP)
     @ResponseBody
-    public ResponseEntity<Response> isEmailExist(@PathVariable String email) {
-        log.info("check-email-exist called {}", email);
-        return userService.isEmailExist(email);
+    public ResponseEntity<Response> validateSignUp(@RequestBody UserDto userDto) {
+        log.info("check-email-exist called {}", userDto);
+        return authenticateService.validateSignUp(userDto);
     }
 
     @PostMapping(UrlConstant.SIGNUP)
     public String signup(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes) {
         log.info("Signup called {}", userDto.getEmail());
-        return userService.registerUser(userDto, redirectAttributes);
+        return authenticateService.registerUser(userDto, redirectAttributes);
     }
 
     @PostMapping(UrlConstant.LOGIN)
     public String login(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes,
                         HttpSession session) {
         log.info("Login called {}", userDto.getEmail());
-        return userService.login(userDto, redirectAttributes, session);
+        return authenticateService.login(userDto, redirectAttributes, session);
     }
 
 

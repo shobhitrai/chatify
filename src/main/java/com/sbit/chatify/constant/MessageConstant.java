@@ -22,4 +22,5 @@ public interface MessageConstant {
     String EMAIL_IS_REQUIRED = "Email is required";
     String PASSWORD_IS_REQUIRED = "Password is required";
     String NAME_IS_REQUIRED = "Name is required";
+    String USERNAME_IS_REQUIRED = "Username is required";
 }

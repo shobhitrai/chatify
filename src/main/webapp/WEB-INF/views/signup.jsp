@@ -42,14 +42,22 @@
 									<form action="signup" class="signup" id="signup-form" method="post">
 										<div class="form-parent">
 											<div class="form-group">
-												<input type="text" id="name" name="name" class="form-control" placeholder="Name">
+												<input type="text" id="firstname" name="firstname" class="form-control" placeholder="First Name">
 												<button class="btn icon"><i class="material-icons">person_outline</i></button>
 											</div>
 											<div class="form-group">
-												<input type="email" id="email" name="email" class="form-control" placeholder="Email Address">
-												<button class="btn icon"><i class="material-icons">mail_outline</i></button>
-											</div>
+                                                <input type="text" id="lastname" name="lastname" class="form-control" placeholder="Last Name">
+                                                <button class="btn icon"><i class="material-icons">person_outline</i></button>
+                                            </div>
 										</div>
+										<div class="form-group">
+                                            <input type="email" id="email" name="email" class="form-control" placeholder="Email Address">
+                                            <button class="btn icon"><i class="material-icons">mail_outline</i></button>
+                                        </div>
+										<div class="form-group">
+                                            <input type="test" id="username" name="username" class="form-control" placeholder="Username">
+                                            <button class="btn icon"><i class="material-icons">person_outline</i></button>
+                                        </div>
 										<div class="form-group">
 											<input type="password" id="password" name="password" class="form-control" placeholder="Password">
 											<button class="btn icon"><i class="material-icons">lock_outline</i></button>

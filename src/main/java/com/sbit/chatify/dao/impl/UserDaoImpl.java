@@ -38,4 +38,11 @@ public class UserDaoImpl implements UserDao {
         query.addCriteria(Criteria.where("email").is(email));
         return mongoTemplate.findOne(query, User.class);
     }
+
+    @Override
+    public boolean isUsernameExist(String username) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("username").is(username));
+        return mongoTemplate.exists(query, User.class);
+    }
 }
