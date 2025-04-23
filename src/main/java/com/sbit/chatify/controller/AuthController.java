@@ -5,7 +5,6 @@ import com.sbit.chatify.constant.UrlConstant;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.AuthenticateService;
-import com.sbit.chatify.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
