@@ -1,5 +1,6 @@
 package com.sbit.chatify.utility;
 
-public class DateUtil {
+public class Util {
+
 
 }
