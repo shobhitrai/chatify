@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserDaoImpl implements UserDao {
 
@@ -41,5 +43,12 @@ public class UserDaoImpl implements UserDao {
         Query query = new Query();
         query.addCriteria(Criteria.where("username").is(username));
         return mongoTemplate.exists(query, User.class);
+    }
+
+    @Override
+    public List<User> findByUserName(String username) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("username").regex(username, "i"));
+        return mongoTemplate.find(query, User.class);
     }
 }

@@ -4,15 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.FriendRequestDao;
+import com.sbit.chatify.dao.UserDao;
+import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.model.FriendRequestDto;
 import com.sbit.chatify.model.Response;
+import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.UserService;
-import com.sbit.chatify.utility.JwtService;
+import com.sbit.chatify.utility.Util;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 @Service
@@ -25,18 +30,18 @@ public class UserServiceImpl implements UserService {
     private FriendRequestDao friendRequestDao;
 
     @Autowired
-    private JwtService jwtService;
+    private UserDao userDao;
+
+    @Autowired
+    private UserDetailDao userDetailDao;
+
+    @Autowired
+    private HttpSession session;
 
     @Override
-    public ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto, String token) {
+    public ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto) {
         try {
-            boolean isValidToken = isValidToken(token, friendRequestDto.getSenderId());
-            if (!isValidToken)
-                return ResponseEntity.ok(Response.builder()
-                        .status(StatusConstant.UNAUTHORIZED_CODE)
-                        .message(MessageConstant.UNAUTHORIZED_ACCESS).build());
-
-            FriendRequest friendRequest = mapper.convertValue(friendRequestDto, FriendRequest.class);
+            var friendRequest = mapper.convertValue(friendRequestDto, FriendRequest.class);
             friendRequest.setCreatedAt(new Date());
             friendRequestDao.save(friendRequest);
             return ResponseEntity.ok(Response.builder()
@@ -44,17 +49,36 @@ public class UserServiceImpl implements UserService {
                     .message(MessageConstant.SUCCESS).build());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(Response.builder()
-                    .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
-                    .message(MessageConstant.INTERNAL_SERVER_ERROR).build());
+            return Util.serverError();
         }
     }
 
-    private boolean isValidToken(String token, String userId) {
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-            return jwtService.isTokenValid(token, userId);
-        } else
-            return false;
+    @Override
+    public ResponseEntity<Response> getSearchedUsers(UserDto userDto) {
+        try {
+            var users = userDao.findByUserName(userDto.getUsername());
+            var foundUsers = new ArrayList<>();
+            var userId = session.getAttribute("userId").toString();
+            users.stream().filter(user -> !user.getId().toString().equals(userId))
+                    .forEach(user -> {
+                        var dto = mapper.convertValue(user, UserDto.class);
+                        var userDetail = userDetailDao.findByUserId(user.getId().toString());
+                        dto.setFirstName(userDetail.getFirstName());
+                        dto.setLastName(userDetail.getLastName());
+                        dto.setProfileImage(userDetail.getProfileImage());
+                        dto.setUsername(user.getUsername());
+                        dto.setUserId(user.getId().toString());
+                        foundUsers.add(dto);
+                    });
+
+            if (foundUsers.isEmpty())
+                return Util.failure(MessageConstant.NO_USER_FOUND);
+            else
+                return Util.success(foundUsers);
+
+        } catch (Exception e) {
+            return Util.serverError();
+        }
     }
+
 }

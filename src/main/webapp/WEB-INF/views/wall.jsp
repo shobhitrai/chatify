@@ -13,9 +13,18 @@
 		<link href="${path}/css/lib/bootstrap.min.css" type="text/css" rel="stylesheet">
 		<!-- Swipe core CSS -->
 		<link href="${path}/css/swipe.min.css" type="text/css" rel="stylesheet">
+		<!-- Custom CSS -->
+		<link href="${path}/css/custom.css" type="text/css" rel="stylesheet">
 		<!-- Favicon -->
 		<link href="${path}/image/favicon.png" type="image/png" rel="icon">
 	</head>
+	<script type="text/javascript">
+    	sessionStorage.setItem("sessionFirstName", "${sessionScope.firstName}");
+        sessionStorage.setItem("sessionLastName", "${sessionScope.lastName}");
+        sessionStorage.setItem("sessionUserId", "${sessionScope.userId}");
+        sessionStorage.setItem("sessionUserName", "${sessionScope.userName}");
+        sessionStorage.setItem("sessionProfileImage", "${sessionScope.profileImage}");
+    </script>
 	<body>
 		<main>
 			<div class="layout">
@@ -755,22 +764,30 @@
 								<button type="button" class="btn" data-dismiss="modal" aria-label="Close"><i class="material-icons">close</i></button>
 							</div>
 							<div class="content">
-								<form>
 									<div class="form-group">
-										<label for="user">Username:</label>
-										<input type="text" class="form-control" id="user" placeholder="Add recipient..." required>
-										<div class="user" id="contact">
-											<img class="avatar-sm" src="${path}/image/avatars/avatar-female-5.jpg" alt="avatar">
-											<h5>Keith Morris</h5>
-											<button class="btn"><i class="material-icons">close</i></button>
-										</div>
-									</div>
+                                       <label for="user">Username:</label>
+                                       <div style="position: relative;">
+                                          <input type="text" class="form-control" id="user" placeholder="Add recipient..." required>
+                                          <div id="searched-user">
+                                             <!--<div class="dropdown-menu" id="user-dropdown">
+                                                <button class="dropdown-item" type="button">John Doe</button>
+                                                <button class="dropdown-item" type="button">Jane Smith</button>
+                                             </div>-->
+                                          </div>
+                                       </div>
+                                       <div id='searched-icon'>
+                                       <!--<div class="user" id="contact">
+                                          <img class="avatar-sm" src="${path}/image/avatars/avatar-female-5.jpg" alt="avatar">
+                                          <h5>Keith Morris</h5>
+                                          <button class="btn"><i class="material-icons">close</i></button>
+                                       </div>-->
+                                       </div>
+                                    </div>
 									<div class="form-group">
 										<label for="welcome">Message:</label>
-										<textarea class="text-control" id="welcome" placeholder="Send your welcome message...">Hi Keith, I'd like to add you as a contact.</textarea>
+										<textarea class="text-control" id="welcome" placeholder="Send your welcome message..."></textarea>
 									</div>
-									<button type="submit" class="btn button w-100">Send Friend Request</button>
-								</form>
+									<button type="button" class="btn button w-100">Send Friend Request</button>
 							</div>
 						</div>
 					</div>

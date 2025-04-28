@@ -19,4 +19,11 @@ public interface MessageConstant {
     String TOKEN = "token";
     String TOKEN_TIME = "tokenTime";
     String UNAUTHORIZED_ACCESS = "Unauthorized access";
+    String USER_ID = "userId";
+    String USER_NAME = "userName";
+    String FIRST_NAME = "firstName";
+    String LAST_NAME = "lastName";
+    String PROFILE_IMAGE = "profileImage";
+    String NO_USER_FOUND = "No user found";
+
 }

@@ -23,10 +23,16 @@ public class UserController {
 
     @PostMapping(UrlConstant.SEND_FRIEND_REQUEST)
     @ResponseBody
-    public ResponseEntity<Response> sendFriendRequest(@RequestBody FriendRequestDto friendRequestDto,
-                                                      @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Response> sendFriendRequest(@RequestBody FriendRequestDto friendRequestDto) {
         log.info("sendFriendRequest called {}", friendRequestDto);
-        return userService.sendFriendRequest(friendRequestDto, token);
+        return userService.sendFriendRequest(friendRequestDto);
+    }
+
+    @PostMapping(UrlConstant.SEARCH_USERS)
+    @ResponseBody
+    public ResponseEntity<Response> getSearchedUsers(@RequestBody UserDto userDto) {
+        log.info("getSearchedUsers called {}", userDto);
+        return userService.getSearchedUsers(userDto);
     }
 
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.constant.ServicesConstant;
-import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.User;
@@ -12,7 +11,8 @@ import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.AuthenticateService;
-import com.sbit.chatify.utility.JwtService;
+import com.sbit.chatify.utility.Util;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -38,44 +36,31 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     private ObjectMapper mapper;
 
     @Autowired
-    private JwtService jwtService;
+    private HttpSession session;
 
 
     @Override
     public ResponseEntity<Response> validateSignUp(UserDto userDto) {
         try {
-            if (userDto.getEmail() == null || userDto.getEmail().isBlank()) {
-                return ResponseEntity.ok(Response.builder()
-                        .status(StatusConstant.ERROR_CODE)
-                        .message(MessageConstant.EMAIL_IS_REQUIRED).build());
-            }
-            if (userDto.getUsername() == null || userDto.getUsername().isBlank()) {
-                return ResponseEntity.ok(Response.builder()
-                        .status(StatusConstant.ERROR_CODE)
-                        .message(MessageConstant.USERNAME_IS_REQUIRED).build());
-            }
+            if (userDto.getEmail() == null || userDto.getEmail().isBlank())
+                return Util.failure(MessageConstant.EMAIL_IS_REQUIRED);
+
+            if (userDto.getUsername() == null || userDto.getUsername().isBlank())
+                return Util.failure(MessageConstant.USERNAME_IS_REQUIRED);
 
             boolean isEmailExist = userDao.isMailExist(userDto.getEmail());
             if (isEmailExist)
-                return ResponseEntity.ok(Response.builder()
-                        .status(StatusConstant.ERROR_CODE)
-                        .message(MessageConstant.EMAIL_ALREADY_EXISTS).build());
+                return Util.failure(MessageConstant.EMAIL_ALREADY_EXISTS);
 
             boolean isUsernameExist = userDao.isUsernameExist(userDto.getUsername());
             if (isUsernameExist)
-                return ResponseEntity.ok(Response.builder()
-                        .status(StatusConstant.ERROR_CODE)
-                        .message(MessageConstant.USER_ALREADY_EXISTS).build());
+                return Util.failure(MessageConstant.USER_ALREADY_EXISTS);
 
-            return ResponseEntity.ok(Response.builder()
-                    .status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.EMAIL_IS_AVAILABLE).build());
+            return Util.success();
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(Response.builder()
-                    .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
-                    .message(MessageConstant.INTERNAL_SERVER_ERROR).build());
+            return Util.serverError();
         }
     }
 
@@ -115,10 +100,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 return PageConstant.REDIRECT_LOGIN;
             }
 
-            String jwtToken = getJwtToken(user);
-            log.info("JWT Token: {}", jwtToken);
-            redirectAttributes.addFlashAttribute(MessageConstant.TOKEN, jwtToken);
-            redirectAttributes.addFlashAttribute(MessageConstant.TOKEN_TIME, jwtService.getExpirationTime());
+            var userDetails = userDetailDao.findByUserId(user.getId().toString());
+            setSessionAttributes(user, userDetails);
             return PageConstant.REDIRECT_WALL;
 
         } catch (Exception e) {
@@ -128,12 +111,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
     }
 
-    private String getJwtToken(User user) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
-        claims.put("userId", user.getId());
-        claims.put("userName", user.getUsername());
-        return jwtService.generateToken(claims, user);
+    private void setSessionAttributes(User user, UserDetail userDetails) {
+        session.setAttribute(MessageConstant.USER_ID, user.getId());
+        session.setAttribute(MessageConstant.USER_NAME, user.getEmail());
+        session.setAttribute(MessageConstant.FIRST_NAME, userDetails.getFirstName());
+        session.setAttribute(MessageConstant.LAST_NAME, userDetails.getLastName());
+        session.setAttribute(MessageConstant.PROFILE_IMAGE, userDetails.getProfileImage());
     }
 
     private boolean validateLogin(UserDto userDto, RedirectAttributes redirectAttributes) {
