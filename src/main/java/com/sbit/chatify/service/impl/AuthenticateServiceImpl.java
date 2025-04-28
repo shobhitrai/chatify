@@ -54,7 +54,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
             boolean isUsernameExist = userDao.isUsernameExist(userDto.getUsername());
             if (isUsernameExist)
-                return Util.failure(MessageConstant.USER_ALREADY_EXISTS);
+                return Util.failure(MessageConstant.USERNAME_ALREADY_TAKEN);
 
             return Util.success();
 

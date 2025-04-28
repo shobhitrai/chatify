@@ -6,7 +6,7 @@ public interface MessageConstant {
     String INTERNAL_SERVER_ERROR = "Internal server error";
     String USER_REGISTERED_SUCCESSFULLY = "User registered successfully";
     String USER_NOT_FOUND = "User not found";
-    String USER_ALREADY_EXISTS = "User already exists";
+    String USERNAME_ALREADY_TAKEN = "Username already taken";
     String ERROR = "error";
     String USER_ALREADY_ONLINE = "User already online in some different system";
     String WRONG_LOGIN_OR_PASSWORD = "Wrong login or password";
