@@ -1,0 +1,9 @@
+#user-dropdown {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+}
