@@ -72,6 +72,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         try {
             var user = mapper.convertValue(userDto, User.class);
             user.setCreatedAt(new Date());
+            user.setIsActive(1);
             user = userDao.save(user);
             var userDetails = new UserDetail();
             userDetails.setUserId(user.getId().toString());

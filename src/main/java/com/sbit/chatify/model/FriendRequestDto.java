@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class FriendRequestDto {
     private String senderId;
     private String receiverId;
+    private String message;
 
 }

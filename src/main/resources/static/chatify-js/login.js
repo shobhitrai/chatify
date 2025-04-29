@@ -1,3 +1,6 @@
+$('#email').val('shobhit@gmail.com');
+$('#password').val('hello');
+
 $('#submit-login-btn').on('click', function(){
 	processLogin();
 });

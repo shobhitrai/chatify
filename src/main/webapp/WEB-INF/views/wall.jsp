@@ -761,7 +761,7 @@
 						<div class="requests">
 							<div class="title">
 								<h1>Add your friends</h1>
-								<button type="button" class="btn" data-dismiss="modal" aria-label="Close"><i class="material-icons">close</i></button>
+								<button type="button" class="btn" id="close-friend-req-btn" data-dismiss="modal" aria-label="Close"><i class="material-icons">close</i></button>
 							</div>
 							<div class="content">
 									<div class="form-group">
@@ -787,7 +787,10 @@
 										<label for="welcome">Message:</label>
 										<textarea class="text-control" id="welcome" placeholder="Send your welcome message..."></textarea>
 									</div>
-									<button type="button" class="btn button w-100">Send Friend Request</button>
+									<button type="button" class="btn button w-100" id="send-frnd-req-btn">Send Friend Request</button>
+									<div>
+                                        <p id="friend-req-submit-error">&nbsp;</p>
+                                    </div>
 							</div>
 						</div>
 					</div>

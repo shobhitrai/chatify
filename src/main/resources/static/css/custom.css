@@ -7,3 +7,10 @@
     max-height: 200px;
     overflow-y: auto;
 }
+#friend-req-submit-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3px;
+    color: red;
+}

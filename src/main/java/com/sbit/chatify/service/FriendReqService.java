@@ -5,7 +5,7 @@ import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import org.springframework.http.ResponseEntity;
 
-public interface UserService {
+public interface FriendReqService {
 
     ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto);
 

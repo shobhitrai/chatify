@@ -19,7 +19,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public boolean isMailExist(String email) {
-        Query query = new Query();
+        var query = new Query();
         query.addCriteria(Criteria.where("email").is(email));
         return mongoTemplate.exists(query, User.class);
     }
@@ -30,24 +30,23 @@ public class UserDaoImpl implements UserDao {
     }
 
 
-
     @Override
     public User findByEmail(String email) {
-        Query query = new Query();
+        var query = new Query();
         query.addCriteria(Criteria.where("email").is(email));
         return mongoTemplate.findOne(query, User.class);
     }
 
     @Override
     public boolean isUsernameExist(String username) {
-        Query query = new Query();
+        var query = new Query();
         query.addCriteria(Criteria.where("username").is(username));
         return mongoTemplate.exists(query, User.class);
     }
 
     @Override
     public List<User> findByUserName(String username) {
-        Query query = new Query();
+        var query = new Query();
         query.addCriteria(Criteria.where("username").regex(username, "i"));
         return mongoTemplate.find(query, User.class);
     }

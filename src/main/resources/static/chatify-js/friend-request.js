@@ -1,5 +1,55 @@
 let typingTimer; // Timer identifier
 const typingDelay = 200; // Delay in milliseconds
+let friendUserId;
+let friendName;
+const userId = sessionStorage.getItem('sessionUserId');
+
+$('#send-frnd-req-btn').on('click', function(){
+	sendFriendRequest(this)
+});
+
+$('#close-friend-req-btn').on('click', function(){
+	resetFriendReq();
+	$('#friend-req-submit-error').html('&nbsp;');
+});
+
+function sendFriendRequest(element) {
+    const message = $('#welcome').val().trim();
+    if(friendUserId == null || friendUserId == undefined) {
+        $('#friend-req-submit-error').text('Please select a user');
+        return;
+    }
+    if (message === '') {
+        $('#friend-req-submit-error').text('Please enter a message');
+        return;
+    }
+    $('#send-frnd-req-btn').prop('disabled', true);
+    const reqBody = {
+        "senderId": userId,
+        "receiverId": friendUserId,
+        "message": message
+    }
+    $.ajax({
+        url: 'send-friend-request',
+        type: 'POST',
+        data: JSON.stringify(reqBody),
+        contentType: 'application/json',
+        success: function (response) {
+            console.log(JSON.stringify(response));
+            $('#send-frnd-req-btn').prop('disabled', false);
+            if (response.status == 100) {
+                $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
+                resetFriendReq();
+            } else {
+                $('#friend-req-submit-error').text(response.message);
+            }
+        },
+        error: function (errorThrown) {
+            console.log(JSON.stringify(errorThrown));
+            return;
+        }
+    });
+}
 
 $('#user').on('keyup', function (e) {
      clearTimeout(typingTimer); // Clear the previous timer
@@ -16,7 +66,8 @@ $('#searched-user').on('click', '.searched-user-btn', function () {
 function getSearchedIcon(element) {
    const firstName = $(element).data('firstname');
    const lastName = $(element).data('lastname');
-   const userId = $(element).data('userid');
+   friendUserId = $(element).data('userid');
+   friendName = firstName + ' ' + lastName;
    const profileImage = $(element).data('profileimage');
    $('#searched-user').html('');
    var data = '<div class="user" id="contact">' +
@@ -31,10 +82,17 @@ function getSearchedIcon(element) {
 }
 
 $('#searched-icon').on('click', '.btn', function () {
-    $('#searched-icon').html('');
-    $('#welcome').val('');
-    $('#user').prop('disabled', false);
+   resetFriendReq();
+   $('#friend-req-submit-error').html('&nbsp;');
 });
+
+function resetFriendReq() {
+     $('#searched-icon').html('');
+     $('#welcome').val('');
+     $('#user').prop('disabled', false);
+     friendUserId = null;
+     friendName = null;
+}
 
 function getSearchedUsers(e, element) {
    if ((e.which >= 48 && e.which <= 57) ||

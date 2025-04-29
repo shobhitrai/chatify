@@ -10,7 +10,7 @@ import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.model.FriendRequestDto;
 import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
-import com.sbit.chatify.service.UserService;
+import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.utility.Util;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class FriendReqServiceImpl implements FriendReqService {
 
     @Autowired
     private ObjectMapper mapper;
@@ -41,12 +41,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto) {
         try {
+            var userId = session.getAttribute("userId").toString();
+            var friendReqAlredyExists = friendRequestDao.findBySenderIdAndReceiverId(userId,
+                    friendRequestDto.getReceiverId());
+            if (friendReqAlredyExists)
+                return Util.failure(MessageConstant.FRIEND_REQUEST_ALREADY_EXISTS);
+
             var friendRequest = mapper.convertValue(friendRequestDto, FriendRequest.class);
+            friendRequest.setIsAccepted(false);
             friendRequest.setCreatedAt(new Date());
             friendRequestDao.save(friendRequest);
-            return ResponseEntity.ok(Response.builder()
-                    .status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS).build());
+            return Util.success();
         } catch (Exception e) {
             e.printStackTrace();
             return Util.serverError();
@@ -77,6 +82,7 @@ public class UserServiceImpl implements UserService {
                 return Util.success(foundUsers);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return Util.serverError();
         }
     }
