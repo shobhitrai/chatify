@@ -1,44 +1,31 @@
 package com.sbit.chatify.websocket;
 
-import org.springframework.web.socket.BinaryMessage;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
+import jakarta.websocket.*;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
 
-public class SocketHandler extends TextWebSocketHandler {
-    @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) {
-        try {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+@ServerEndpoint("/socket/{userId}")
+public class SocketHandler {
+
+    @OnMessage
+    public void processBookingRequest(@PathParam("userId") String userId, String message, Session session) {
+
     }
 
-    @Override
-    public void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
-        try {
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @OnOpen
+    public void onOpen(@PathParam("userId") String userId, Session session) {
+        SocketUtil.register(userId, session);
     }
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        try {
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @OnClose
+    public void onClose(@PathParam("userId") String userId, Session session, CloseReason reason) {
+        SocketUtil.closeConnection(userId, session, reason);
     }
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        SocketUtil.closeConnection(session, status);
+    @OnError
+    public void onError(@PathParam("userId") String userId, Session session, Throwable throwable) {
+        SocketUtil.transportError(userId, session, throwable);
     }
 
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) {
-        SocketUtil.transportError(session, exception);
-    }
+
 }
