@@ -5,13 +5,12 @@ $(document).ready(function() {
 var webSocket;
 
 function connect() {
-    const userId = sessionStorage.getItem('sessionUserId');
-    const socketUrl = 'ws://' + document.location.host + '/chatify/chat/' + userId;
+    const socketUrl = 'ws://' + document.location.host + '/chatify/chat/' + sessionUserId;
     console.log("Connecting to socket: " + socketUrl);
     webSocket = new WebSocket(socketUrl);
 
     webSocket.onopen = () => {
-      console.log("Connected to WebSocket server");
+      console.log("Connected to socket");
     };
 
     webSocket.onmessage = (event) => {

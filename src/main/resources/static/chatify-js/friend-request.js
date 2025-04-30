@@ -2,7 +2,7 @@ let typingTimer; // Timer identifier
 const typingDelay = 200; // Delay in milliseconds
 let friendUserId;
 let friendName;
-const userId = sessionStorage.getItem('sessionUserId');
+const userId = sessionUserId;
 
 $('#send-frnd-req-btn').on('click', function(){
 	sendFriendRequest(this)

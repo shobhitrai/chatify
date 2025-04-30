@@ -35,10 +35,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
-    private HttpSession session;
-
-
     @Override
     public ResponseEntity<Response> validateSignUp(UserDto userDto) {
         try {
@@ -101,8 +97,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 return PageConstant.REDIRECT_LOGIN;
             }
 
-            var userDetails = userDetailDao.findByUserId(user.getId().toString());
-            setSessionAttributes(user, userDetails);
+            addWallData(redirectAttributes, user);
             return PageConstant.REDIRECT_WALL;
 
         } catch (Exception e) {
@@ -112,12 +107,13 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
     }
 
-    private void setSessionAttributes(User user, UserDetail userDetails) {
-        session.setAttribute(MessageConstant.USER_ID, user.getId());
-        session.setAttribute(MessageConstant.USER_NAME, user.getEmail());
-        session.setAttribute(MessageConstant.FIRST_NAME, userDetails.getFirstName());
-        session.setAttribute(MessageConstant.LAST_NAME, userDetails.getLastName());
-        session.setAttribute(MessageConstant.PROFILE_IMAGE, userDetails.getProfileImage());
+    private void addWallData(RedirectAttributes redirectAttributes, User user) {
+        var userDetails = userDetailDao.findByUserId(user.getId().toString());
+        redirectAttributes.addFlashAttribute(MessageConstant.USER_ID, user.getId());
+        redirectAttributes.addFlashAttribute(MessageConstant.USER_NAME, user.getUsername());
+        redirectAttributes.addFlashAttribute(MessageConstant.FIRST_NAME, userDetails.getFirstName());
+        redirectAttributes.addFlashAttribute(MessageConstant.LAST_NAME, userDetails.getLastName());
+        redirectAttributes.addFlashAttribute(MessageConstant.PROFILE_IMAGE, userDetails.getProfileImage());
     }
 
     private boolean validateLogin(UserDto userDto, RedirectAttributes redirectAttributes) {

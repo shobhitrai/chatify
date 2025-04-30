@@ -19,11 +19,12 @@
 		<link href="${path}/image/favicon.png" type="image/png" rel="icon">
 	</head>
 	<script type="text/javascript">
-    	sessionStorage.setItem("sessionFirstName", "${sessionScope.firstName}");
-        sessionStorage.setItem("sessionLastName", "${sessionScope.lastName}");
-        sessionStorage.setItem("sessionUserId", "${sessionScope.userId}");
-        sessionStorage.setItem("sessionUserName", "${sessionScope.userName}");
-        sessionStorage.setItem("sessionProfileImage", "${sessionScope.profileImage}");
+        var sessionFirstName = '${firstName}';
+        var sessionLastName = '${lastName}';
+        var sessionUserId = '${userId}';
+        var sessionUserName = '${userName}';
+        var sessionProfileImage = '${profileImage}';
+        console.log(sessionFirstName + ' ' + sessionLastName + ' ' + sessionUserId + ' ' + sessionUserName + ' ' + sessionProfileImage);
     </script>
 	<body>
 		<main>
