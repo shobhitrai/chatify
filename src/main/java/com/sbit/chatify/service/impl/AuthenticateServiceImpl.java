@@ -12,6 +12,7 @@ import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.AuthenticateService;
 import com.sbit.chatify.utility.Util;
+import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,11 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             var user = userDao.findByEmail(userDto.getEmail());
             if (Objects.isNull(user) || !userDto.getPassword().equals(user.getPassword())) {
                 redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.WRONG_LOGIN_OR_PASSWORD);
+                return PageConstant.REDIRECT_LOGIN;
+            }
+            if (SocketUtil.SOCKET_CONNECTION.containsKey(user.getId().toString())) {
+                redirectAttributes.addFlashAttribute(MessageConstant.ERROR,
+                        MessageConstant.USER_ALREADY_LOGGED_IN_ON_ANOTHER_DEVICE);
                 return PageConstant.REDIRECT_LOGIN;
             }
 

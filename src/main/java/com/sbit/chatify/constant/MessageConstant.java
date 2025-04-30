@@ -20,4 +20,5 @@ public interface MessageConstant {
     String PROFILE_IMAGE = "profileImage";
     String NO_USER_FOUND = "No user found";
     String FRIEND_REQUEST_ALREADY_EXISTS = "Friend request already exists";
+    Object USER_ALREADY_LOGGED_IN_ON_ANOTHER_DEVICE = "User already logged in on another device";
 }
