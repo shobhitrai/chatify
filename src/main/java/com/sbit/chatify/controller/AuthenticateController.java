@@ -25,21 +25,15 @@ public class AuthenticateController {
         return PageConstant.REDIRECT_LOGIN;
     }
 
-    @GetMapping("login")
+    @GetMapping(UrlConstant.LOGIN)
     public String login() {
         return PageConstant.LOGIN;
     }
 
-    @GetMapping("signup")
+    @GetMapping(UrlConstant.SIGNUP)
     public String signup() {
         return PageConstant.SIGN_UP;
     }
-
-    @GetMapping("wall")
-    public String wall() {
-        return PageConstant.WALL;
-    }
-
 
     @PostMapping(UrlConstant.VALIDATE_SIGNUP)
     @ResponseBody

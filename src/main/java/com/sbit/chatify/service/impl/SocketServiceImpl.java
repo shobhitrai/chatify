@@ -2,7 +2,9 @@ package com.sbit.chatify.service.impl;
 
 import com.sbit.chatify.service.SocketService;
 import com.sbit.chatify.websocket.SocketUtil;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
@@ -16,7 +18,8 @@ public class SocketServiceImpl implements SocketService {
     @Override
     public void register(WebSocketSession session) {
         try {
-            String userId = (String) session.getAttributes().get("userId");
+            HttpSession httpSession = (HttpSession) session.getAttributes().get("httpSession");
+            String userId = (String) httpSession.getAttribute("userId");
             if (Objects.nonNull(userId)) {
                 SocketUtil.SOCKET_CONNECTION.put(userId, session);
                 log.info("User connected: {}, Total users: {}", userId, SocketUtil.SOCKET_CONNECTION.size());
@@ -31,7 +34,8 @@ public class SocketServiceImpl implements SocketService {
     @Override
     public void closeConnection(WebSocketSession session, CloseStatus status) {
         try {
-            String userId = (String) session.getAttributes().get("userId");
+            HttpSession httpSession = (HttpSession) session.getAttributes().get("httpSession");
+            String userId = (String) httpSession.getAttribute("userId");
             SocketUtil.SOCKET_CONNECTION.remove(userId);
             session.close(status);
             log.info("Connection closed for user: {}, code: {}, reason: {}, Total connected: {}",
@@ -43,7 +47,8 @@ public class SocketServiceImpl implements SocketService {
 
     @Override
     public void transportError(WebSocketSession session, Throwable exception) {
-        String userId = (String) session.getAttributes().get("userId");
+        HttpSession httpSession = (HttpSession) session.getAttributes().get("httpSession");
+        String userId = (String) httpSession.getAttribute("userId");
         try {
             log.error("Transport error for user: {}. Error: {}", userId, exception.getMessage());
             session.close();

@@ -36,6 +36,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private HttpSession session;
+
     @Override
     public ResponseEntity<Response> validateSignUp(UserDto userDto) {
         try {
@@ -103,7 +106,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 return PageConstant.REDIRECT_LOGIN;
             }
 
-            addWallData(redirectAttributes, user);
+            session.setAttribute(MessageConstant.USER_ID, user.getId().toString());
             return PageConstant.REDIRECT_WALL;
 
         } catch (Exception e) {
@@ -111,15 +114,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.INTERNAL_SERVER_ERROR);
             return PageConstant.REDIRECT_LOGIN;
         }
-    }
-
-    private void addWallData(RedirectAttributes redirectAttributes, User user) {
-        var userDetails = userDetailDao.findByUserId(user.getId().toString());
-        redirectAttributes.addFlashAttribute(MessageConstant.USER_ID, user.getId());
-        redirectAttributes.addFlashAttribute(MessageConstant.USER_NAME, user.getUsername());
-        redirectAttributes.addFlashAttribute(MessageConstant.FIRST_NAME, userDetails.getFirstName());
-        redirectAttributes.addFlashAttribute(MessageConstant.LAST_NAME, userDetails.getLastName());
-        redirectAttributes.addFlashAttribute(MessageConstant.PROFILE_IMAGE, userDetails.getProfileImage());
     }
 
     private boolean validateLogin(UserDto userDto, RedirectAttributes redirectAttributes) {

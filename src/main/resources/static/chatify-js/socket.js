@@ -5,7 +5,7 @@ $(document).ready(function() {
 var webSocket;
 
 function connect() {
-    const socketUrl = 'ws://' + document.location.host + '/chatify/chat/' + sessionUserId;
+    const socketUrl = 'ws://' + document.location.host + '/chatify/chat';
     console.log("Connecting to socket: " + socketUrl);
     webSocket = new WebSocket(socketUrl);
 

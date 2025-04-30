@@ -12,7 +12,7 @@ public class SocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(socketHandler(), "/chat/{userId}").setAllowedOrigins("*")
+        registry.addHandler(socketHandler(), "/chat").setAllowedOrigins("*")
                 .addInterceptors(new CustomHandshakeInterceptor());
     }
 
