@@ -12,6 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class SocketResponse {
-    String userId;
-    Map<String, Object> payload;
+    String senderId;
+    String receiverId;
+    String payload;
 }

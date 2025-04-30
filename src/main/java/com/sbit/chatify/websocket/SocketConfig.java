@@ -10,14 +10,15 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class SocketConfig implements WebSocketConfigurer {
 
-	@Override
-	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		registry.addHandler(socketHandler(), "/chat/{userId}").setAllowedOrigins("*");
-	}
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(socketHandler(), "/chat/{userId}").setAllowedOrigins("*")
+                .addInterceptors(new CustomHandshakeInterceptor());
+    }
 
-	@Bean
-	public Handler socketHandler() {
-		return new Handler();
-	}
+    @Bean
+    public SocketHandler socketHandler() {
+        return new SocketHandler();
+    }
 
 }
