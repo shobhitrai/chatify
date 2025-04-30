@@ -6,7 +6,7 @@ var webSocket;
 
 function connect() {
     const userId = sessionStorage.getItem('sessionUserId');
-    const socketUrl = 'ws://' + document.location.host + '/chatify/socket/' + userId;
+    const socketUrl = 'ws://' + document.location.host + '/chatify/chat/' + userId;
     console.log("Connecting to socket: " + socketUrl);
     webSocket = new WebSocket(socketUrl);
 
