@@ -1203,6 +1203,7 @@
 		<script src="${path}/js/vendor/popper.min.js"></script>
 		<script src="${path}/js/swipe.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>
+		<script src="${path}/chatify-js/socket.js"></script>
 		<script src="${path}/chatify-js/friend-request.js"></script>
 		<script>
 			function scrollToBottom(el) { el.scrollTop = el.scrollHeight; }
