@@ -8,7 +8,7 @@ import jakarta.websocket.server.ServerEndpoint;
 public class SocketHandler {
 
     @OnMessage
-    public void processBookingRequest(@PathParam("userId") String userId, String message, Session session) {
+    public void onMessage(@PathParam("userId") String userId, String message, Session session) {
 
     }
 

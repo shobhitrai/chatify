@@ -2,29 +2,33 @@ $(document).ready(function() {
 	connect();
 });
 
-const webSocket;
+var webSocket;
 
 function connect() {
     const userId = sessionStorage.getItem('sessionUserId');
-    const socketUrl = 'ws://${document.location.host}/chatify/socket/${userId}';
+    const socketUrl = 'ws://' + document.location.host + '/chatify/socket/' + userId;
+    console.log("Connecting to socket: " + socketUrl);
     webSocket = new WebSocket(socketUrl);
 
-    webSocket.onmessage = handleIncomingMessage;
-    webSocket.onerror = handleSocketError;
-}
+    webSocket.onopen = () => {
+      console.log("Connected to WebSocket server");
+    };
 
-function handleIncomingMessage(event) {
-    try {
-        const payload = JSON.parse(event.data);
-        console.log("From socket: " + JSON.stringify(payload));
-        incomming(payload);
-    } catch (error) {
-        console.error("Error parsing incoming message: ", error);
-    }
-}
+    webSocket.onmessage = (event) => {
+      console.log("Received message:", event.data);
+    };
 
-function handleSocketError(error) {
-    console.error("WebSocket error: ", error);
+    webSocket.onclose = (event) => {
+      if (event.wasClean) {
+        console.log('Connection closed cleanly, code=${event.code} reason=${event.reason}');
+      } else {
+        console.error('Connection died');
+      }
+    };
+
+    webSocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
 }
 
 function incomming(payload) {
