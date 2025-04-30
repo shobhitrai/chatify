@@ -2,10 +2,9 @@ package com.sbit.chatify.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.model.SocketResponse;
+import jakarta.websocket.CloseReason;
+import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Map;
 import java.util.Objects;
@@ -15,27 +14,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SocketUtil {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final Map<String, WebSocketSession> SOCKET_CONNECTION = new ConcurrentHashMap<>();
+    private static final Map<String, Session> SOCKET_CONNECTION = new ConcurrentHashMap<>();
 
-    public static String register(WebSocketSession session) {
+    public static void register(String userId, Session session) {
         try {
-            String[] urlParts = session.getUri().toString().split("/");
-            String userId = urlParts[urlParts.length - 1];
             SOCKET_CONNECTION.put(userId, session);
             log.info("User connected: {}, Total users: {}", userId, SOCKET_CONNECTION.size());
-            return userId;
         } catch (Exception e) {
-            log.error("Error during registration: {}", e.getMessage(), e);
-            return null;
+            log.error("Error during registration: {}", e.getMessage());
         }
     }
 
     public static void send(SocketResponse socketResponse) {
         try {
-            WebSocketSession session = SOCKET_CONNECTION.get(socketResponse.getUserId());
+            Session session = SOCKET_CONNECTION.get(socketResponse.getUserId());
             if (session != null && session.isOpen()) {
-                String payload = MAPPER.writeValueAsString(socketResponse.getPayload());
-                session.sendMessage(new TextMessage(payload));
+                session.getBasicRemote().sendObject(socketResponse);
             } else {
                 log.warn("Session not found or closed for user: {}", socketResponse.getUserId());
             }
@@ -44,32 +38,23 @@ public class SocketUtil {
         }
     }
 
-    public static void closeConnection(WebSocketSession session, CloseStatus status) {
+    public static void closeConnection(String userId, Session session, CloseReason reason) {
         try {
-            String userId = SOCKET_CONNECTION.entrySet().stream()
-                    .filter(entry -> Objects.equals(entry.getValue(), session))
-                    .map(Map.Entry::getKey).findFirst().orElse(null);
-
-            if (userId != null) {
-                SOCKET_CONNECTION.remove(userId);
-                session.close(status);
-                log.info("Connection closed for user: {}, Total connected: {}", userId, SOCKET_CONNECTION.size());
-            } else {
-                log.warn("User not found for session: {}", session.getId());
-            }
+            SOCKET_CONNECTION.remove(userId);
+            session.close(reason);
+            log.info("Connection closed for user: {} with reason: {}, Total connected: {}",
+                    userId, reason.getReasonPhrase(), SOCKET_CONNECTION.size());
         } catch (Exception e) {
-            log.error("Error closing connection: {}", e.getMessage(), e);
+            log.error("Error closing connection: {}", e.getMessage());
         }
     }
 
-    public static void transportError(WebSocketSession session, Throwable exception) {
+    public static void transportError(String userId, Session session, Throwable throwable) {
         try {
-            String userId = SOCKET_CONNECTION.entrySet().stream()
-                    .filter(entry -> Objects.equals(entry.getValue(), session))
-                    .map(Map.Entry::getKey).findFirst().orElse(null);
-            log.error("Error in transport for user: {}, Exception: {}", userId, exception.getMessage(), exception);
+            log.error("Transport error for user: {}. Error: {}", userId, throwable.getMessage());
+//            session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, throwable.getMessage()));
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error("Error during transport error handling: {}", e.getMessage());
         }
     }
 }
