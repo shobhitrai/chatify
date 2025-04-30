@@ -135,6 +135,8 @@ function getSearchedUsers(e, element) {
                return;
             }
          });
+      } else {
+            $('#searched-user').html('');
       }
    }
 }
