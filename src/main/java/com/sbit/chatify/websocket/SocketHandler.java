@@ -5,7 +5,6 @@ import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.model.FriendRequestDto;
 import com.sbit.chatify.model.SocketRequest;
-import com.sbit.chatify.model.SocketResponse;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;

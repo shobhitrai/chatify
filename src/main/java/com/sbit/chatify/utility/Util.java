@@ -3,7 +3,6 @@ package com.sbit.chatify.utility;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.model.Response;
-import com.sbit.chatify.model.SocketResponse;
 import org.springframework.http.ResponseEntity;
 
 public class Util {
