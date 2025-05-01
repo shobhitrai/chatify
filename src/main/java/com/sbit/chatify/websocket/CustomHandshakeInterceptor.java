@@ -1,5 +1,6 @@
 package com.sbit.chatify.websocket;
 
+import com.sbit.chatify.constant.MessageConstant;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.server.ServerHttpRequest;
@@ -18,10 +19,12 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
         if (request instanceof ServletServerHttpRequest) {
             HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
             HttpSession httpSession = servletRequest.getSession(false);
-            if (httpSession != null)
-                attributes.put("httpSession", httpSession);
+            if (httpSession != null) {
+                attributes.put(MessageConstant.HTTP_SESSION, httpSession);
+                return true;// Proceed with the handshake
+            }
         }
-        return true; // Proceed with the handshake
+        return false; // Reject the handshake if no session is found
     }
 
     @Override

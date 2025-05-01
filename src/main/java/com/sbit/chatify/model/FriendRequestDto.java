@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FriendRequestDto {
-    private String senderId;
     private String receiverId;
     private String message;
 

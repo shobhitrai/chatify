@@ -24,31 +24,25 @@ function sendFriendRequest(element) {
         return;
     }
     $('#send-frnd-req-btn').prop('disabled', true);
-    const reqBody = {
-        "senderId": userId,
+    const payload = {
         "receiverId": friendUserId,
         "message": message
     }
-    $.ajax({
-        url: 'send-friend-request',
-        type: 'POST',
-        data: JSON.stringify(reqBody),
-        contentType: 'application/json',
-        success: function (response) {
-            console.log(JSON.stringify(response));
-            $('#send-frnd-req-btn').prop('disabled', false);
-            if (response.status == 100) {
-                $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
-                resetFriendReq();
-            } else {
-                $('#friend-req-submit-error').text(response.message);
-            }
-        },
-        error: function (errorThrown) {
-            console.log(JSON.stringify(errorThrown));
-            return;
-        }
-    });
+    const socketReq = {
+        "type" : "friendRequest",
+        "payload" : payload
+    }
+    webSocket.send(JSON.stringify(socketReq));
+}
+
+function ackFriendRequest(payload) {
+    $('#send-frnd-req-btn').prop('disabled', false);
+    if (payload.status == 100) {
+        $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
+        resetFriendReq();
+    } else {
+        $('#friend-req-submit-error').text(payload.message);
+    }
 }
 
 $('#user').on('keyup', function (e) {

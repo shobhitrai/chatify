@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface FriendReqService {
 
-    ResponseEntity<Response> sendFriendRequest(FriendRequestDto friendRequestDto);
+    void sendFriendRequest(String userId, FriendRequestDto friendRequestDto);
 
     ResponseEntity<Response> getSearchedUsers(UserDto userDto);
 }

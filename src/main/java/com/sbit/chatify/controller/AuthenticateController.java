@@ -43,15 +43,17 @@ public class AuthenticateController {
     }
 
     @PostMapping(UrlConstant.SIGNUP)
-    public String signup(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes) {
+    public String signup(@ModelAttribute UserDto userDto,
+                         RedirectAttributes redirectAttributes, HttpSession session) {
         log.info("signup called {}", userDto.getEmail());
-        return authenticateService.registerUser(userDto, redirectAttributes);
+        return authenticateService.registerUser(userDto, redirectAttributes, session);
     }
 
     @PostMapping(UrlConstant.LOGIN)
-    public String login(@ModelAttribute UserDto userDto, RedirectAttributes redirectAttributes) {
+    public String login(@ModelAttribute UserDto userDto,
+                        RedirectAttributes redirectAttributes, HttpSession session) {
         log.info("login called {}", userDto.getEmail());
-        return authenticateService.login(userDto, redirectAttributes);
+        return authenticateService.login(userDto, redirectAttributes, session);
     }
 
 

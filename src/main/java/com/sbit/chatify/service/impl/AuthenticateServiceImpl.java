@@ -36,9 +36,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Autowired
     private ObjectMapper mapper;
 
-    @Autowired
-    private HttpSession session;
-
     @Override
     public ResponseEntity<Response> validateSignUp(UserDto userDto) {
         try {
@@ -65,7 +62,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String registerUser(UserDto userDto, RedirectAttributes redirectAttributes) {
+    public String registerUser(UserDto userDto, RedirectAttributes redirectAttributes, HttpSession session) {
         var status = validateSignUp(userDto, redirectAttributes);
         if (!status)
             return PageConstant.REDIRECT_SIGNUP;
@@ -90,23 +87,36 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String login(UserDto userDto, RedirectAttributes redirectAttributes) {
-        var status = validateLogin(userDto, redirectAttributes);
-        if (!status)
-            return PageConstant.REDIRECT_LOGIN;
+    public String login(UserDto userDto, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
+            var status = validateLogin(userDto, redirectAttributes);
+            if (!status)
+                return PageConstant.REDIRECT_LOGIN;
+
             var user = userDao.findByEmail(userDto.getEmail());
             if (Objects.isNull(user) || !userDto.getPassword().equals(user.getPassword())) {
                 redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.WRONG_LOGIN_OR_PASSWORD);
+                log.info("Login failed for user: {}", userDto.getEmail());
                 return PageConstant.REDIRECT_LOGIN;
             }
+
             if (SocketUtil.SOCKET_CONNECTION.containsKey(user.getId().toString())) {
                 redirectAttributes.addFlashAttribute(MessageConstant.ERROR,
                         MessageConstant.USER_ALREADY_LOGGED_IN_ON_ANOTHER_DEVICE);
+                log.info("User already logged in on another device: {}", user.getId());
+                return PageConstant.REDIRECT_LOGIN;
+            }
+
+            String sessionUserId = (String) session.getAttribute(MessageConstant.USER_ID);
+            if (sessionUserId != null && !sessionUserId.equals(user.getId().toString())
+                    && SocketUtil.SOCKET_CONNECTION.containsKey(sessionUserId)) {
+                redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.SESSION_ALREADY_EXISTS);
+                log.info("Session conflict for user: {}", user.getId().toString());
                 return PageConstant.REDIRECT_LOGIN;
             }
 
             session.setAttribute(MessageConstant.USER_ID, user.getId().toString());
+            log.info("Session created for user: {} with session Id: {}", user.getId(), session.getId());
             return PageConstant.REDIRECT_WALL;
 
         } catch (Exception e) {

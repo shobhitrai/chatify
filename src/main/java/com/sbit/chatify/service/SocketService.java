@@ -9,4 +9,6 @@ public interface SocketService {
     void closeConnection(WebSocketSession session, CloseStatus status);
 
     void transportError(WebSocketSession session, Throwable exception);
+
+    boolean validateHttpSession(WebSocketSession session);
 }

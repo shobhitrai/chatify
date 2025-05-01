@@ -1,9 +1,13 @@
 package com.sbit.chatify.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sbit.chatify.constant.MessageConstant;
+import com.sbit.chatify.constant.SocketConstant;
+import com.sbit.chatify.model.FriendRequestDto;
+import com.sbit.chatify.model.SocketResponse;
+import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,16 +17,17 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-
 @Slf4j
 @Component
 public class SocketHandler extends TextWebSocketHandler {
     @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
     private SocketService socketService;
 
+    @Autowired
+    private FriendReqService friendReqService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
@@ -32,8 +37,15 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         try {
-            System.out.println("Received message: " + message.getPayload());
+            boolean httpSessionStatus = socketService.validateHttpSession(session);
+            if (!httpSessionStatus)
+                return;
+            log.info("Received from socket message: {}", message.getPayload());
+            processMessage(session, message);
+
         } catch (Exception e) {
+            log.error("Error processing message: {}", e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -49,5 +61,22 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
+    }
+
+    private void processMessage(WebSocketSession session, TextMessage message) throws Exception {
+        SocketResponse socketResponse = mapper.readValue(message.getPayload(), SocketResponse.class);
+        String userId = getUserIdFromSession(session);
+        switch (socketResponse.getType()) {
+            case SocketConstant.FRIEND_REQUEST:
+                FriendRequestDto friendRequestDto = mapper.convertValue(socketResponse.getPayload(),
+                        FriendRequestDto.class);
+                friendReqService.sendFriendRequest(userId, friendRequestDto);
+                break;
+        }
+    }
+
+    private String getUserIdFromSession(WebSocketSession session) {
+        HttpSession httpSession = (HttpSession) session.getAttributes().get(MessageConstant.HTTP_SESSION);
+        return httpSession.getAttribute(MessageConstant.USER_ID).toString();
     }
 }

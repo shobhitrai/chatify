@@ -1,5 +1,6 @@
 package com.sbit.chatify.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +12,8 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SocketResponse {
-    private String userId;
-    private int status;
-    private String message;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SocketRequest {
     private String type;
     private Map<String, Object> payload;
-
 }

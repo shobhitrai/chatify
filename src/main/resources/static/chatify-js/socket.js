@@ -5,7 +5,7 @@ $(document).ready(function() {
 var webSocket;
 
 function connect() {
-    const socketUrl = 'ws://' + document.location.host + '/chatify/chat';
+    const socketUrl = 'ws://' + document.location.host + sessionPath +'/chat';
     console.log("Connecting to socket: " + socketUrl);
     webSocket = new WebSocket(socketUrl);
 
@@ -14,14 +14,17 @@ function connect() {
     };
 
     webSocket.onmessage = (event) => {
-      console.log("Received message:", event.data);
+      let payload = JSON.parse(event.data);
+      console.log("From socket" + JSON.stringify(payload));
+      incomming(payload);
     };
 
     webSocket.onclose = (event) => {
       if (event.wasClean) {
         console.log('Connection closed cleanly, code=${event.code} reason=${event.reason}');
       } else {
-        console.error('Connection died');
+        alert('Connection died, please login again.');
+        window.location.href = sessionPath + '/login'
       }
     };
 
@@ -32,8 +35,12 @@ function connect() {
 
 function incomming(payload) {
 	switch (payload.type) {
-	case "notificationCount":
-		socNotificationCount();
-		break;
+	    case "invalidSession":
+	        alert("Session expired, please login again.");
+		    window.location.href = sessionPath + '/login';
+		    break;
+	    case "ackFriendRequest":
+	        ackFriendRequest(payload);
+            break;
 	}
 }

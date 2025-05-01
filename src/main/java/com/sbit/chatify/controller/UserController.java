@@ -1,6 +1,5 @@
 package com.sbit.chatify.controller;
 
-import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.constant.UrlConstant;
 import com.sbit.chatify.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

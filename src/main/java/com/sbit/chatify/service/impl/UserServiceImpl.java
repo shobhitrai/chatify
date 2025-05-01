@@ -7,6 +7,7 @@ import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.User;
 import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.service.UserService;
+import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getWallData(Model model) {
         String userId = (String) session.getAttribute("userId");
-        if (Objects.isNull(userId))
+        if (Objects.isNull(userId) || SocketUtil.SOCKET_CONNECTION.containsKey(userId))
             return PageConstant.REDIRECT_LOGIN;
 
         User user = userDao.findById(new ObjectId(userId));
