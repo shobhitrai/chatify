@@ -65,10 +65,8 @@ public class FriendReqServiceImpl implements FriendReqService {
                     .isActive(true).createdAt(new Date()).build();
 
             friendRequestDao.save(friendRequest);
-            var socketResponse = SocketResponse.builder().userId(userId).
-                    status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS)
-                    .type(SocketConstant.ACK_FRIEND_REQUEST).build();
+            var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST).build();
             SocketUtil.send(socketResponse);
 
             sendNotification(userId, friendRequestDto, friendRequest);
@@ -95,8 +93,7 @@ public class FriendReqServiceImpl implements FriendReqService {
                 var receiverDetail = userDetailDao.findByUserId(friendRequestDto.getReceiverId());
                 var chatDto = getChatDto(chat, receiverDetail);
                 var socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())
-                        .status(StatusConstant.SUCCESS_CODE)
-                        .message(MessageConstant.FRIEND_REQUEST)
+                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.FRIEND_REQUEST)
                         .data(chatDto).type(SocketConstant.CHAT).build();
                 SocketUtil.send(socketResponse);
             }
@@ -106,13 +103,12 @@ public class FriendReqServiceImpl implements FriendReqService {
     }
 
     private ChatDto getChatDto(Chat chat, UserDetail receiverDetail) {
-        var chatDto = ChatDto.builder().receiverId(chat.getReceiverId())
+        return ChatDto.builder().receiverId(chat.getReceiverId())
                 .receiverFirstName(receiverDetail.getFirstName())
                 .receiverLastName(receiverDetail.getLastName())
                 .message(chat.getMessage()).type(chat.getType())
                 .formattedDate("Today").createdAt(chat.getCreatedAt())
                 .isRead(chat.getIsRead()).build();
-        return chatDto;
     }
 
     @Override
