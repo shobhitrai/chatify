@@ -89,7 +89,7 @@ public class FriendReqServiceImpl implements FriendReqService {
                     .isActive(true).createdAt(new Date()).build();
             chatDao.save(chat);
 
-            if (SocketUtil.SOCKET_CONNECTION.containsKey(friendRequestDto.getReceiverId())) {
+            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(friendRequestDto.getReceiverId())) {
                 var receiverDetail = userDetailDao.findByUserId(friendRequestDto.getReceiverId());
                 var chatDto = getChatDto(chat, receiverDetail);
                 var socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())

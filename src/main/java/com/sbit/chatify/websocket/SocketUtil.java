@@ -13,11 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SocketUtil {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    public static final Map<String, WebSocketSession> SOCKET_CONNECTION = new ConcurrentHashMap<>();
+    public static final Map<String, WebSocketSession> SOCKET_CONNECTIONS = new ConcurrentHashMap<>();
 
     public static void send(SocketResponse socketResponse) {
         try {
-            WebSocketSession session = SOCKET_CONNECTION.get(socketResponse.getUserId());
+            WebSocketSession session = SOCKET_CONNECTIONS.get(socketResponse.getUserId());
             if (session != null && session.isOpen()) {
                 String message = MAPPER.writeValueAsString(socketResponse);
                 session.sendMessage(new TextMessage(message));

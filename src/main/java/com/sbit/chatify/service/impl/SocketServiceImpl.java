@@ -25,9 +25,9 @@ public class SocketServiceImpl implements SocketService {
         try {
             String userId = getUserIdFromSession(session);
             if (Objects.nonNull(userId)) {
-                SocketUtil.SOCKET_CONNECTION.put(userId, session);
+                SocketUtil.SOCKET_CONNECTIONS.put(userId, session);
                 log.info("User connected: {}, Session Id: {}, Total users: {}",
-                        userId, session.getId(), SocketUtil.SOCKET_CONNECTION.size());
+                        userId, session.getId(), SocketUtil.SOCKET_CONNECTIONS.size());
             } else {
                 log.warn("UserId not found in session attributes.");
             }
@@ -40,10 +40,10 @@ public class SocketServiceImpl implements SocketService {
     public void closeConnection(WebSocketSession session, CloseStatus status) {
         try {
             String userId = getUserIdFromSession(session);
-            SocketUtil.SOCKET_CONNECTION.remove(userId);
+            SocketUtil.SOCKET_CONNECTIONS.remove(userId);
             session.close(status);
             log.info("Connection closed for user: {}, code: {}, reason: {}, Total connected: {}",
-                    userId, status.getCode(), status.getReason(), SocketUtil.SOCKET_CONNECTION.size());
+                    userId, status.getCode(), status.getReason(), SocketUtil.SOCKET_CONNECTIONS.size());
         } catch (Exception e) {
             log.error("Error closing connection: {}", e.getMessage());
         }
@@ -77,12 +77,12 @@ public class SocketServiceImpl implements SocketService {
     }
 
     private void closeConnection(WebSocketSession session) {
-        String userId = SocketUtil.SOCKET_CONNECTION.entrySet().stream()
+        String userId = SocketUtil.SOCKET_CONNECTIONS.entrySet().stream()
                 .filter(entry -> Objects.equals(session, entry.getValue()))
                 .map(Map.Entry::getKey).findFirst().orElse(null);
 
         if (Objects.isNull(userId)) {
-            log.warn("Session not found in SOCKET_CONNECTION.");
+            log.warn("Session not found in SOCKET_CONNECTIONS.");
             return;
         }
 
@@ -104,7 +104,7 @@ public class SocketServiceImpl implements SocketService {
 
     private static void closeSession(WebSocketSession session, String userId) {
         try {
-            SocketUtil.SOCKET_CONNECTION.remove(userId);
+            SocketUtil.SOCKET_CONNECTIONS.remove(userId);
             if (session != null && session.isOpen())
                 session.close();
         } catch (IOException e) {

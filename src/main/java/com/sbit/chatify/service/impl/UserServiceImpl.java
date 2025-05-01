@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getWallData(Model model) {
         String userId = (String) session.getAttribute("userId");
-        if (Objects.isNull(userId) || SocketUtil.SOCKET_CONNECTION.containsKey(userId))
+        if (Objects.isNull(userId) || SocketUtil.SOCKET_CONNECTIONS.containsKey(userId))
             return PageConstant.REDIRECT_LOGIN;
 
         User user = userDao.findById(new ObjectId(userId));
