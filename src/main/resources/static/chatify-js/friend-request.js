@@ -23,6 +23,10 @@ function sendFriendRequest(element) {
         $('#friend-req-submit-error').text('Please enter a message');
         return;
     }
+    if (message.length > 500) {
+        $('#friend-req-submit-error').text('Message cannot exceed 500 characters');
+        return;
+    }
     $('#send-frnd-req-btn').prop('disabled', true);
     const payload = {
         "receiverId": friendUserId,
@@ -92,8 +96,7 @@ function getSearchedUsers(e, element) {
    if ((e.which >= 48 && e.which <= 57) ||
       (e.which >= 65 && e.which <= 90) ||
       (e.which >= 97 && e.which <= 122) ||
-      e.which == 8 ||
-      e.which == 46) {
+      e.which == 8 || e.which == 46) {
       let username = $(element).val().trim();
       if (username !== '') {
           const payload = {
