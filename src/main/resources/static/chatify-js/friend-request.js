@@ -96,41 +96,36 @@ function getSearchedUsers(e, element) {
       e.which == 46) {
       let username = $(element).val().trim();
       if (username !== '') {
-         let reqBody = {
+          const payload = {
             "username": username
-         }
-         $.ajax({
-            url: 'search-users',
-            type: 'POST',
-            data: JSON.stringify(reqBody),
-            contentType: 'application/json',
-            success: function (response) {
-               console.log(JSON.stringify(response));
-               $('#searched-user').html('');
-               let text = '<div class="dropdown-menu" id="user-dropdown">'
-               if (response.status == 100) {
-                  for (let i = 0; i < response.data.length; i++) {
-                     const item = response.data[i];
-                     text += '<button class="dropdown-item searched-user-btn" type="button"' +
-                        'data-firstname="' + item.firstName + '"' +
-                        'data-lastname="' + item.lastName + '"' +
-                        'data-userid="' + item.userId + '"' +
-                        'data-profileimage="' + item.profileImage + '">' +
-                        item.username + '</button>'
-                  }
-               } else {
-                  text += '<button class="dropdown-item" type="button">No user found</button>'
-               }
-               text += '</div>'
-               $('#searched-user').html(text);
-            },
-            error: function (errorThrown) {
-               console.log(JSON.stringify(errorThrown));
-               return;
-            }
-         });
+          }
+          const socketReq = {
+            "type" : "searchedUsers",
+            "payload": payload
+          }
+        webSocket.send(JSON.stringify(socketReq));
       } else {
             $('#searched-user').html('');
       }
    }
+}
+
+function ackSearchedUsers(payload) {
+   $('#searched-user').html('');
+   let text = '<div class="dropdown-menu" id="user-dropdown">'
+   if (payload.status == 100) {
+      for (let i = 0; i < payload.data.length; i++) {
+         const item = payload.data[i];
+         text += '<button class="dropdown-item searched-user-btn" type="button"' +
+            'data-firstname="' + item.firstName + '"' +
+            'data-lastname="' + item.lastName + '"' +
+            'data-userid="' + item.userId + '"' +
+            'data-profileimage="' + item.profileImage + '">' +
+            item.username + '</button>'
+      }
+   } else {
+      text += '<button class="dropdown-item" type="button">No user found</button>'
+   }
+   text += '</div>'
+   $('#searched-user').html(text);
 }

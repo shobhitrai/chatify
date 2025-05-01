@@ -42,5 +42,8 @@ function incomming(payload) {
 	    case "ackFriendRequest":
 	        ackFriendRequest(payload);
             break;
+        case "ackSearchedUsers":
+            ackSearchedUsers(payload);
+            break;
 	}
 }

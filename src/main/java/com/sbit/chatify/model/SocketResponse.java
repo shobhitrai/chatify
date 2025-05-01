@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,6 +14,6 @@ public class SocketResponse {
     private int status;
     private String message;
     private String type;
-    private Map<String, Object> payload;
+    private Object data;
 
 }

@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.model.FriendRequestDto;
+import com.sbit.chatify.model.SocketRequest;
 import com.sbit.chatify.model.SocketResponse;
+import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;
 import jakarta.servlet.http.HttpSession;
@@ -64,13 +66,18 @@ public class SocketHandler extends TextWebSocketHandler {
     }
 
     private void processMessage(WebSocketSession session, TextMessage message) throws Exception {
-        SocketResponse socketResponse = mapper.readValue(message.getPayload(), SocketResponse.class);
+        SocketRequest socketRequest = mapper.readValue(message.getPayload(), SocketRequest.class);
         String userId = getUserIdFromSession(session);
-        switch (socketResponse.getType()) {
+        switch (socketRequest.getType()) {
             case SocketConstant.FRIEND_REQUEST:
-                FriendRequestDto friendRequestDto = mapper.convertValue(socketResponse.getPayload(),
+                FriendRequestDto friendRequestDto = mapper.convertValue(socketRequest.getPayload(),
                         FriendRequestDto.class);
                 friendReqService.sendFriendRequest(userId, friendRequestDto);
+                break;
+
+            case SocketConstant.SEARCHED_USERS:
+                UserDto userDto = mapper.convertValue(socketRequest.getPayload(), UserDto.class);
+                friendReqService.getSearchedUsers(userId, userDto);
                 break;
         }
     }

@@ -9,20 +9,19 @@ import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.model.FriendRequestDto;
-import com.sbit.chatify.model.Response;
 import com.sbit.chatify.model.SocketResponse;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.FriendReqService;
-import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 
+@Slf4j
 @Service
 public class FriendReqServiceImpl implements FriendReqService {
 
@@ -62,19 +61,22 @@ public class FriendReqServiceImpl implements FriendReqService {
                     .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST).build();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            socketResponse = Util.serverError(userId, SocketConstant.ACK_FRIEND_REQUEST);
+            log.info("Error while sending friend request: {}", e.getMessage());
+            socketResponse = SocketResponse.builder().userId(userId)
+                    .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
+                    .message(MessageConstant.INTERNAL_SERVER_ERROR)
+                    .type(SocketConstant.ACK_FRIEND_REQUEST).build();
         } finally {
             SocketUtil.send(socketResponse);
         }
     }
 
     @Override
-    public ResponseEntity<Response> getSearchedUsers(UserDto userDto) {
+    public void getSearchedUsers(String userId, UserDto userDto) {
+        SocketResponse socketResponse = null;
         try {
             var users = userDao.findByUserName(userDto.getUsername());
             var foundUsers = new ArrayList<>();
-            var userId = session.getAttribute("userId").toString();
             users.stream().filter(user -> !user.getId().toString().equals(userId))
                     .forEach(user -> {
                         var dto = mapper.convertValue(user, UserDto.class);
@@ -88,13 +90,22 @@ public class FriendReqServiceImpl implements FriendReqService {
                     });
 
             if (foundUsers.isEmpty())
-                return Util.failure(MessageConstant.NO_USER_FOUND);
+                socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
+                        .message(MessageConstant.NO_USER_FOUND)
+                        .type(SocketConstant.ACK_SEARCHED_USERS).build();
             else
-                return Util.success(foundUsers);
+                socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
+                        .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_SEARCHED_USERS)
+                        .data(foundUsers).build();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            return Util.serverError();
+            log.error("Error while searching users: {}", e.getMessage());
+            socketResponse = SocketResponse.builder().userId(userId)
+                    .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
+                    .message(MessageConstant.INTERNAL_SERVER_ERROR)
+                    .type(SocketConstant.ACK_FRIEND_REQUEST).build();
+        } finally {
+            SocketUtil.send(socketResponse);
         }
     }
 

@@ -15,5 +15,5 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SocketRequest {
     private String type;
-    private Map<String, Object> payload;
+    private Object payload;
 }
