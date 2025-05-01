@@ -4,10 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.constant.StatusConstant;
+import com.sbit.chatify.dao.ChatDao;
 import com.sbit.chatify.dao.FriendRequestDao;
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.dao.UserDetailDao;
+import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.FriendRequest;
+import com.sbit.chatify.entity.Notification;
+import com.sbit.chatify.entity.UserDetail;
+import com.sbit.chatify.model.ChatDto;
 import com.sbit.chatify.model.FriendRequestDto;
 import com.sbit.chatify.model.SocketResponse;
 import com.sbit.chatify.model.UserDto;
@@ -15,6 +20,7 @@ import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +41,9 @@ public class FriendReqServiceImpl implements FriendReqService {
     private UserDao userDao;
 
     @Autowired
+    private ChatDao chatDao;
+
+    @Autowired
     private UserDetailDao userDetailDao;
 
     @Autowired
@@ -42,33 +51,70 @@ public class FriendReqServiceImpl implements FriendReqService {
 
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
-        SocketResponse socketResponse = null;
         try {
             var friendReqAlredyExists = friendRequestDao.findBySenderIdAndReceiverId(userId,
                     friendRequestDto.getReceiverId());
 
             if (friendReqAlredyExists) {
-                socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
+                var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
                         .message(MessageConstant.FRIEND_REQUEST_ALREADY_EXISTS)
                         .type(SocketConstant.ACK_FRIEND_REQUEST).build();
+                SocketUtil.send(socketResponse);
                 return;
             }
             var friendRequest = FriendRequest.builder().senderId(userId)
-                    .receiverId(friendRequestDto.getReceiverId()).isAccepted(false).createdAt(new Date()).build();
+                    .receiverId(friendRequestDto.getReceiverId()).isAccepted(false)
+                    .isActive(true).createdAt(new Date()).build();
+
             friendRequestDao.save(friendRequest);
+            var socketResponse = SocketResponse.builder().userId(userId).
+                    status(StatusConstant.SUCCESS_CODE)
+                    .message(MessageConstant.SUCCESS)
+                    .type(SocketConstant.ACK_FRIEND_REQUEST).build();
+            SocketUtil.send(socketResponse);
 
-            socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST).build();
-
+            sendNotification(userId, friendRequestDto, friendRequest);
         } catch (Exception e) {
             log.info("Error while sending friend request: {}", e.getMessage());
-            socketResponse = SocketResponse.builder().userId(userId)
+            var socketResponse = SocketResponse.builder().userId(userId)
                     .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
                     .message(MessageConstant.INTERNAL_SERVER_ERROR)
                     .type(SocketConstant.ACK_FRIEND_REQUEST).build();
-        } finally {
             SocketUtil.send(socketResponse);
         }
+    }
+
+    private void sendNotification(String userId,
+                                  FriendRequestDto friendRequestDto, FriendRequest friendRequest) {
+        try {
+            var chat = Chat.builder().message(friendRequest.getMessage())
+                    .senderId(userId).receiverId(friendRequestDto.getReceiverId())
+                    .type(MessageConstant.FRIEND_REQUEST).isRead(false)
+                    .isActive(true).createdAt(new Date()).build();
+            chatDao.save(chat);
+
+            if (SocketUtil.SOCKET_CONNECTION.containsKey(friendRequestDto.getReceiverId())) {
+                var receiverDetail = userDetailDao.findByUserId(friendRequestDto.getReceiverId());
+                var chatDto = getChatDto(chat, receiverDetail);
+                var socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())
+                        .status(StatusConstant.SUCCESS_CODE)
+                        .message(MessageConstant.FRIEND_REQUEST)
+                        .data(chatDto).type(SocketConstant.CHAT).build();
+                SocketUtil.send(socketResponse);
+            }
+        } catch (Exception e) {
+            log.info("Error while sending friend request notification: {}", e.getMessage());
+        }
+    }
+
+    private ChatDto getChatDto(Chat chat, UserDetail receiverDetail) {
+        var chatDto = ChatDto.builder().receiverId(chat.getReceiverId())
+                .receiverFirstName(receiverDetail.getFirstName())
+                .receiverLastName(receiverDetail.getLastName())
+                .message(chat.getMessage()).type(chat.getType())
+                .formattedDate("Today").createdAt(chat.getCreatedAt())
+                .isRead(chat.getIsRead()).build();
+        return chatDto;
     }
 
     @Override

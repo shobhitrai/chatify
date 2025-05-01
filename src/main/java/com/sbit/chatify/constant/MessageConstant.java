@@ -23,5 +23,6 @@ public interface MessageConstant {
     String USER_ALREADY_LOGGED_IN_ON_ANOTHER_DEVICE = "User already logged in on another device";
     String HTTP_SESSION = "httpSession";
     String SESSION_ALREADY_EXISTS = "Session already exists";
+    String FRIEND_REQUEST = "friendRequest";
 
 }

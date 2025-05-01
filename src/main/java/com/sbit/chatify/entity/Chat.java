@@ -9,24 +9,22 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = CollectionConstant.FRIEND_REQUEST)
-public class FriendRequest implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+@Document(collection = CollectionConstant.CHAT)
+public class Chat {
     @Id
     private ObjectId id;
     private String senderId;
     private String receiverId;
-    private Date createdAt;
-    private Boolean isAccepted;
     private String message;
+    private String type;
+    private Date createdAt;
+    private Boolean isRead;
     private Boolean isActive;
+
 }

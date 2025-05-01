@@ -141,8 +141,27 @@
 										<button class="btn filterDiscussionsBtn" data-toggle="list" data-filter="unread">Unread</button>
 									</div>						
 									<div class="discussions">
-										<h1>Discussions</h1>
-										<div class="list-group" id="chats" role="tablist">
+										<h1>Chats</h1>
+										<c:forEach items="${contacts}" var="contact">
+                                           <a href="#list-request" class="filterDiscussions all unread single" id="list-request-list" data-toggle="list" role="tab">
+                                              <img class="avatar-md" src="${path}/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+                                              <div class="status">
+                                                 <i class="material-icons offline">fiber_manual_record</i>
+                                              </div>
+                                              <div class="new bg-gray">
+                                                 <span>?</span>
+                                              </div>
+                                              <div class="data">
+                                                 <h5>Louis Martinez</h5>
+                                                 <span>Feb 10</span>
+                                                 <p>Hi Keith, I'd like to add you as a contact.</p>
+                                              </div>
+                                           </a>
+                                        </c:forEach>
+
+
+
+										<!-- <div class="list-group" id="chats" role="tablist">
 											<a href="#list-chat" class="filterDiscussions all unread single active" id="list-chat-list" data-toggle="list" role="tab">
 												<img class="avatar-md" src="${path}/image/avatars/avatar-female-1.jpg" data-toggle="tooltip" data-placement="top" title="Janette" alt="avatar">
 												<div class="status">
@@ -254,7 +273,9 @@
 													<p>Unfortunately your session today has been cancelled!</p>
 												</div>
 											</a>
-										</div>
+										</div> -->
+
+
 									</div>
 								</div>
 								<!-- End of Discussions -->

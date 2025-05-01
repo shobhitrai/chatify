@@ -18,13 +18,12 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Document(collection = CollectionConstant.NOTIFICATION)
-public class Notification implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class Notification {
     @Id
     private ObjectId id;
-    private String userId;
-    private String fromUserId;
+    private String senderId;
+    private String receiverId;
     private String message;
     private Date createdAt;
+    private Boolean isRead;
 }
