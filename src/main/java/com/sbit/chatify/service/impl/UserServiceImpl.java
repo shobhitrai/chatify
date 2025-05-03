@@ -2,10 +2,14 @@ package com.sbit.chatify.service.impl;
 
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.PageConstant;
+import com.sbit.chatify.dao.ChatDao;
 import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.dao.UserDetailDao;
+import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.User;
-import com.sbit.chatify.entity.UserDetail;
+import com.sbit.chatify.model.ChatMessage;
+import com.sbit.chatify.model.ChatGroup;
+import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.UserService;
 import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,19 +35,54 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDetailDao userDetailDao;
 
+    @Autowired
+    private ChatDao chatDao;
+
     @Override
     public String getWallData(Model model) {
-        String userId = (String) session.getAttribute("userId");
+        var userId = (String) session.getAttribute(MessageConstant.USER_ID);
         if (Objects.isNull(userId) || SocketUtil.SOCKET_CONNECTIONS.containsKey(userId))
             return PageConstant.REDIRECT_LOGIN;
 
-        User user = userDao.findById(new ObjectId(userId));
-        UserDetail userDetail = userDetailDao.findByUserId(userId);
-        model.addAttribute(MessageConstant.USER_ID, user.getId());
-        model.addAttribute(MessageConstant.USER_NAME, user.getUsername());
-        model.addAttribute(MessageConstant.FIRST_NAME, userDetail.getFirstName());
-        model.addAttribute(MessageConstant.LAST_NAME, userDetail.getLastName());
-        model.addAttribute(MessageConstant.PROFILE_IMAGE, userDetail.getProfileImage());
+        var user = userDao.findById(new ObjectId(userId));
+        var userDto = getUserDetails(user);
+        var chatGroups = getAllChatGroups(userId);
+
+        model.addAttribute(MessageConstant.USER, userDto);
+        model.addAttribute(MessageConstant.CHAT_GROUPS, chatGroups);
         return PageConstant.WALL;
+    }
+
+    private List<ChatGroup> getAllChatGroups(String userId) {
+        var chats = chatDao.getAllChatsByUserId(userId);
+        var distinctSenderIds = chats.stream().map(Chat::getSenderId).distinct().toList();
+        var chatGroups = new ArrayList<ChatGroup>();
+
+        distinctSenderIds.forEach(senderId -> {
+            var senderDetails = userDetailDao.findByUserId(senderId);
+
+            var chatList = chats.stream()
+                    .filter(chat -> chat.getSenderId().equals(senderId))
+                    .map(chat -> ChatMessage.builder().type(chat.getMessage()).message(chat.getMessage())
+                            .createdAt(chat.getCreatedAt()).isRead(chat.getIsRead()).build())
+                    .sorted(Comparator.comparing(ChatMessage::getCreatedAt).reversed())
+                    .toList();
+
+            var chatGroup = ChatGroup.builder().senderId(senderId).senderFirstName(senderDetails.getFirstName())
+                    .senderLastName(senderDetails.getLastName()).receiverId(userId).chats(chatList).build();
+
+            chatGroups.add(chatGroup);
+        });
+        return chatGroups.stream()
+                .filter(chatGroup -> !chatGroup.getChats().isEmpty())
+                .sorted(Comparator.comparing(chatGroup -> chatGroup.getChats().get(0).getCreatedAt(),
+                        Comparator.reverseOrder())).toList();
+    }
+
+    private UserDto getUserDetails(User user) {
+        var userDetail = userDetailDao.findByUserId(user.getId().toString());
+        return UserDto.builder().userId(user.getId().toString()).email(user.getEmail())
+                .username(user.getUsername()).firstName(userDetail.getFirstName())
+                .lastName(userDetail.getLastName()).profileImage(userDetail.getProfileImage()).build();
     }
 }

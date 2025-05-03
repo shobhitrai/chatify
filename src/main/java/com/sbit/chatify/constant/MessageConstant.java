@@ -24,5 +24,6 @@ public interface MessageConstant {
     String HTTP_SESSION = "httpSession";
     String SESSION_ALREADY_EXISTS = "Session already exists";
     String FRIEND_REQUEST = "friendRequest";
-
+    String USER = "user";
+    String CHAT_GROUPS = "chatGroups";
 }

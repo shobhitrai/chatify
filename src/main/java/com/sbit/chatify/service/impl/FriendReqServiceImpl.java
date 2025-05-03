@@ -11,10 +11,7 @@ import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.entity.UserDetail;
-import com.sbit.chatify.model.ChatDto;
-import com.sbit.chatify.model.FriendRequestDto;
-import com.sbit.chatify.model.SocketResponse;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
@@ -83,16 +80,17 @@ public class FriendReqServiceImpl implements FriendReqService {
     private void sendNotification(String userId,
                                   FriendRequestDto friendRequestDto, FriendRequest friendRequest) {
         try {
+            var receiverId = friendRequestDto.getReceiverId();
             var chat = Chat.builder().message(friendRequest.getMessage())
-                    .senderId(userId).receiverId(friendRequestDto.getReceiverId())
+                    .senderId(userId).receiverId(receiverId)
                     .type(MessageConstant.FRIEND_REQUEST).isRead(false)
                     .isActive(true).createdAt(new Date()).build();
             chatDao.save(chat);
 
-            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(friendRequestDto.getReceiverId())) {
-                var receiverDetail = userDetailDao.findByUserId(friendRequestDto.getReceiverId());
-                var chatDto = getChatDto(chat, receiverDetail);
-                var socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())
+            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
+                var senderDetail = userDetailDao.findByUserId(userId);
+                var chatDto = getChat(friendRequestDto.getReceiverId(), chat, senderDetail);
+                var socketResponse = SocketResponse.builder().userId(receiverId)
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.FRIEND_REQUEST)
                         .data(chatDto).type(SocketConstant.CHAT).build();
                 SocketUtil.send(socketResponse);
@@ -102,13 +100,11 @@ public class FriendReqServiceImpl implements FriendReqService {
         }
     }
 
-    private ChatDto getChatDto(Chat chat, UserDetail receiverDetail) {
-        return ChatDto.builder().receiverId(chat.getReceiverId())
-                .receiverFirstName(receiverDetail.getFirstName())
-                .receiverLastName(receiverDetail.getLastName())
-                .message(chat.getMessage()).type(chat.getType())
-                .formattedDate("Today").createdAt(chat.getCreatedAt())
-                .isRead(chat.getIsRead()).build();
+    private ChatDto getChat(String receiverId, Chat chat, UserDetail senderDetail) {
+        return ChatDto.builder().senderId(senderDetail.getUserId())
+                .senderFirstName(senderDetail.getFirstName()).senderLastName(senderDetail.getLastName())
+                .receiverId(receiverId).message(chat.getMessage()).isRead(chat.getIsRead())
+                .type(chat.getType()).formattedDate("Now").build();
     }
 
     @Override

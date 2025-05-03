@@ -5,20 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatDto {
+public class ChatGroup {
     private String senderId;
     private String receiverId;
     private String senderFirstName;
     private String senderLastName;
-    private String message;
-    private String type;
-    private Date createdAt;
-    private String formattedDate;
-    private Boolean isRead;
+    private List<ChatMessage> chats;
 }
