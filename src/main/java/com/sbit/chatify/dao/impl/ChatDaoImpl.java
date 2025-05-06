@@ -26,7 +26,7 @@ public class ChatDaoImpl implements ChatDao {
     public List<Chat> getAllChatsByUserId(String userId) {
         var query = new Query();
         query.addCriteria(Criteria.where("receiverId").is(userId)
-                .and("isActive").is(true));
+                .and("isActive").is(true).and("isRead").is(false));
         query.with(Sort.by(Sort.Direction.DESC, "createdAt"));
         return mongoTemplate.find(query, Chat.class);
     }

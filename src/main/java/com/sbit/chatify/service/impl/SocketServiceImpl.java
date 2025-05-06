@@ -91,6 +91,7 @@ public class SocketServiceImpl implements SocketService {
             SocketUtil.send(SocketResponse.builder()
                     .type(SocketConstant.INVALID_SESSION)
                     .userId(userId).build());
+            log.info("Task executed by: " + Thread.currentThread().getName());
         });
         sendFuture.thenRun(() -> {
             closeSession(session, userId);

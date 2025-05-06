@@ -2,6 +2,6 @@ package com.sbit.chatify.service;
 
 import org.springframework.ui.Model;
 
-public interface UserService {
+public interface WallService {
     String getWallData(Model model);
 }

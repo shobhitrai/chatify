@@ -62,7 +62,7 @@ public class FriendReqServiceImpl implements FriendReqService {
             }
             var friendRequest = FriendRequest.builder().senderId(userId)
                     .receiverId(friendRequestDto.getReceiverId()).isAccepted(false)
-                    .isActive(true).createdAt(new Date()).build();
+                    .isActive(true).message(friendRequestDto.getMessage()).createdAt(new Date()).build();
 
             friendRequestDao.save(friendRequest);
             var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)

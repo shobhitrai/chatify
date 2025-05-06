@@ -16,6 +16,7 @@ public class ChatDto {
     private String receiverId;
     private String senderFirstName;
     private String senderLastName;
+    private String senderProfileImage;
     private String message;
     private String type;
     private Date createdAt;
