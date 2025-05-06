@@ -21,6 +21,7 @@ public class Notification {
     private ObjectId id;
     private String senderId;
     private String receiverId;
+    private String type;
     private String message;
     private Date createdAt;
     private Boolean isRead;

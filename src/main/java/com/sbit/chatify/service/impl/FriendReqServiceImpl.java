@@ -10,6 +10,7 @@ import com.sbit.chatify.dao.UserDao;
 import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.FriendRequest;
+import com.sbit.chatify.entity.Notification;
 import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.ChatDto;
 import com.sbit.chatify.model.FriendRequestDto;
@@ -84,30 +85,12 @@ public class FriendReqServiceImpl implements FriendReqService {
                                   FriendRequestDto friendRequestDto, FriendRequest friendRequest) {
         try {
             var receiverId = friendRequestDto.getReceiverId();
-            var chat = Chat.builder().message(friendRequest.getMessage())
-                    .senderId(userId).receiverId(receiverId)
-                    .type(MessageConstant.FRIEND_REQUEST).isRead(false)
-                    .isActive(true).createdAt(new Date()).build();
-            chatDao.save(chat);
 
             if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
-                var senderDetail = userDetailDao.findByUserId(userId);
-                var chatDto = getChat(friendRequestDto.getReceiverId(), chat, senderDetail);
-                var socketResponse = SocketResponse.builder().userId(receiverId)
-                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.FRIEND_REQUEST)
-                        .data(chatDto).type(SocketConstant.CHAT).build();
-                SocketUtil.send(socketResponse);
             }
         } catch (Exception e) {
             log.info("Error while sending friend request notification: {}", e.getMessage());
         }
-    }
-
-    private ChatDto getChat(String receiverId, Chat chat, UserDetail senderDetail) {
-        return ChatDto.builder().senderId(senderDetail.getUserId())
-                .senderFirstName(senderDetail.getFirstName()).senderLastName(senderDetail.getLastName())
-                .receiverId(receiverId).message(chat.getMessage()).isRead(chat.getIsRead())
-                .type(chat.getType()).formattedDate("Now").build();
     }
 
     @Override

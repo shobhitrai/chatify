@@ -21,8 +21,8 @@
       <c:forEach items="${chats}" var="chat">
          <c:choose>
             <c:when test="${chat.type == 'friendRequest'}">
-               <a href="#list-request" class="filterDiscussions all unread single ${chat.senderId}" id="list-request-list" data-toggle="list" role="tab">
-                  <img class="avatar-md" src="${chat.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar">
+               <a href="#page-${chat.senderId}" class="filterDiscussions all unread single" data-toggle="list">
+                  <img class="avatar-md" src="${chat.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${chat.senderFirstName}" alt="avatar">
                   <div class="status">
                      <i class="material-icons offline">fiber_manual_record</i>
                   </div>
