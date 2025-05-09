@@ -198,6 +198,7 @@
 		<script src="${path}/js/bootstrap.min.js"></script>
 		<script src="${path}/chatify-js/socket.js"></script>
 		<script src="${path}/chatify-js/friend-request.js"></script>
+		<script src="${path}/chatify-js/wall.js"></script>
 
 	</body>
 

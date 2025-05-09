@@ -19,20 +19,20 @@
       <h1>Chats</h1>
       <div class="list-group" id="chats" role="tablist">
          <c:forEach items="${chatGroups}" var="chatGroup">
-            <a href="#chat-${chatGroup.senderId}" class="filterDiscussions all unread single" data-toggle="list">
-               <img class="avatar-md" src="${chatGroup.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${chatGroup.senderFirstName}" alt="avatar">
-               <div class="status">
-                  <i class="material-icons offline">fiber_manual_record</i>
-               </div>
-               <div class="new bg-gray">
-                  <span>?</span>
-               </div>
-               <div class="data">
-                  <h5>${chatGroup.senderFirstName} ${chatGroup.senderLastName}</h5>
-                  <span>${chatGroup.chats[0].formattedDate}</span>
-                  <p>${chatGroup.chats[0].message}</p>
-               </div>
-            </a>
+               <a id="user-${chatGroup.senderId}" href="#chat-${chatGroup.senderId}" class="filterDiscussions all unread single" data-toggle="list">
+                  <img class="avatar-md" src="${chatGroup.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${chatGroup.senderFirstName}" alt="avatar">
+                  <div class="status">
+                     <i class="material-icons offline">fiber_manual_record</i>
+                  </div>
+                  <div class="new bg-gray">
+                     <span>?</span>
+                  </div>
+                  <div class="data"\t>
+                     <h5>${chatGroup.senderFirstName} ${chatGroup.senderLastName}</h5>
+                     <span>${chatGroup.chats[0].formattedDate}</span>
+                     <p>${chatGroup.chats[0].message}</p>
+                  </div>
+               </a>
          </c:forEach>
       </div>
    </div>

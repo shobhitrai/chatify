@@ -16,7 +16,7 @@ function connect() {
    webSocket.onmessage = (event) => {
       let payload = JSON.parse(event.data);
       console.log("From socket" + JSON.stringify(payload));
-      incomming(payload);
+      incoming(payload);
    };
 
    webSocket.onclose = (event) => {
@@ -33,7 +33,7 @@ function connect() {
    };
 }
 
-function incomming(payload) {
+function incoming(payload) {
    switch (payload.type) {
       case "invalidSession":
          alert("Session expired, please login again.");
@@ -51,6 +51,5 @@ function incomming(payload) {
       case "appendChatGroup":
          appendChatGroup(payload);
          break;
-
    }
 }

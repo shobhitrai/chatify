@@ -15,6 +15,10 @@ public class SocketUtil {
     private static final ObjectMapper MAPPER = new ObjectMapper();
     public static final Map<String, WebSocketSession> SOCKET_CONNECTIONS = new ConcurrentHashMap<>();
 
+    public static int getConnectionSize() {
+        return SOCKET_CONNECTIONS.size();
+    }
+
     public static void send(SocketResponse socketResponse) {
         try {
             WebSocketSession session = SOCKET_CONNECTIONS.get(socketResponse.getUserId());
@@ -26,6 +30,7 @@ public class SocketUtil {
                 log.warn("Session not found or closed for user: {}", socketResponse.getUserId());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error sending message: {}", e.getMessage(), e);
         }
     }

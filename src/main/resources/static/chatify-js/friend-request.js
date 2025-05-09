@@ -116,7 +116,7 @@ function getSearchedUsers(e, element) {
 function ackSearchedUsers(payload) {
    $('#searched-user').html('');
    let text = '<div class="dropdown-menu" id="user-dropdown">'
-   if (payload.status == 100) {
+   if (payload.status === 100) {
       for (let i = 0; i < payload.data.length; i++) {
          const item = payload.data[i];
          text += '<button class="dropdown-item searched-user-btn" type="button"' +
@@ -134,17 +134,16 @@ function ackSearchedUsers(payload) {
 }
 
 function appendNotification(payload) {
-    let noti = payload.data;
-    let text = '<a href="#" class="filterNotifications all '
-    + noti.isRecent ? 'latest' : 'oldest' + ' notification"'
-    +' data-toggle="list"><img class="avatar-md" src="'+noti.senderProfileImage+'" data-toggle="tooltip"'
-    + ' data-placement="top" title="'+noti.senderProfileImage+'" alt="avatar">'
-    + '<div class="status"><i class="material-icons online">'
-    + ' fiber_manual_record</i></div><div class="data"><p>'+noti.message
-    + '</p><span>'+noti.formattedDate+'</span></div></a>';
+   if (payload.status === 100) {
+      let noti = payload.data;
+      let text = '<a href="#" class="filterNotifications all ' +
+         (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
+         ' data-toggle="list"><img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
+         ' data-placement="top" title="' + noti.senderProfileImage + '" alt="avatar">' +
+         '<div class="status"><i class="material-icons online">' +
+         ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
+         '</p><span>' + noti.formattedDate + '</span></div></a>';
 
-    console.log('appendNotification: ' + text);
-
-    $('#alerts').prepend(text);
-
+      $('#alerts').prepend(text);
+   }
 }

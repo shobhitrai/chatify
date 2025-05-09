@@ -39,7 +39,10 @@ public class SocketServiceImpl implements SocketService {
     @Override
     public void closeConnection(WebSocketSession session, CloseStatus status) {
         try {
-            String userId = getUserIdFromSession(session);
+            //dont get userId from session, its already invalidated by logout.
+            String userId = SocketUtil.SOCKET_CONNECTIONS.entrySet().stream()
+                    .filter(entry -> Objects.equals(session, entry.getValue()))
+                    .map(Map.Entry::getKey).findFirst().orElse(null);
             SocketUtil.SOCKET_CONNECTIONS.remove(userId);
             session.close(status);
             log.info("Connection closed for user: {}, code: {}, reason: {}, Total connected: {}",
@@ -51,6 +54,7 @@ public class SocketServiceImpl implements SocketService {
 
     @Override
     public void transportError(WebSocketSession session, Throwable exception) {
+        exception.printStackTrace();
         try {
             String userId = getUserIdFromSession(session);
             log.error("Transport error for user: {}. Error: {}", userId, exception.getMessage());
@@ -95,7 +99,8 @@ public class SocketServiceImpl implements SocketService {
         });
         sendFuture.thenRun(() -> {
             closeSession(session, userId);
-            log.info("Message sent and session closed for user: {}", userId);
+            log.info("Message sent and session closed for user: {}, total open connection: {}"
+                    , userId, SocketUtil.getConnectionSize());
         }).exceptionally(ex -> {
             log.error("Error while sending message: {}", ex.getMessage());
             closeSession(session, userId);
