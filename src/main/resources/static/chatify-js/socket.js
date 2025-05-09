@@ -50,9 +50,8 @@ function incoming(payload) {
          createChatGroup(payload);
          appendNotification(payload);
          break;
-      case "appendChatGroup":
-
-
+      case "ackAcceptFriendRequest":
+         ackAcceptFriendRequest(payload);
          break;
    }
 }

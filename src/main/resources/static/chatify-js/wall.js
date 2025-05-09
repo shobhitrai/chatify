@@ -19,9 +19,9 @@ function createChatGroup(payload) {
 }
 
 function acceptFriendRequest(element) {
-   let senderId = $(element).data('userid');
-
-   let payload = {
+   let senderId = $(element).attr('id').replace('accept-', '');
+   $(element).prop('disabled', true);
+   const payload = {
       "senderId": senderId
    }
    const socketReq = {
@@ -29,4 +29,15 @@ function acceptFriendRequest(element) {
       "payload": payload
    }
    webSocket.send(JSON.stringify(socketReq));
+}
+
+function ackAcceptFriendRequest(payload) {
+
+if(payload.status === 100) {
+    const contactInfo = payload.data;
+    $('#accept-' + contactInfo.contactId).prop('disabled', false);
+    }
+    else {
+        alert(payload.message);
+    }
 }

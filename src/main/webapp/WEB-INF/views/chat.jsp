@@ -48,8 +48,8 @@
                                  <a href="#"><img class="avatar-xl" src="${cg.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${cg.senderFirstName}" alt="avatar"></a>
                                  <h5><span>${cgchat.message}</span></h5>
                                  <div class="options">
-                                    <button class="btn button fr-accept-btn" data-userid="${cg.senderId}"><i class="material-icons">check</i></button>
-                                    <button class="btn button fr-reject-btn" data-userid="${cg.senderId}"><i class="material-icons">close</i></button>
+                                    <button class="btn button fr-accept-btn" id="accept-${cg.senderId}"><i class="material-icons">check</i></button>
+                                    <button class="btn button fr-reject-btn" id="reject-${cg.senderId}"><i class="material-icons">close</i></button>
                                  </div>
                               </div>
                            </div>

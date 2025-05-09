@@ -181,20 +181,21 @@ public class FriendReqServiceImpl implements FriendReqService {
                 SocketUtil.send(socketResponse);
                 return;
             }
-
             friendRequest.setIsAccepted(true);
             friendRequest.setIsActive(false);
             friendRequestDao.save(friendRequest);
 
             //for receiver
-            var receiverContact = getEnrichedContact(userId, friendRequestDto.getSenderId());
+            var receiverContact = saveContact(userId, friendRequestDto.getSenderId());
             //for sender
-            var senderContact = getEnrichedContact(friendRequestDto.getSenderId(), userId);
+            var senderContact = saveContact(friendRequestDto.getSenderId(), userId);
+
             socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST).build();
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST)
+                    .data(receiverContact).build();
             SocketUtil.send(socketResponse);
 
-            //send notification
+            notifyToSender(friendRequestDto.getSenderId(), senderContact);
         } catch (Exception e) {
             log.error("Error while searching users: {}", e.getMessage());
             socketResponse = SocketResponse.builder().userId(userId)
@@ -205,17 +206,43 @@ public class FriendReqServiceImpl implements FriendReqService {
         }
     }
 
-    private Contact getEnrichedContact(String userId, String userId2) {
+    private void notifyToSender(String receiverId, ContactInfo senderContact) {
+        try {
+            Notification notification = Notification.builder()
+                    .senderId(senderContact.getContactId()).receiverId(receiverId)
+                    .message(senderContact.getContactFirstName() + " " + MessageConstant.ACCEPT_FRIEND_REQUEST)
+                    .createdAt(new Date()).isRead(false).build();
+            notificationDao.save(notification);
+            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
+                var notificationDto = NotificationDto.builder().createdAt(notification.getCreatedAt())
+                        .message(notification.getMessage()).senderId(notification.getSenderId())
+                        .receiverId(receiverId).isRead(notification.getIsRead())
+                        .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
+                        .isRecent(Util.isRecent(notification.getCreatedAt()))
+                        .isRead(notification.getIsRead()).build();
+                var socketResponse = SocketResponse.builder().userId(receiverId)
+                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
+                        .type(SocketConstant.ADD_CONTACT).data(notificationDto).build();
+                SocketUtil.send(socketResponse);
+            }
+        } catch (Exception e) {
+            log.error("Error while sending add contact notification: {}", e.getMessage());
+        }
+    }
+
+    private ContactInfo saveContact(String userId, String userId2) {
         var contact = contactDao.findByUserId(userId);
         if (Objects.isNull(contact))
             contact = Contact.builder().userId(userId).contacts(new ArrayList<>()).build();
 
         var userDetails = userDetailDao.findByUserId(userId2);
         ContactInfo contactInfo = ContactInfo.builder()
-                .contactId(userId2).contactName(userDetails.getFirstName() + " " + userDetails.getLastName())
-                .profileImage(userDetails.getProfileImage()).createdAt(new Date()).build();
+                .contactId(userId2).contactFirstName(userDetails.getFirstName())
+                .contactLastName(userDetails.getLastName()).createdAt(new Date())
+                .build();
         contact.getContacts().add(contactInfo);
-        return contactDao.save(contact);
+        contactDao.save(contact);
+        return contactInfo;
     }
 
 }

@@ -9,4 +9,5 @@ public interface SocketConstant {
     String CREATE_CHAT_GROUP = "createChatGroup";
     String ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
     String ACK_ACCEPT_FRIEND_REQUEST = "ackAcceptFriendRequest";
+    String ADD_CONTACT = "addContact";
 }

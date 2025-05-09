@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 public class ContactInfo {
     private String contactId;
-    private String contactName;
+    private String contactFirstName;
+    private String contactLastName;
     private Date createdAt;
-    private String profileImage;
 }
