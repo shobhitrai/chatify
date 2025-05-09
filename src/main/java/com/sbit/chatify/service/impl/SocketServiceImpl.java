@@ -48,6 +48,7 @@ public class SocketServiceImpl implements SocketService {
             log.info("Connection closed for user: {}, code: {}, reason: {}, Total connected: {}",
                     userId, status.getCode(), status.getReason(), SocketUtil.SOCKET_CONNECTIONS.size());
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error closing connection: {}", e.getMessage());
         }
     }
