@@ -7,7 +7,7 @@ import java.util.List;
 public interface FriendRequestDao {
     FriendRequest save(FriendRequest friendRequest);
 
-    boolean findBySenderIdAndReceiverId(String senderId, String receiverId);
+    boolean isFriendRequestExist(String senderId, String receiverId);
 
-    List<FriendRequest> findByReceiverId(String userId);
+    FriendRequest findBySenderIdAndReceiverId(String senderId, String receiverId);
 }

@@ -8,4 +8,6 @@ public interface FriendReqService {
     void sendFriendRequest(String userId, FriendRequestDto friendRequestDto);
 
     void getSearchedUsers(String userId, UserDto userDto);
+
+    void acceptFriendRequest(String userId, FriendRequestDto accpetFR);
 }

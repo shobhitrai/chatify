@@ -1,3 +1,8 @@
+$('.fr-accept-btn').on('click', function(){
+	acceptFriendRequest(this);
+});
+
+
 function createChatGroup(payload) {
    if (payload.status === 100) {
       let chatGroup = payload.data.chatGroups;
@@ -11,4 +16,17 @@ function createChatGroup(payload) {
          '<span>' + chatGroup.chats[0].formattedDate + '</span><p>' + chatGroup.chats[0].message + '</p></div></a>';
       $('#chats').prepend(data);
    }
+}
+
+function acceptFriendRequest(element) {
+   let senderId = $(element).data('userid');
+
+   let payload = {
+      "senderId": senderId
+   }
+   const socketReq = {
+      "type" : "acceptFriendRequest",
+      "payload": payload
+   }
+   webSocket.send(JSON.stringify(socketReq));
 }

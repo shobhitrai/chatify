@@ -5,10 +5,7 @@ import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.*;
-import com.sbit.chatify.entity.Chat;
-import com.sbit.chatify.entity.FriendRequest;
-import com.sbit.chatify.entity.Notification;
-import com.sbit.chatify.entity.UserDetail;
+import com.sbit.chatify.entity.*;
 import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.utility.Util;
@@ -41,11 +38,14 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Autowired
     private NotificationDao notificationDao;
 
+    @Autowired
+    private ContactDao contactDao;
+
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
             // Friend req already exists either by sender or receiver
-            var isReqAlreadyExist = friendRequestDao.findBySenderIdAndReceiverId(userId,
+            var isReqAlreadyExist = friendRequestDao.isFriendRequestExist(userId,
                     friendRequestDto.getReceiverId());
 
             if (isReqAlreadyExist) {
@@ -167,6 +167,55 @@ public class FriendReqServiceImpl implements FriendReqService {
         } finally {
             SocketUtil.send(socketResponse);
         }
+    }
+
+    @Override
+    public void acceptFriendRequest(String userId, FriendRequestDto friendRequestDto) {
+        SocketResponse socketResponse = null;
+        try {
+            var friendRequest = friendRequestDao.findBySenderIdAndReceiverId(friendRequestDto.getSenderId(), userId);
+            if (Objects.isNull(friendRequest)) {
+                socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
+                        .message(MessageConstant.INVALID_USER)
+                        .type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST).build();
+                SocketUtil.send(socketResponse);
+                return;
+            }
+
+            friendRequest.setIsAccepted(true);
+            friendRequest.setIsActive(false);
+            friendRequestDao.save(friendRequest);
+
+            //for receiver
+            var receiverContact = getEnrichedContact(userId, friendRequestDto.getSenderId());
+            //for sender
+            var senderContact = getEnrichedContact(friendRequestDto.getSenderId(), userId);
+            socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST).build();
+            SocketUtil.send(socketResponse);
+
+            //send notification
+        } catch (Exception e) {
+            log.error("Error while searching users: {}", e.getMessage());
+            socketResponse = SocketResponse.builder().userId(userId)
+                    .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
+                    .message(MessageConstant.INTERNAL_SERVER_ERROR)
+                    .type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST).build();
+            SocketUtil.send(socketResponse);
+        }
+    }
+
+    private Contact getEnrichedContact(String userId, String userId2) {
+        var contact = contactDao.findByUserId(userId);
+        if (Objects.isNull(contact))
+            contact = Contact.builder().userId(userId).contacts(new ArrayList<>()).build();
+
+        var userDetails = userDetailDao.findByUserId(userId2);
+        ContactInfo contactInfo = ContactInfo.builder()
+                .contactId(userId2).contactName(userDetails.getFirstName() + " " + userDetails.getLastName())
+                .profileImage(userDetails.getProfileImage()).createdAt(new Date()).build();
+        contact.getContacts().add(contactInfo);
+        return contactDao.save(contact);
     }
 
 }

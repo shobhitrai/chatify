@@ -123,18 +123,9 @@
                                        <div style="position: relative;">
                                           <input type="text" class="form-control" id="user" placeholder="Add recipient..." required>
                                           <div id="searched-user">
-                                             <!--<div class="dropdown-menu" id="user-dropdown">
-                                                <button class="dropdown-item" type="button">John Doe</button>
-                                                <button class="dropdown-item" type="button">Jane Smith</button>
-                                             </div>-->
                                           </div>
                                        </div>
                                        <div id='searched-icon'>
-                                       <!--<div class="user" id="contact">
-                                          <img class="avatar-sm" src="${path}/image/avatars/avatar-female-5.jpg" alt="avatar">
-                                          <h5>Keith Morris</h5>
-                                          <button class="btn"><i class="material-icons">close</i></button>
-                                       </div>-->
                                        </div>
                                     </div>
 									<div class="form-group">

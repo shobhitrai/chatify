@@ -22,20 +22,20 @@ public class FriendReqeustDaoImpl implements FriendRequestDao {
     }
 
     @Override
-    public boolean findBySenderIdAndReceiverId(String senderId, String receiverId) {
+    public boolean isFriendRequestExist(String senderId, String receiverId) {
         var query = new Query();
         query.addCriteria(new Criteria().orOperator(
                 Criteria.where("senderId").is(senderId).and("receiverId").is(receiverId),
-                Criteria.where("senderId").is(receiverId).and("receiverId").is(senderId)
-        ));
+                Criteria.where("senderId").is(receiverId).and("receiverId").is(senderId)));
+        query.addCriteria(Criteria.where("isAccepted").is(false).and("isActive").is(true));
         return mongoTemplate.exists(query, FriendRequest.class);
     }
 
     @Override
-    public List<FriendRequest> findByReceiverId(String userId) {
+    public FriendRequest findBySenderIdAndReceiverId(String senderId, String receiverId) {
         var query = new Query();
-        query.addCriteria(Criteria.where("receiverId").is(userId)
-                .and("isAccepted").is(false));
-        return mongoTemplate.find(query, FriendRequest.class);
+        query.addCriteria(Criteria.where("senderId").is(senderId).and("receiverId").is(receiverId)
+                .and("isAccepted").is(false).and("isActive").is(true));
+        return mongoTemplate.findOne(query, FriendRequest.class);
     }
 }

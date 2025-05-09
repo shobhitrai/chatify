@@ -25,4 +25,6 @@ public interface MessageConstant {
     String FRIEND_REQUEST_MESSAGE = "has sent you a friend request on Chatify.";
     String NOTIFICATIONS = "notifications";
     String CHAT_GROUPS = "chatGroups";
+    String INVALID_USER = "Invalid user";
+
 }
