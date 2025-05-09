@@ -2,7 +2,6 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.ContactDao;
 import com.sbit.chatify.entity.Contact;
-import com.sbit.chatify.entity.FriendRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
