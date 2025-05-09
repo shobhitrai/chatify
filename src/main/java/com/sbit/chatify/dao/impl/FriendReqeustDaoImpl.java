@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class FriendReqeustDaoImpl implements FriendRequestDao {
 
@@ -25,5 +27,13 @@ public class FriendReqeustDaoImpl implements FriendRequestDao {
         query.addCriteria(Criteria.where("senderId").is(senderId)
                 .and("receiverId").is(receiverId));
         return mongoTemplate.exists(query, FriendRequest.class);
+    }
+
+    @Override
+    public List<FriendRequest> findByReceiverId(String userId) {
+        var query = new Query();
+        query.addCriteria(Criteria.where("receiverId").is(userId)
+                .and("isAccepted").is(false));
+        return mongoTemplate.find(query, FriendRequest.class);
     }
 }

@@ -1,6 +1,5 @@
 package com.sbit.chatify.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +11,12 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class FriendRequestDto {
+public class NotificationDto {
+    private String senderId;
     private String receiverId;
     private String message;
-    private String senderId;
     private Date createdAt;
-    private Boolean isAccepted;
-    private Boolean isActive;
-    private String senderFirstName;
-    private String senderLastName;
+    private Boolean isRead;
     private String formattedDate;
     private String senderProfileImage;
     private Boolean isRecent;

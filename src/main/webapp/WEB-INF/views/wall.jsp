@@ -25,6 +25,7 @@
         var sessionUserName = '${user.username}';
         var sessionProfileImage = '${user.profileImage}';
         var sessionPath = '${path}'
+        console.log('${user}' + '${friendRequests}')
     </script>
 	<body>
 		<main>
@@ -41,7 +42,7 @@
                             <a href="#notifications" data-toggle="tab" class="f-grow1"><i class="material-icons">notifications_none</i></a>
                             <button class="btn mode"><i class="material-icons">brightness_2</i></button>
                             <a href="#settings" data-toggle="tab"><i class="material-icons">settings</i></a>
-                            <button class="btn power" onclick="visitPage();"><i class="material-icons">power_settings_new</i></button>
+                            <button class="btn power" onclick="window.location.href='${path}/logout'"><i class="material-icons">power_settings_new</i></button>
                          </div>
                       </div>
                    </div>
@@ -198,10 +199,7 @@
 		<script src="${path}/js/bootstrap.min.js"></script>
 		<script src="${path}/chatify-js/socket.js"></script>
 		<script src="${path}/chatify-js/friend-request.js"></script>
-		<script>
-			function scrollToBottom(el) { el.scrollTop = el.scrollHeight; }
-			scrollToBottom(document.getElementById('content'));
-		</script>
+
 	</body>
 
 </html>

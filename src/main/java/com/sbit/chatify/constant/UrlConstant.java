@@ -7,5 +7,6 @@ public interface UrlConstant {
     String SEND_FRIEND_REQUEST = "send-friend-request";
     String SEARCH_USERS = "search-users";
     String WALL = "wall";
+    String LOGOUT = "logout";
 
 }

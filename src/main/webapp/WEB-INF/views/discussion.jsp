@@ -18,7 +18,7 @@
    </div>
    <div class="discussions">
       <h1>Chats</h1>
-      <c:forEach items="${chats}" var="chat">
+      <%--<c:forEach items="${chats}" var="chat">
          <c:choose>
             <c:when test="${chat.type == 'friendRequest'}">
                <a href="#page-${chat.senderId}" class="filterDiscussions all unread single" data-toggle="list">
@@ -37,6 +37,6 @@
                </a>
             </c:when>
          </c:choose>
-      </c:forEach>
+      </c:forEach>--%>
    </div>
 </div>

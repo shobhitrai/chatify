@@ -125,6 +125,16 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         }
     }
 
+    @Override
+    public String logout(HttpSession session) {
+        String sessionUserId = (String) session.getAttribute(MessageConstant.USER_ID);
+        if (Objects.nonNull(sessionUserId)) {
+            session.invalidate();
+            log.info("Session invalidated for user: {}", sessionUserId);
+        }
+        return PageConstant.REDIRECT_LOGIN;
+    }
+
     private boolean validateLogin(UserDto userDto, RedirectAttributes redirectAttributes) {
         if (Objects.isNull(userDto.getEmail()) || userDto.getEmail().isBlank()) {
             redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.EMAIL_IS_REQUIRED);

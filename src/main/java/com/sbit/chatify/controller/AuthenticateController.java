@@ -35,6 +35,12 @@ public class AuthenticateController {
         return PageConstant.SIGN_UP;
     }
 
+    @GetMapping(UrlConstant.LOGOUT)
+    public String logout(HttpSession session) {
+        log.info("logout called");
+        return authenticateService.logout(session);
+    }
+
     @PostMapping(UrlConstant.VALIDATE_SIGNUP)
     @ResponseBody
     public ResponseEntity<Response> validateSignUp(@RequestBody UserDto userDto) {

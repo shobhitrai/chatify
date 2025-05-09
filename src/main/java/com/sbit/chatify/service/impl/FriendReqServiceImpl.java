@@ -4,21 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.constant.StatusConstant;
-import com.sbit.chatify.dao.ChatDao;
-import com.sbit.chatify.dao.FriendRequestDao;
-import com.sbit.chatify.dao.UserDao;
-import com.sbit.chatify.dao.UserDetailDao;
-import com.sbit.chatify.entity.Chat;
+import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.entity.Notification;
-import com.sbit.chatify.entity.UserDetail;
-import com.sbit.chatify.model.ChatDto;
 import com.sbit.chatify.model.FriendRequestDto;
 import com.sbit.chatify.model.SocketResponse;
 import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.websocket.SocketUtil;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +39,7 @@ public class FriendReqServiceImpl implements FriendReqService {
     private UserDetailDao userDetailDao;
 
     @Autowired
-    private HttpSession session;
+    private NotificationDao notificationDao;
 
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
@@ -81,12 +74,19 @@ public class FriendReqServiceImpl implements FriendReqService {
         }
     }
 
-    private void sendNotification(String userId,
-                                  FriendRequestDto friendRequestDto, FriendRequest friendRequest) {
+    private void sendNotification(String userId, FriendRequestDto friendRequestDto,
+                                  FriendRequest friendRequest) {
         try {
             var receiverId = friendRequestDto.getReceiverId();
+            var senderDetail = userDetailDao.findByUserId(userId);
+            var notification = Notification.builder()
+                    .senderId(userId).receiverId(receiverId)
+                    .message(senderDetail.getFirstName() + " " + MessageConstant.FRIEND_REQUEST_MESSAGE)
+                    .createdAt(new Date()).isRead(false).build();
+            notificationDao.save(notification);
 
             if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
+
             }
         } catch (Exception e) {
             log.info("Error while sending friend request notification: {}", e.getMessage());

@@ -2,14 +2,12 @@ package com.sbit.chatify.service.impl;
 
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.PageConstant;
-import com.sbit.chatify.dao.ChatDao;
-import com.sbit.chatify.dao.UserDao;
-import com.sbit.chatify.dao.UserDetailDao;
+import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.User;
-import com.sbit.chatify.model.ChatDto;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.WallService;
+import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
 import org.bson.types.ObjectId;
@@ -37,6 +35,12 @@ public class WallServiceImpl implements WallService {
     @Autowired
     private ChatDao chatDao;
 
+    @Autowired
+    private FriendRequestDao friendRequestDao;
+
+    @Autowired
+    private NotificationDao notificationDao;
+
     @Override
     public String getWallData(Model model) {
         var userId = (String) session.getAttribute(MessageConstant.USER_ID);
@@ -45,32 +49,71 @@ public class WallServiceImpl implements WallService {
 
         var user = userDao.findById(new ObjectId(userId));
         var userDto = getUserDetails(user);
-        var chats = getAllLatestChat(userId);
+        var friendRequests = getFriendRequests(userId);
+        var chats = getAllLatestChat(userId, friendRequests);
+        var notifications = getAllNotifications(userId);
 
         model.addAttribute(MessageConstant.USER, userDto);
+        model.addAttribute(MessageConstant.FRIEND_REQUESTS, friendRequests);
         model.addAttribute(MessageConstant.CHATS, chats);
+        model.addAttribute(MessageConstant.NOTIFICATIONS, notifications);
         return PageConstant.WALL;
     }
 
-    private List<ChatDto> getAllLatestChat(String userId) {
+    private List<NotificationDto> getAllNotifications(String userId) {
+        var notifications = notificationDao.findByReceiverId(userId);
+        return notifications.stream().map(notification -> {
+            var senderDetails = userDetailDao.findByUserId(notification.getSenderId());
+            return NotificationDto.builder().createdAt(notification.getCreatedAt())
+                    .message(notification.getMessage()).senderId(notification.getSenderId())
+                    .receiverId(userId).isRead(notification.getIsRead())
+                    .formattedDate(Util.getFormatedDate(notification.getCreatedAt()))
+                    .senderProfileImage(senderDetails.getProfileImage())
+                    .isRecent(Util.isRecent(notification.getCreatedAt()))
+                    .isRead(notification.getIsRead()).build();
+        }).toList();
+    }
+
+    private List<FriendRequestDto> getFriendRequests(String userId) {
+        var friendRequests = friendRequestDao.findByReceiverId(userId);
+        return friendRequests.stream().map(fr -> {
+            var senderDetails = userDetailDao.findByUserId(fr.getSenderId());
+
+            return FriendRequestDto.builder().createdAt(fr.getCreatedAt())
+                    .message(fr.getMessage()).senderId(fr.getSenderId())
+                    .senderFirstName(senderDetails.getFirstName())
+                    .senderLastName(senderDetails.getLastName())
+                    .formattedDate(Util.getFormatedDate(fr.getCreatedAt()))
+                    .senderProfileImage(senderDetails.getProfileImage())
+                    .isRecent(Util.isRecent(fr.getCreatedAt())).build();
+        }).sorted(Comparator.comparing(FriendRequestDto::getCreatedAt).reversed()).toList();
+    }
+
+    private List<ChatGroup> getAllLatestChat(String userId, List<FriendRequestDto> friendRequests) {
         var chats = chatDao.getAllChatsByUserId(userId);
         var distinctSenderIds = chats.stream().map(Chat::getSenderId).distinct().toList();
-        var chatList = new ArrayList<ChatDto>();
+        var chatGroups = new ArrayList<ChatGroup>();
 
         distinctSenderIds.forEach(senderId -> {
             var senderDetails = userDetailDao.findByUserId(senderId);
-            var chatDto = chats.stream()
+
+            var chatMessages = chats.stream()
                     .filter(chat -> chat.getSenderId().equals(senderId))
-                    .map(chat -> ChatDto.builder().type(chat.getType()).message(chat.getMessage())
-                            .createdAt(chat.getCreatedAt()).isRead(chat.getIsRead())
-                            .senderId(userId).senderFirstName(senderDetails.getFirstName())
-                            .senderLastName(senderDetails.getLastName()).receiverId(userId)
-                            .senderProfileImage(senderDetails.getProfileImage()).build())
-                    .findFirst().orElse(null);
-            chatList.add(chatDto);
+                    .map(chat -> ChatMessage.builder().type(chat.getMessage()).message(chat.getMessage())
+                            .createdAt(chat.getCreatedAt()).build())
+                    .sorted(Comparator.comparing(ChatMessage::getCreatedAt).reversed())
+                    .toList();
+
+            var chatGroup = ChatGroup.builder().senderId(senderId).senderFirstName(senderDetails.getFirstName())
+                    .senderLastName(senderDetails.getLastName()).receiverId(userId).chats(chatMessages)
+                    .senderProfileImage(senderDetails.getProfileImage()).build();
+
+            chatGroups.add(chatGroup);
         });
-        return chatList.stream()
-                .sorted(Comparator.comparing(ChatDto::getCreatedAt).reversed()).toList();
+        return chatGroups.stream()
+                .filter(chatGroup -> !chatGroup.getChats().isEmpty())
+                .sorted(Comparator.comparing(chatGroup -> chatGroup.getChats().get(0).getCreatedAt(),
+                        Comparator.reverseOrder())).toList();
     }
 
     private UserDto getUserDetails(User user) {

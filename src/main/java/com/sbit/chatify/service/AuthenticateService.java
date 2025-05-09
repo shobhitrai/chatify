@@ -12,4 +12,6 @@ public interface AuthenticateService {
     String registerUser(UserDto userDto, RedirectAttributes redirectAttributes, HttpSession session);
 
     String login(UserDto userDto, RedirectAttributes redirectAttributes, HttpSession session);
+
+    String logout(HttpSession session);
 }

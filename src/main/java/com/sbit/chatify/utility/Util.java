@@ -5,6 +5,10 @@ import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.model.Response;
 import org.springframework.http.ResponseEntity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 public class Util {
 
     public static ResponseEntity<Response> serverError() {
@@ -30,5 +34,16 @@ public class Util {
                 .status(StatusConstant.SUCCESS_CODE)
                 .data(data)
                 .message(MessageConstant.SUCCESS).build());
+    }
+
+    public static String getFormatedDate(Date date) {
+        var formatter = new SimpleDateFormat("MMM dd, yyyy");
+        return formatter.format(date);
+    }
+
+    public static boolean isRecent(Date givenDate) {
+        long currentTime = System.currentTimeMillis();
+        long oneWeekAgo = currentTime - TimeUnit.DAYS.toMillis(2);
+        return givenDate.getTime() > oneWeekAgo;
     }
 }

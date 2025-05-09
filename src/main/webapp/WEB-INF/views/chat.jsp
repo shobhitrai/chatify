@@ -5,19 +5,20 @@
 
 <div class="tab-content" id="nav-tabContent">
    <!-- Start of Babble -->
-   <div class="babble tab-pane fade" id="list-request">
+   <c:forEach items="${friendRequests}" var="fr">
+   <div class="babble tab-pane fade" id="fr${fr.senderId}">
       <!-- Start of Chat -->
       <div class="chat" id="chat3">
          <div class="top">
             <div class="container">
                <div class="col-md-12">
                   <div class="inside">
-                     <a href="#"><img class="avatar-md" src="${path}/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar"></a>
+                     <a href="#"><img class="avatar-md" src="${fr.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${fr.senderFirstName}" alt="avatar"></a>
                      <div class="status">
                         <i class="material-icons offline">fiber_manual_record</i>
                      </div>
                      <div class="data">
-                        <h5><a href="#">Louis Martinez</a></h5>
+                        <h5><a href="#">${fr.senderFirstName} ${fr.senderLastName}</a></h5>
                         <span>Inactive</span>
                      </div>
                      <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-30">phone_in_talk</i></button>
@@ -42,8 +43,8 @@
             <div class="container">
                <div class="col-md-12">
                   <div class="no-messages request">
-                     <a href="#"><img class="avatar-xl" src="${path}/image/avatars/avatar-female-6.jpg" data-toggle="tooltip" data-placement="top" title="Louis" alt="avatar"></a>
-                     <h5>Louis Martinez would like to add you as a contact. <span>Hi Keith, I'd like to add you as a contact.</span></h5>
+                     <a href="#"><img class="avatar-xl" src="${fr.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${fr.senderFirstName}" alt="avatar"></a>
+                     <h5><span>${fr.message}</span></h5>
                      <div class="options">
                         <button class="btn button"><i class="material-icons">check</i></button>
                         <button class="btn button"><i class="material-icons">close</i></button>
@@ -70,5 +71,10 @@
       </div>
       <!-- End of Chat -->
    </div>
+   </c:forEach>
    <!-- End of Babble -->
 </div>
+<script>
+			function scrollToBottom() { el.scrollTop = el.scrollHeight; }
+			scrollToBottom(document.getElementById('content'));
+		</script>

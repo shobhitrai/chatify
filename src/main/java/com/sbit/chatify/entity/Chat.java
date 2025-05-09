@@ -26,5 +26,4 @@ public class Chat {
     private Date createdAt;
     private Boolean isRead;
     private Boolean isActive;
-
 }

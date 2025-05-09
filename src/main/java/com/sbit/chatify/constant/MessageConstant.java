@@ -24,6 +24,9 @@ public interface MessageConstant {
     String HTTP_SESSION = "httpSession";
     String SESSION_ALREADY_EXISTS = "Session already exists";
     String FRIEND_REQUEST = "friendRequest";
+    String FRIEND_REQUESTS = "friendRequests";
     String USER = "user";
     String CHATS = "chats";
+    String FRIEND_REQUEST_MESSAGE = "has sent you a friend request on Chatify.";
+    String NOTIFICATIONS = "notifications";
 }
