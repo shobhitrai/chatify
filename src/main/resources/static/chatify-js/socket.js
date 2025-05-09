@@ -1,49 +1,56 @@
-$(document).ready(function() {
-	connect();
+$(document).ready(function () {
+   connect();
 });
 
 var webSocket;
 
 function connect() {
-    const socketUrl = 'ws://' + document.location.host + sessionPath +'/chat';
-    console.log("Connecting to socket: " + socketUrl);
-    webSocket = new WebSocket(socketUrl);
+   const socketUrl = 'ws://' + document.location.host + sessionPath + '/chat';
+   console.log("Connecting to socket: " + socketUrl);
+   webSocket = new WebSocket(socketUrl);
 
-    webSocket.onopen = () => {
+   webSocket.onopen = () => {
       console.log("Connected to socket");
-    };
+   };
 
-    webSocket.onmessage = (event) => {
+   webSocket.onmessage = (event) => {
       let payload = JSON.parse(event.data);
       console.log("From socket" + JSON.stringify(payload));
       incomming(payload);
-    };
+   };
 
-    webSocket.onclose = (event) => {
+   webSocket.onclose = (event) => {
       if (event.wasClean) {
-        console.log('Connection closed cleanly, code=${event.code} reason=${event.reason}');
+         console.log('Connection closed cleanly, code=${event.code} reason=${event.reason}');
       } else {
-        alert('Connection died, please login again.');
-        window.location.href = sessionPath + '/login'
+         alert('Connection died, please login again.');
+         window.location.href = sessionPath + '/login'
       }
-    };
+   };
 
-    webSocket.onerror = (error) => {
+   webSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
-    };
+   };
 }
 
 function incomming(payload) {
-	switch (payload.type) {
-	    case "invalidSession":
-	        alert("Session expired, please login again.");
-		    window.location.href = sessionPath + '/login';
-		    break;
-	    case "ackFriendRequest":
-	        ackFriendRequest(payload);
-            break;
-        case "ackSearchedUsers":
-            ackSearchedUsers(payload);
-            break;
-	}
+   switch (payload.type) {
+      case "invalidSession":
+         alert("Session expired, please login again.");
+         window.location.href = sessionPath + '/login';
+         break;
+      case "ackFriendRequest":
+         ackFriendRequest(payload);
+         break;
+      case "ackSearchedUsers":
+         ackSearchedUsers(payload);
+         break;
+      case "appendNotification":
+         appendNotification(payload);
+         break;
+      case "appendChatGroup":
+         appendChatGroup(payload);
+         break;
+
+   }
 }

@@ -14,10 +14,6 @@ public interface MessageConstant {
     String LAST_NAME_IS_REQUIRED = "Last name is required";
     String SUCCESS = "Success";
     String USER_ID = "userId";
-    String USER_NAME = "userName";
-    String FIRST_NAME = "firstName";
-    String LAST_NAME = "lastName";
-    String PROFILE_IMAGE = "profileImage";
     String NO_USER_FOUND = "No user found";
     String FRIEND_REQUEST_ALREADY_EXISTS = "Friend request already exists";
     String USER_ALREADY_LOGGED_IN_ON_ANOTHER_DEVICE = "User already logged in on another device";
@@ -26,7 +22,7 @@ public interface MessageConstant {
     String FRIEND_REQUEST = "friendRequest";
     String FRIEND_REQUESTS = "friendRequests";
     String USER = "user";
-    String CHATS = "chats";
     String FRIEND_REQUEST_MESSAGE = "has sent you a friend request on Chatify.";
     String NOTIFICATIONS = "notifications";
+    String CHAT_GROUPS = "chatGroups";
 }

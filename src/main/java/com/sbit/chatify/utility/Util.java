@@ -36,8 +36,13 @@ public class Util {
                 .message(MessageConstant.SUCCESS).build());
     }
 
-    public static String getFormatedDate(Date date) {
+    public static String getNotificationFormatedDate(Date date) {
         var formatter = new SimpleDateFormat("MMM dd, yyyy");
+        return formatter.format(date);
+    }
+
+    public static String getChatFormatedDate(Date date) {
+        var formatter = new SimpleDateFormat("MMM dd");
         return formatter.format(date);
     }
 

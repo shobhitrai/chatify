@@ -5,19 +5,19 @@ import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.*;
+import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.entity.Notification;
-import com.sbit.chatify.model.FriendRequestDto;
-import com.sbit.chatify.model.SocketResponse;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.entity.UserDetail;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.FriendReqService;
+import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -79,6 +79,13 @@ public class FriendReqServiceImpl implements FriendReqService {
         try {
             var receiverId = friendRequestDto.getReceiverId();
             var senderDetail = userDetailDao.findByUserId(userId);
+
+            var chat = Chat.builder()
+                    .senderId(userId).receiverId(receiverId).message(friendRequest.getMessage())
+                    .type(MessageConstant.FRIEND_REQUEST).createdAt(new Date()).isActive(true)
+                    .isRead(false).build();
+            chatDao.save(chat);
+
             var notification = Notification.builder()
                     .senderId(userId).receiverId(receiverId)
                     .message(senderDetail.getFirstName() + " " + MessageConstant.FRIEND_REQUEST_MESSAGE)
@@ -86,11 +93,41 @@ public class FriendReqServiceImpl implements FriendReqService {
             notificationDao.save(notification);
 
             if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
-
+                var notificationDto = getNotificationDto(notification, senderDetail, receiverId);
+                var chatGroup = getChatDto(chat, senderDetail, receiverId);
+                var socketNotiResponse = SocketResponse.builder().userId(receiverId)
+                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
+                        .type(SocketConstant.APPEND_NOTIFICATION).data(notificationDto).build();
+                SocketUtil.send(socketNotiResponse);
+                var socketChatResponse = SocketResponse.builder().userId(receiverId)
+                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
+                        .type(SocketConstant.APPEND_CHAT_GROUP).data(chatGroup).build();
+                SocketUtil.send(socketChatResponse);
             }
         } catch (Exception e) {
             log.info("Error while sending friend request notification: {}", e.getMessage());
         }
+    }
+
+    private ChatGroup getChatDto(Chat chat, UserDetail senderDetail, String receiverId) {
+        var chatMessage = ChatMessage.builder().type(chat.getType()).message(chat.getMessage())
+                .createdAt(chat.getCreatedAt()).formattedDate(Util.getChatFormatedDate(chat.getCreatedAt()))
+                .build();
+
+        return ChatGroup.builder().senderId(senderDetail.getUserId())
+                .senderFirstName(senderDetail.getFirstName()).receiverId(receiverId)
+                .senderLastName(senderDetail.getLastName()).chats(List.of(chatMessage))
+                .senderProfileImage(senderDetail.getProfileImage()).build();
+    }
+
+    private NotificationDto getNotificationDto(Notification notification, UserDetail senderDetail, String receiverId) {
+       return NotificationDto.builder().createdAt(notification.getCreatedAt())
+                .message(notification.getMessage()).senderId(notification.getSenderId())
+                .receiverId(receiverId).isRead(notification.getIsRead())
+                .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
+                .senderProfileImage(senderDetail.getProfileImage())
+                .isRecent(Util.isRecent(notification.getCreatedAt()))
+                .isRead(notification.getIsRead()).build();
     }
 
     @Override

@@ -132,3 +132,19 @@ function ackSearchedUsers(payload) {
    text += '</div>'
    $('#searched-user').html(text);
 }
+
+function appendNotification(payload) {
+    let noti = payload.data;
+    let text = '<a href="#" class="filterNotifications all '
+    + noti.isRecent ? 'latest' : 'oldest' + ' notification"'
+    +' data-toggle="list"><img class="avatar-md" src="'+noti.senderProfileImage+'" data-toggle="tooltip"'
+    + ' data-placement="top" title="'+noti.senderProfileImage+'" alt="avatar">'
+    + '<div class="status"><i class="material-icons online">'
+    + ' fiber_manual_record</i></div><div class="data"><p>'+noti.message
+    + '</p><span>'+noti.formattedDate+'</span></div></a>';
+
+    console.log('appendNotification: ' + text);
+
+    $('#alerts').prepend(text);
+
+}

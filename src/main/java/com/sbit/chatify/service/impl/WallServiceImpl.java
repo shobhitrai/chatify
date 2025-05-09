@@ -5,7 +5,10 @@ import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.User;
-import com.sbit.chatify.model.*;
+import com.sbit.chatify.model.ChatGroup;
+import com.sbit.chatify.model.ChatMessage;
+import com.sbit.chatify.model.NotificationDto;
+import com.sbit.chatify.model.UserDto;
 import com.sbit.chatify.service.WallService;
 import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
@@ -47,15 +50,13 @@ public class WallServiceImpl implements WallService {
         if (Objects.isNull(userId) || SocketUtil.SOCKET_CONNECTIONS.containsKey(userId))
             return PageConstant.REDIRECT_LOGIN;
 
-        var user = userDao.findById(new ObjectId(userId));
-        var userDto = getUserDetails(user);
-        var friendRequests = getFriendRequests(userId);
-        var chats = getAllLatestChat(userId, friendRequests);
-        var notifications = getAllNotifications(userId);
+        User user = userDao.findById(new ObjectId(userId));
+        UserDto userDto = getUserDetails(user);
+        List<ChatGroup> chats = getAllChats(userId);
+        List<NotificationDto> notifications = getAllNotifications(userId);
 
         model.addAttribute(MessageConstant.USER, userDto);
-        model.addAttribute(MessageConstant.FRIEND_REQUESTS, friendRequests);
-        model.addAttribute(MessageConstant.CHATS, chats);
+        model.addAttribute(MessageConstant.CHAT_GROUPS, chats);
         model.addAttribute(MessageConstant.NOTIFICATIONS, notifications);
         return PageConstant.WALL;
     }
@@ -67,40 +68,26 @@ public class WallServiceImpl implements WallService {
             return NotificationDto.builder().createdAt(notification.getCreatedAt())
                     .message(notification.getMessage()).senderId(notification.getSenderId())
                     .receiverId(userId).isRead(notification.getIsRead())
-                    .formattedDate(Util.getFormatedDate(notification.getCreatedAt()))
+                    .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                     .senderProfileImage(senderDetails.getProfileImage())
                     .isRecent(Util.isRecent(notification.getCreatedAt()))
                     .isRead(notification.getIsRead()).build();
         }).toList();
     }
 
-    private List<FriendRequestDto> getFriendRequests(String userId) {
-        var friendRequests = friendRequestDao.findByReceiverId(userId);
-        return friendRequests.stream().map(fr -> {
-            var senderDetails = userDetailDao.findByUserId(fr.getSenderId());
-
-            return FriendRequestDto.builder().createdAt(fr.getCreatedAt())
-                    .message(fr.getMessage()).senderId(fr.getSenderId())
-                    .senderFirstName(senderDetails.getFirstName())
-                    .senderLastName(senderDetails.getLastName())
-                    .formattedDate(Util.getFormatedDate(fr.getCreatedAt()))
-                    .senderProfileImage(senderDetails.getProfileImage())
-                    .isRecent(Util.isRecent(fr.getCreatedAt())).build();
-        }).sorted(Comparator.comparing(FriendRequestDto::getCreatedAt).reversed()).toList();
-    }
-
-    private List<ChatGroup> getAllLatestChat(String userId, List<FriendRequestDto> friendRequests) {
+    private List<ChatGroup> getAllChats(String userId) {
         var chats = chatDao.getAllChatsByUserId(userId);
         var distinctSenderIds = chats.stream().map(Chat::getSenderId).distinct().toList();
         var chatGroups = new ArrayList<ChatGroup>();
 
         distinctSenderIds.forEach(senderId -> {
             var senderDetails = userDetailDao.findByUserId(senderId);
-
             var chatMessages = chats.stream()
                     .filter(chat -> chat.getSenderId().equals(senderId))
-                    .map(chat -> ChatMessage.builder().type(chat.getMessage()).message(chat.getMessage())
-                            .createdAt(chat.getCreatedAt()).build())
+                    .map(chat -> ChatMessage.builder().type(chat.getType())
+                            .message(chat.getMessage()).createdAt(chat.getCreatedAt())
+                            .formattedDate(Util.getChatFormatedDate(chat.getCreatedAt()))
+                            .build())
                     .sorted(Comparator.comparing(ChatMessage::getCreatedAt).reversed())
                     .toList();
 

@@ -25,7 +25,6 @@
         var sessionUserName = '${user.username}';
         var sessionProfileImage = '${user.profileImage}';
         var sessionPath = '${path}'
-        console.log('${user}' + '${friendRequests}')
     </script>
 	<body>
 		<main>

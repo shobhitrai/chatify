@@ -2,7 +2,6 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.NotificationDao;
 import com.sbit.chatify.entity.Notification;
-import com.sbit.chatify.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
