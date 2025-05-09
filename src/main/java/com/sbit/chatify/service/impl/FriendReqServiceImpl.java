@@ -44,16 +44,18 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
-            var friendReqAlredyExists = friendRequestDao.findBySenderIdAndReceiverId(userId,
+            // Friend req already exists either by sender or receiver
+            var isReqAlreadyExist = friendRequestDao.findBySenderIdAndReceiverId(userId,
                     friendRequestDto.getReceiverId());
 
-            if (friendReqAlredyExists) {
+            if (isReqAlreadyExist) {
                 var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
                         .message(MessageConstant.FRIEND_REQUEST_ALREADY_EXISTS)
                         .type(SocketConstant.ACK_FRIEND_REQUEST).build();
                 SocketUtil.send(socketResponse);
                 return;
             }
+
             var friendRequest = FriendRequest.builder().senderId(userId)
                     .receiverId(friendRequestDto.getReceiverId()).isAccepted(false)
                     .isActive(true).message(friendRequestDto.getMessage()).createdAt(new Date()).build();

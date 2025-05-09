@@ -24,8 +24,10 @@ public class FriendReqeustDaoImpl implements FriendRequestDao {
     @Override
     public boolean findBySenderIdAndReceiverId(String senderId, String receiverId) {
         var query = new Query();
-        query.addCriteria(Criteria.where("senderId").is(senderId)
-                .and("receiverId").is(receiverId));
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("senderId").is(senderId).and("receiverId").is(receiverId),
+                Criteria.where("senderId").is(receiverId).and("receiverId").is(senderId)
+        ));
         return mongoTemplate.exists(query, FriendRequest.class);
     }
 
