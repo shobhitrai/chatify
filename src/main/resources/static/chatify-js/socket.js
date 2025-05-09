@@ -45,11 +45,14 @@ function incoming(payload) {
       case "ackSearchedUsers":
          ackSearchedUsers(payload);
          break;
-      case "appendNotification":
+      case "createChatGroup":
+         createMainChat(payload);
+         createChatGroup(payload);
          appendNotification(payload);
          break;
       case "appendChatGroup":
-         appendChatGroup(payload);
+
+
          break;
    }
 }

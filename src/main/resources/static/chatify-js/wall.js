@@ -1,6 +1,6 @@
-function appendChatGroup(payload) {
+function createChatGroup(payload) {
    if (payload.status === 100) {
-      let chatGroup = payload.data;
+      let chatGroup = payload.data.chatGroups;
       let data = 'id="user-'+chatGroup.senderId+'"' +
           '<a href="#chat-' + chatGroup.senderId + '" class="filterDiscussions all unread single" ' +
          'data-toggle="list"><img class="avatar-md" src="' + chatGroup.senderProfileImage + '" ' +

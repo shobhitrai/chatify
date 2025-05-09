@@ -135,7 +135,7 @@ function ackSearchedUsers(payload) {
 
 function appendNotification(payload) {
    if (payload.status === 100) {
-      let noti = payload.data;
+      let noti = payload.data.notifications;
       let text = '<a href="#" class="filterNotifications all ' +
          (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
          ' data-toggle="list"><img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +

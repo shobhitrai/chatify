@@ -95,14 +95,13 @@ public class FriendReqServiceImpl implements FriendReqService {
             if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
                 var notificationDto = getNotificationDto(notification, senderDetail, receiverId);
                 var chatGroup = getChatDto(chat, senderDetail, receiverId);
-                var socketNotiResponse = SocketResponse.builder().userId(receiverId)
+                Map<String, Object> data = new HashMap<>();
+                data.put(MessageConstant.NOTIFICATIONS, notificationDto);
+                data.put(MessageConstant.CHAT_GROUPS, chatGroup);
+                var socketResponse = SocketResponse.builder().userId(receiverId)
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                        .type(SocketConstant.APPEND_NOTIFICATION).data(notificationDto).build();
-                SocketUtil.send(socketNotiResponse);
-                var socketChatResponse = SocketResponse.builder().userId(receiverId)
-                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                        .type(SocketConstant.APPEND_CHAT_GROUP).data(chatGroup).build();
-                SocketUtil.send(socketChatResponse);
+                        .type(SocketConstant.CREATE_CHAT_GROUP).data(data).build();
+                SocketUtil.send(socketResponse);
             }
         } catch (Exception e) {
             log.info("Error while sending friend request notification: {}", e.getMessage());
@@ -121,7 +120,7 @@ public class FriendReqServiceImpl implements FriendReqService {
     }
 
     private NotificationDto getNotificationDto(Notification notification, UserDetail senderDetail, String receiverId) {
-       return NotificationDto.builder().createdAt(notification.getCreatedAt())
+        return NotificationDto.builder().createdAt(notification.getCreatedAt())
                 .message(notification.getMessage()).senderId(notification.getSenderId())
                 .receiverId(receiverId).isRead(notification.getIsRead())
                 .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))

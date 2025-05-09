@@ -6,7 +6,6 @@ public interface SocketConstant {
     String ACK_FRIEND_REQUEST = "ackFriendRequest";
     String SEARCHED_USERS = "searchedUsers";
     String ACK_SEARCHED_USERS = "ackSearchedUsers";
-    String APPEND_NOTIFICATION = "appendNotification";
-    String APPEND_CHAT_GROUP = "appendChatGroup";
+    String CREATE_CHAT_GROUP = "createChatGroup";
     String CHAT = "chat";
 }
