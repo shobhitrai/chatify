@@ -10,4 +10,7 @@ public interface SocketConstant {
     String ACCEPT_FRIEND_REQUEST = "acceptFriendRequest";
     String ACK_ACCEPT_FRIEND_REQUEST = "ackAcceptFriendRequest";
     String ADD_CONTACT = "addContact";
+    String REMOVE_CONTACT = "removeContact";
+    String REJECT_FRIEND_REQUEST = "rejectFriendRequest";
+    String ACK_REJECT_FRIEND_REQUEST = "ackRejectFriendRequest";
 }

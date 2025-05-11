@@ -44,9 +44,8 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
-
             var contact = contactDao.findByUserId(userId);
-            if(Objects.nonNull(contact) && contact.getContacts().stream()
+            if (Objects.nonNull(contact) && contact.getContacts().stream()
                     .anyMatch(contactInfo ->
                             contactInfo.getContactId().equals(friendRequestDto.getReceiverId()))) {
                 var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
@@ -209,12 +208,70 @@ public class FriendReqServiceImpl implements FriendReqService {
 
             notifyToSender(friendRequestDto.getSenderId(), senderContact);
         } catch (Exception e) {
-            log.error("Error while searching users: {}", e.getMessage());
+            log.error("Error while accepting friend request: {}", e.getMessage());
             socketResponse = SocketResponse.builder().userId(userId)
                     .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
                     .message(MessageConstant.INTERNAL_SERVER_ERROR)
                     .type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST).build();
             SocketUtil.send(socketResponse);
+        }
+    }
+
+    @Override
+    public void rejectFriendRequest(String userId, FriendRequestDto friendRequestDto) {
+        SocketResponse socketResponse = null;
+        try {
+            var friendRequest = friendRequestDao.findBySenderIdAndReceiverId(friendRequestDto.getSenderId(), userId);
+            if (Objects.isNull(friendRequest)) {
+                socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
+                        .message(MessageConstant.INVALID_USER)
+                        .type(SocketConstant.ACK_REJECT_FRIEND_REQUEST).build();
+                SocketUtil.send(socketResponse);
+                return;
+            }
+
+            friendRequest.setIsActive(false);
+            friendRequestDao.save(friendRequest);
+
+            socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST)
+                    .build();
+            SocketUtil.send(socketResponse);
+
+            notifyToSender(friendRequestDto.getSenderId(), userId);
+
+        } catch (Exception e) {
+            log.error("Error while rejecting friend request: {}", e.getMessage());
+            socketResponse = SocketResponse.builder().userId(userId)
+                    .status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
+                    .message(MessageConstant.INTERNAL_SERVER_ERROR)
+                    .type(SocketConstant.ACK_REJECT_FRIEND_REQUEST).build();
+            SocketUtil.send(socketResponse);
+        }
+    }
+
+    private void notifyToSender(String senderId, String userId) {
+        try {
+            UserDetail userDetail = userDetailDao.findByUserId(userId);
+            Notification notification = Notification.builder()
+                    .senderId(userId).receiverId(senderId)
+                    .message(userDetail.getFirstName() + " " + MessageConstant.REJECTED_FRIEND_REQUEST)
+                    .createdAt(new Date()).isRead(false).build();
+            notificationDao.save(notification);
+            if (SocketUtil.isUserConnected(senderId)) {
+                var notificationDto = NotificationDto.builder().createdAt(notification.getCreatedAt())
+                        .message(notification.getMessage()).senderId(notification.getSenderId())
+                        .receiverId(senderId).isRead(notification.getIsRead())
+                        .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
+                        .isRecent(Util.isRecent(notification.getCreatedAt()))
+                        .isRead(notification.getIsRead()).build();
+                var socketResponse = SocketResponse.builder().userId(senderId)
+                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
+                        .type(SocketConstant.REMOVE_CONTACT).data(notificationDto).build();
+                SocketUtil.send(socketResponse);
+            }
+        } catch (Exception e) {
+            log.error("Error while sending remove contact notification: {}", e.getMessage());
         }
     }
 

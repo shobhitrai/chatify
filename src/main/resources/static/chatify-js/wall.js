@@ -1,8 +1,28 @@
 let acceptedSenderId;
+let rejectedSenderId;
 
 $(document).on('click', '.fr-accept-btn', function() {
    acceptFriendRequest(this);
 });
+
+$(document).on('click', '.fr-reject-btn', function() {
+   rejectFriendRequest(this);
+});
+
+rejectFriendRequest(element) {
+    let senderId = $(element).attr('id').replace('reject-', '');
+    $(element).prop('disabled', true);
+    rejectedSenderId = senderId;
+    const payload = {
+          "senderId": senderId
+       }
+       const socketReq = {
+          "type" : "rejectFriendRequest",
+          "payload": payload
+       }
+       webSocket.send(JSON.stringify(socketReq));
+
+}
 
 
 function createChatGroup(payload) {

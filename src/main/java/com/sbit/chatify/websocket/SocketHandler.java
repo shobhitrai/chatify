@@ -69,20 +69,23 @@ public class SocketHandler extends TextWebSocketHandler {
         String userId = getUserIdFromSession(session);
         switch (socketRequest.getType()) {
             case SocketConstant.FRIEND_REQUEST:
-                var friendRequestDto = mapper.convertValue(socketRequest.getPayload(),
-                        FriendRequestDto.class);
-                friendReqService.sendFriendRequest(userId, friendRequestDto);
+                friendReqService.sendFriendRequest(userId,
+                        mapper.convertValue(socketRequest.getPayload(), FriendRequestDto.class));
                 break;
 
             case SocketConstant.SEARCHED_USERS:
-                var userDto = mapper.convertValue(socketRequest.getPayload(), UserDto.class);
-                friendReqService.getSearchedUsers(userId, userDto);
+                friendReqService.getSearchedUsers(userId,
+                        mapper.convertValue(socketRequest.getPayload(), UserDto.class));
                 break;
 
             case SocketConstant.ACCEPT_FRIEND_REQUEST:
-                var accpetFR = mapper.convertValue(socketRequest.getPayload(),
-                        FriendRequestDto.class);
-                friendReqService.acceptFriendRequest(userId, accpetFR);
+                friendReqService.acceptFriendRequest(userId,
+                        mapper.convertValue(socketRequest.getPayload(), FriendRequestDto.class));
+                break;
+
+            case SocketConstant.REJECT_FRIEND_REQUEST:
+                friendReqService.rejectFriendRequest(userId,
+                        mapper.convertValue(socketRequest.getPayload(), FriendRequestDto.class));
                 break;
         }
     }
