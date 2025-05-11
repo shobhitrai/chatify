@@ -19,5 +19,5 @@ public class ContactDto {
     private String username;
     private String userId;
     private String profileImage;
-    private boolean isOnline;
+    private Boolean isOnline;
 }

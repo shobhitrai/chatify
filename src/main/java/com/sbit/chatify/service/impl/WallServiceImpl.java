@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class WallServiceImpl implements WallService {
@@ -65,10 +62,12 @@ public class WallServiceImpl implements WallService {
 
     private List<ContactDto> getAllcontacts(String userId) {
         var contacts = contactDao.findByUserId(userId);
+        if (Objects.isNull(contacts))
+            return Collections.emptyList();
         var contactDtos = new ArrayList<ContactDto>();
         contacts.getContacts().forEach(contact -> {
             var userDetail = userDetailDao.findByUserId(contact.getContactId());
-            var isOnline = SocketUtil.isUserConnected(contact.getContactId());
+            boolean isOnline = SocketUtil.isUserConnected(contact.getContactId());
             var contactDto = ContactDto.builder().contactId(contact.getContactId())
                     .firstName(userDetail.getFirstName()).lastName(userDetail.getLastName()).userId(userId)
                     .createdAt(contact.getCreatedAt()).profileImage(userDetail.getProfileImage())
@@ -82,6 +81,8 @@ public class WallServiceImpl implements WallService {
 
     private List<NotificationDto> getAllNotifications(String userId) {
         var notifications = notificationDao.findByReceiverId(userId);
+        if (notifications.isEmpty())
+            return Collections.emptyList();
         return notifications.stream().map(notification -> {
             var senderDetails = userDetailDao.findByUserId(notification.getSenderId());
             return NotificationDto.builder().createdAt(notification.getCreatedAt())
@@ -96,6 +97,8 @@ public class WallServiceImpl implements WallService {
 
     private List<ChatGroup> getAllChats(String userId) {
         var chats = chatDao.getAllChatsByUserId(userId);
+        if (chats.isEmpty())
+            return Collections.emptyList();
         var distinctSenderIds = chats.stream().map(Chat::getSenderId).distinct().toList();
         var chatGroups = new ArrayList<ChatGroup>();
 

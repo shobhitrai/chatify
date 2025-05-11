@@ -24,8 +24,9 @@ function createMainChat(payload) {
          ' <div class="no-messages request"> <a href="#"><img class="avatar-xl" '+
          'src="'+cg.senderProfileImage+'" data-toggle="tooltip" data-placement="top" '+
          'title="'+cg.senderFirstName+'" alt="avatar"></a> <h5><span>'+cg.chats[0].message+'</span></h5>'+
-         ' <div class="options"> <button class="btn button"><i class="material-icons">check</i>'+
-         '</button> <button class="btn button"><i class="material-icons">close</i></button> </div>'+
+         ' <div class="options"> <button class="btn button fr-accept-btn" id="accept-'+cg.senderId+'">'+
+         '<i class="material-icons">check</i></button> <button class="btn button fr-reject-btn" '+
+         'id="reject-'+cg.senderId+'"><i class="material-icons">close</i></button> </div>'+
          ' </div> </div> </div> </div> <div class="container"> <div class="col-md-12">'+
          ' <div class="bottom"> <form class="position-relative w-100"> <textarea class="form-control"'+
          ' placeholder="Messaging unavailable" rows="1" disabled></textarea> <button class="btn'+
@@ -36,5 +37,8 @@ function createMainChat(payload) {
          ' </div></div></div>';
 
          $('#nav-tabContent').append(data);
+
+         <button class="btn button fr-accept-btn" id="accept-${cg.senderId}"><i class="material-icons">check</i></button>
+         <button class="btn button fr-reject-btn" id="reject-${cg.senderId}"><i class="material-icons">close</i></button>
    }
 }

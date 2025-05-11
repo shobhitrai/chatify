@@ -72,10 +72,10 @@
                                       <h1>Contacts</h1>
                                       <div class="list-group" id="contacts" role="tablist">
                                          <c:forEach items="${contacts}" var="contact">
-                                            <a href="#" id="contact-{$contact.contactId}" class="filterMembers all ${contact.isOnline ? 'online' : 'offline'} contact" data-toggle="list">
+                                            <a href="#" id="contact-${contact.contactId}" class="filterMembers all ${contact.isOnline ? 'online' : 'offline'} contact" data-toggle="list">
                                                <img class="avatar-md" src="${contact.profileImage}" data-toggle="tooltip" data-placement="top" title="${contact.firstName}" alt="avatar">
                                                <div class="status">
-                                                  <i class="material-icons offline">fiber_manual_record</i>
+                                                  <i class="material-icons ${contact.isOnline ? 'online' : 'offline'}">fiber_manual_record</i>
                                                </div>
                                                <div class="data">
                                                   <h5>${contact.firstName} ${contact.lastName}</h5>
