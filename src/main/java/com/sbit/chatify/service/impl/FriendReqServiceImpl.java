@@ -44,6 +44,17 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
+
+            var contact = contactDao.findByUserId(userId);
+            if(Objects.nonNull(contact) && contact.getContacts().stream()
+                    .anyMatch(contactInfo ->
+                            contactInfo.getContactId().equals(friendRequestDto.getReceiverId()))) {
+                var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
+                        .message(MessageConstant.ALREADY_CONTACT)
+                        .type(SocketConstant.ACK_FRIEND_REQUEST).build();
+                SocketUtil.send(socketResponse);
+                return;
+            }
             // Friend req already exists either by sender or receiver
             var isReqAlreadyExist = friendRequestDao.isFriendRequestExist(userId,
                     friendRequestDto.getReceiverId());
@@ -136,6 +147,7 @@ public class FriendReqServiceImpl implements FriendReqService {
         SocketResponse socketResponse = null;
         try {
             var users = userDao.findByUserName(userDto.getUsername());
+
             var foundUsers = new ArrayList<>();
             users.stream().filter(user -> !user.getId().toString().equals(userId))
                     .forEach(user -> {

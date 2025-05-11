@@ -28,5 +28,5 @@ public interface MessageConstant {
     String CHAT_GROUPS = "chatGroups";
     String INVALID_USER = "Invalid user";
     String CONTACTS = "contacts";
-
+    String ALREADY_CONTACT = "User is already your contact";
 }
