@@ -38,7 +38,5 @@ function createMainChat(payload) {
 
          $('#nav-tabContent').append(data);
 
-         <button class="btn button fr-accept-btn" id="accept-${cg.senderId}"><i class="material-icons">check</i></button>
-         <button class="btn button fr-reject-btn" id="reject-${cg.senderId}"><i class="material-icons">close</i></button>
    }
 }
