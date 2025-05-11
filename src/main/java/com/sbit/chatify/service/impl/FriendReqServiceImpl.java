@@ -94,7 +94,7 @@ public class FriendReqServiceImpl implements FriendReqService {
                     .createdAt(new Date()).isRead(false).build();
             notificationDao.save(notification);
 
-            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
+            if (SocketUtil.isUserConnected(receiverId)) {
                 var notificationDto = getNotificationDto(notification, senderDetail, receiverId);
                 var chatGroup = getChatDto(chat, senderDetail, receiverId);
                 Map<String, Object> data = new HashMap<>();
@@ -206,14 +206,14 @@ public class FriendReqServiceImpl implements FriendReqService {
         }
     }
 
-    private void notifyToSender(String receiverId, ContactInfo senderContact) {
+    private void notifyToSender(String receiverId, ContactDto senderContact) {
         try {
             Notification notification = Notification.builder()
                     .senderId(senderContact.getContactId()).receiverId(receiverId)
-                    .message(senderContact.getContactFirstName() + " " + MessageConstant.ACCEPT_FRIEND_REQUEST)
+                    .message(senderContact.getFirstName() + " " + MessageConstant.ACCEPT_FRIEND_REQUEST)
                     .createdAt(new Date()).isRead(false).build();
             notificationDao.save(notification);
-            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(receiverId)) {
+            if (SocketUtil.isUserConnected(receiverId)) {
                 var notificationDto = NotificationDto.builder().createdAt(notification.getCreatedAt())
                         .message(notification.getMessage()).senderId(notification.getSenderId())
                         .receiverId(receiverId).isRead(notification.getIsRead())
@@ -230,7 +230,7 @@ public class FriendReqServiceImpl implements FriendReqService {
         }
     }
 
-    private ContactInfo saveContact(String userId, String userId2) {
+    private ContactDto saveContact(String userId, String userId2) {
         var contact = contactDao.findByUserId(userId);
         if (Objects.isNull(contact))
             contact = Contact.builder().userId(userId).contacts(new ArrayList<>()).build();
@@ -242,7 +242,12 @@ public class FriendReqServiceImpl implements FriendReqService {
                 .build();
         contact.getContacts().add(contactInfo);
         contactDao.save(contact);
-        return contactInfo;
+        return ContactDto.builder().contactId(userDetails.getUserId())
+                .lastName(userDetails.getLastName())
+                .firstName(userDetails.getFirstName())
+                .profileImage(userDetails.getProfileImage())
+                .createdAt(contactInfo.getCreatedAt()).userId(userId)
+                .isOnline(SocketUtil.isUserConnected(userDetails.getUserId())).build();
     }
 
 }

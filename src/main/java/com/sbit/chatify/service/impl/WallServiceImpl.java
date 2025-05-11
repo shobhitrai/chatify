@@ -5,10 +5,7 @@ import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.User;
-import com.sbit.chatify.model.ChatGroup;
-import com.sbit.chatify.model.ChatMessage;
-import com.sbit.chatify.model.NotificationDto;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.WallService;
 import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
@@ -44,21 +41,43 @@ public class WallServiceImpl implements WallService {
     @Autowired
     private NotificationDao notificationDao;
 
+    @Autowired
+    private ContactDao contactDao;
+
     @Override
     public String getWallData(Model model) {
         var userId = (String) session.getAttribute(MessageConstant.USER_ID);
-        if (Objects.isNull(userId) || SocketUtil.SOCKET_CONNECTIONS.containsKey(userId))
+        if (Objects.isNull(userId) || SocketUtil.isUserConnected(userId))
             return PageConstant.REDIRECT_LOGIN;
 
         User user = userDao.findById(new ObjectId(userId));
         UserDto userDto = getUserDetails(user);
         List<ChatGroup> chats = getAllChats(userId);
         List<NotificationDto> notifications = getAllNotifications(userId);
+        List<ContactDto> contacts = getAllcontacts(userId);
 
         model.addAttribute(MessageConstant.USER, userDto);
+        model.addAttribute(MessageConstant.CONTACTS, contacts);
         model.addAttribute(MessageConstant.CHAT_GROUPS, chats);
         model.addAttribute(MessageConstant.NOTIFICATIONS, notifications);
         return PageConstant.WALL;
+    }
+
+    private List<ContactDto> getAllcontacts(String userId) {
+        var contacts = contactDao.findByUserId(userId);
+        var contactDtos = new ArrayList<ContactDto>();
+        contacts.getContacts().forEach(contact -> {
+            var userDetail = userDetailDao.findByUserId(contact.getContactId());
+            var isOnline = SocketUtil.isUserConnected(contact.getContactId());
+            var contactDto = ContactDto.builder().contactId(contact.getContactId())
+                    .firstName(userDetail.getFirstName()).lastName(userDetail.getLastName()).userId(userId)
+                    .createdAt(contact.getCreatedAt()).profileImage(userDetail.getProfileImage())
+                    .isOnline(isOnline).build();
+            contactDtos.add(contactDto);
+        });
+        return contactDtos.stream()
+                .sorted(Comparator.comparing(ContactDto::getCreatedAt, Comparator.reverseOrder()))
+                .toList();
     }
 
     private List<NotificationDto> getAllNotifications(String userId) {

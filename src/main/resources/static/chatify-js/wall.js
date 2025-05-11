@@ -32,12 +32,22 @@ function acceptFriendRequest(element) {
 }
 
 function ackAcceptFriendRequest(payload) {
+   if (payload.status === 100) {
+      const contact = payload.data;
+      $('#accept-' + contactInfo.contactId).prop('disabled', false);
+      addToContactList(contactInfo);
+   } else {
+      alert(payload.message);
+   }
+}
 
-if(payload.status === 100) {
-    const contactInfo = payload.data;
-    $('#accept-' + contactInfo.contactId).prop('disabled', false);
-    }
-    else {
-        alert(payload.message);
-    }
+function addToContactList(contactInfo) {
+    let data = '<a href="#" id="contact-'+contact.contactId+'" class="filterMembers all '
+                +(contact.isOnline ? 'online' : 'offline')
+                +' contact" data-toggle="list"><img class="avatar-md" src="'+contact.profileImage+'" '
+                +'data-toggle="tooltip" data-placement="top" title="'+contact.firstName+'" alt="avatar">'
+                +'<div class="status"><i class="material-icons online">fiber_manual_record</i></div>'
+                +'<div class="data"><h5>'+contact.firstName+' '+contact.lastName+'</h5>'
+                +'<p>Sofia, Bulgaria</p></div><div class="person-add"><i class="material-icons">person</i>												</div>											</a>';
+    $('#contacts').prepend(data);
 }

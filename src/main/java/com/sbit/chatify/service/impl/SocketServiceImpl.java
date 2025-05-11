@@ -25,9 +25,9 @@ public class SocketServiceImpl implements SocketService {
         try {
             String userId = getUserIdFromSession(session);
             if (Objects.nonNull(userId)) {
-                SocketUtil.SOCKET_CONNECTIONS.put(userId, session);
+                SocketUtil.addConnection(userId, session);
                 log.info("User connected: {}, Session Id: {}, Total users: {}",
-                        userId, session.getId(), SocketUtil.SOCKET_CONNECTIONS.size());
+                        userId, session.getId(), SocketUtil.getConnectionSize());
             } else {
                 log.warn("UserId not found in session attributes.");
             }
@@ -40,13 +40,11 @@ public class SocketServiceImpl implements SocketService {
     public void closeConnection(WebSocketSession session, CloseStatus status) {
         try {
             //dont get userId from session, its already invalidated by logout.
-            String userId = SocketUtil.SOCKET_CONNECTIONS.entrySet().stream()
-                    .filter(entry -> Objects.equals(session, entry.getValue()))
-                    .map(Map.Entry::getKey).findFirst().orElse(null);
-            SocketUtil.SOCKET_CONNECTIONS.remove(userId);
+            String userId = SocketUtil.getUserIdFromConnection(session);
+            SocketUtil.removeConnection(userId);
             session.close(status);
             log.info("Connection closed for user: {}, code: {}, reason: {}, Total connected: {}",
-                    userId, status.getCode(), status.getReason(), SocketUtil.SOCKET_CONNECTIONS.size());
+                    userId, status.getCode(), status.getReason(), SocketUtil.getConnectionSize());
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Error closing connection: {}", e.getMessage());
@@ -82,9 +80,7 @@ public class SocketServiceImpl implements SocketService {
     }
 
     private void closeConnection(WebSocketSession session) {
-        String userId = SocketUtil.SOCKET_CONNECTIONS.entrySet().stream()
-                .filter(entry -> Objects.equals(session, entry.getValue()))
-                .map(Map.Entry::getKey).findFirst().orElse(null);
+        String userId = SocketUtil.getUserIdFromConnection(session);
 
         if (Objects.isNull(userId)) {
             log.warn("Session not found in SOCKET_CONNECTIONS.");
@@ -111,7 +107,7 @@ public class SocketServiceImpl implements SocketService {
 
     private static void closeSession(WebSocketSession session, String userId) {
         try {
-            SocketUtil.SOCKET_CONNECTIONS.remove(userId);
+            SocketUtil.removeConnection(userId);
             if (session != null && session.isOpen())
                 session.close();
         } catch (IOException e) {

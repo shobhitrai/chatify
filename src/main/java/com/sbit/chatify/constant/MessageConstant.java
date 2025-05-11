@@ -27,5 +27,6 @@ public interface MessageConstant {
     String NOTIFICATIONS = "notifications";
     String CHAT_GROUPS = "chatGroups";
     String INVALID_USER = "Invalid user";
+    String CONTACTS = "contacts";
 
 }

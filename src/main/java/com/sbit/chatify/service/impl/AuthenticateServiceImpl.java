@@ -99,7 +99,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
                 return PageConstant.REDIRECT_LOGIN;
             }
 
-            if (SocketUtil.SOCKET_CONNECTIONS.containsKey(user.getId().toString())) {
+            if (SocketUtil.isUserConnected(user.getId().toString())) {
                 redirectAttributes.addFlashAttribute(MessageConstant.ERROR,
                         MessageConstant.USER_ALREADY_LOGGED_IN_ON_ANOTHER_DEVICE);
                 log.info("User already logged in on another device: {}", user.getId());
@@ -108,7 +108,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
             String sessionUserId = (String) session.getAttribute(MessageConstant.USER_ID);
             if (sessionUserId != null && !sessionUserId.equals(user.getId().toString())
-                    && SocketUtil.SOCKET_CONNECTIONS.containsKey(sessionUserId)) {
+                    && SocketUtil.isUserConnected(sessionUserId)) {
                 redirectAttributes.addFlashAttribute(MessageConstant.ERROR, MessageConstant.SESSION_ALREADY_EXISTS);
                 log.info("Session conflict for user: {}", user.getId().toString());
                 return PageConstant.REDIRECT_LOGIN;
