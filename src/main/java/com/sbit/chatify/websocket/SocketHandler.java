@@ -62,6 +62,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
+
     }
 
     private void processMessage(WebSocketSession session, TextMessage message) throws Exception {

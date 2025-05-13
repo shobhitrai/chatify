@@ -9,7 +9,7 @@ $(document).on('click', '.fr-reject-btn', function() {
    rejectFriendRequest(this);
 });
 
-rejectFriendRequest(element) {
+function rejectFriendRequest(element) {
     let senderId = $(element).attr('id').replace('reject-', '');
     $(element).prop('disabled', true);
     rejectedSenderId = senderId;
@@ -20,8 +20,7 @@ rejectFriendRequest(element) {
           "type" : "rejectFriendRequest",
           "payload": payload
        }
-       webSocket.send(JSON.stringify(socketReq));
-
+    webSocket.send(JSON.stringify(socketReq));
 }
 
 
