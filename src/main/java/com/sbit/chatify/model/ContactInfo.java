@@ -16,4 +16,6 @@ public class ContactInfo {
     private String contactFirstName;
     private String contactLastName;
     private Date createdAt;
+    private Boolean isLastMsgSeen;
+    private int unreadMsgCount;
 }

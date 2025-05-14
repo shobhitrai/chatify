@@ -8,4 +8,6 @@ public interface ChatDao {
     void save(Chat chat);
 
     List<Chat> getAllChatsByUserId(String userId);
+
+    void inactiveFriendRequestMsg(String senderId, String userId);
 }

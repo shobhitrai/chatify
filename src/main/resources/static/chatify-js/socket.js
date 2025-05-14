@@ -39,19 +39,31 @@ function incoming(payload) {
          alert("Session expired, please login again.");
          window.location.href = sessionPath + '/login';
          break;
+
       case "ackFriendRequest":
          ackFriendRequest(payload);
          break;
+
       case "ackSearchedUsers":
          ackSearchedUsers(payload);
          break;
+
       case "createChatGroup":
          createMainChat(payload);
          createChatGroup(payload);
          appendNotification(payload);
          break;
+
       case "ackAcceptFriendRequest":
          ackAcceptFriendRequest(payload);
          break;
+
+      case "ackRejectFriendRequest":
+         ackRejectFriendRequest(payload);
+         break;
+
+      case "addContact":
+        addContact(payload);
+        break;
    }
 }

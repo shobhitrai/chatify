@@ -7,4 +7,5 @@ public interface ContactDao {
 
     Contact findByUserId(String userId);
 
+    void seenLastMsg(String userId, String contactId);
 }

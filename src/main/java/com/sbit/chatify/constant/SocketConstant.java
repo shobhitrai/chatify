@@ -13,4 +13,5 @@ public interface SocketConstant {
     String REMOVE_CONTACT = "removeContact";
     String REJECT_FRIEND_REQUEST = "rejectFriendRequest";
     String ACK_REJECT_FRIEND_REQUEST = "ackRejectFriendRequest";
+    String SEEN_LAST_MSG = "seenLastMsg";
 }

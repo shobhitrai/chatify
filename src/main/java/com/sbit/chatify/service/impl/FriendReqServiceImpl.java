@@ -134,11 +134,11 @@ public class FriendReqServiceImpl implements FriendReqService {
     private NotificationDto getNotificationDto(Notification notification, UserDetail senderDetail, String receiverId) {
         return NotificationDto.builder().createdAt(notification.getCreatedAt())
                 .message(notification.getMessage()).senderId(notification.getSenderId())
-                .receiverId(receiverId).isRead(notification.getIsRead())
+                .receiverId(receiverId).isRecent(Util.isRecent(notification.getCreatedAt()))
                 .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                 .senderProfileImage(senderDetail.getProfileImage())
-                .isRecent(Util.isRecent(notification.getCreatedAt()))
-                .isRead(notification.getIsRead()).build();
+                .senderFirstName(senderDetail.getFirstName())
+                .senderLastName(senderDetail.getLastName()).build();
     }
 
     @Override
@@ -195,6 +195,7 @@ public class FriendReqServiceImpl implements FriendReqService {
             friendRequest.setIsAccepted(true);
             friendRequest.setIsActive(false);
             friendRequestDao.save(friendRequest);
+            chatDao.inactiveFriendRequestMsg(friendRequest.getSenderId(), userId);
 
             //for receiver
             var receiverContact = saveContact(userId, friendRequestDto.getSenderId());
@@ -232,9 +233,10 @@ public class FriendReqServiceImpl implements FriendReqService {
 
             friendRequest.setIsActive(false);
             friendRequestDao.save(friendRequest);
+            chatDao.inactiveFriendRequestMsg(friendRequest.getSenderId(), userId);
 
             socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST)
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_REJECT_FRIEND_REQUEST)
                     .build();
             SocketUtil.send(socketResponse);
 
@@ -261,10 +263,12 @@ public class FriendReqServiceImpl implements FriendReqService {
             if (SocketUtil.isUserConnected(senderId)) {
                 var notificationDto = NotificationDto.builder().createdAt(notification.getCreatedAt())
                         .message(notification.getMessage()).senderId(notification.getSenderId())
-                        .receiverId(senderId).isRead(notification.getIsRead())
+                        .receiverId(senderId).isRecent(Util.isRecent(notification.getCreatedAt()))
                         .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
-                        .isRecent(Util.isRecent(notification.getCreatedAt()))
-                        .isRead(notification.getIsRead()).build();
+                        .senderProfileImage(userDetail.getProfileImage())
+                        .senderFirstName(userDetail.getFirstName())
+                        .senderLastName(userDetail.getLastName()).build();
+
                 var socketResponse = SocketResponse.builder().userId(senderId)
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
                         .type(SocketConstant.REMOVE_CONTACT).data(notificationDto).build();
@@ -285,13 +289,17 @@ public class FriendReqServiceImpl implements FriendReqService {
             if (SocketUtil.isUserConnected(receiverId)) {
                 var notificationDto = NotificationDto.builder().createdAt(notification.getCreatedAt())
                         .message(notification.getMessage()).senderId(notification.getSenderId())
-                        .receiverId(receiverId).isRead(notification.getIsRead())
+                        .receiverId(receiverId).isRecent(Util.isRecent(notification.getCreatedAt()))
                         .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
-                        .isRecent(Util.isRecent(notification.getCreatedAt()))
-                        .isRead(notification.getIsRead()).build();
+                        .senderProfileImage(senderContact.getProfileImage())
+                        .senderFirstName(senderContact.getFirstName())
+                        .senderLastName(senderContact.getLastName()).build();
+                Map<String, Object> data = new HashMap<>();
+                data.put(MessageConstant.NOTIFICATIONS, notificationDto);
+                data.put(MessageConstant.CONTACTS, senderContact);
                 var socketResponse = SocketResponse.builder().userId(receiverId)
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                        .type(SocketConstant.ADD_CONTACT).data(notificationDto).build();
+                        .type(SocketConstant.ADD_CONTACT).data(data).build();
                 SocketUtil.send(socketResponse);
             }
         } catch (Exception e) {
@@ -308,7 +316,7 @@ public class FriendReqServiceImpl implements FriendReqService {
         ContactInfo contactInfo = ContactInfo.builder()
                 .contactId(userId2).contactFirstName(userDetails.getFirstName())
                 .contactLastName(userDetails.getLastName()).createdAt(new Date())
-                .build();
+                .isLastMsgSeen(false).unreadMsgCount(0).build();
         contact.getContacts().add(contactInfo);
         contactDao.save(contact);
         return ContactDto.builder().contactId(userDetails.getUserId())

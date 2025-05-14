@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,5 +30,16 @@ public class ChatDaoImpl implements ChatDao {
                 .and("isActive").is(true).and("isRead").is(false));
         query.with(Sort.by(Sort.Direction.DESC, "createdAt"));
         return mongoTemplate.find(query, Chat.class);
+    }
+
+    @Override
+    public void inactiveFriendRequestMsg(String senderId, String userId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("senderId").is(senderId)
+                .and("receiverId").is(userId)
+                .and("isActive").is(true));
+        Update update = new Update();
+        update.set("isActive", false);
+        mongoTemplate.updateFirst(query, update, Chat.class);
     }
 }

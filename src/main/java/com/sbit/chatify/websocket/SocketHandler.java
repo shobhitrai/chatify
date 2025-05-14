@@ -3,9 +3,8 @@ package com.sbit.chatify.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
-import com.sbit.chatify.model.FriendRequestDto;
-import com.sbit.chatify.model.SocketRequest;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
+import com.sbit.chatify.service.ChatService;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;
 import jakarta.servlet.http.HttpSession;
@@ -29,6 +28,9 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private FriendReqService friendReqService;
+
+    @Autowired
+    private ChatService chatService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
@@ -88,6 +90,12 @@ public class SocketHandler extends TextWebSocketHandler {
                 friendReqService.rejectFriendRequest(userId,
                         mapper.convertValue(socketRequest.getPayload(), FriendRequestDto.class));
                 break;
+            case SocketConstant.SEEN_LAST_MSG:
+                chatService.seenLastMsg(userId,
+                        mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
+                break;
+
+
         }
     }
 

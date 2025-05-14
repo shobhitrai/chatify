@@ -87,11 +87,11 @@ public class WallServiceImpl implements WallService {
             var senderDetails = userDetailDao.findByUserId(notification.getSenderId());
             return NotificationDto.builder().createdAt(notification.getCreatedAt())
                     .message(notification.getMessage()).senderId(notification.getSenderId())
-                    .receiverId(userId).isRead(notification.getIsRead())
+                    .receiverId(userId).isRecent(Util.isRecent(notification.getCreatedAt()))
                     .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                     .senderProfileImage(senderDetails.getProfileImage())
-                    .isRecent(Util.isRecent(notification.getCreatedAt()))
-                    .isRead(notification.getIsRead()).build();
+                    .senderFirstName(senderDetails.getFirstName())
+                    .senderLastName(senderDetails.getLastName()).build();
         }).toList();
     }
 

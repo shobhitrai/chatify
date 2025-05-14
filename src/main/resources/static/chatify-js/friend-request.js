@@ -139,7 +139,7 @@ function appendNotification(payload) {
       let text = '<a href="#" class="filterNotifications all ' +
          (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
          ' data-toggle="list"><img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
-         ' data-placement="top" title="' + noti.senderProfileImage + '" alt="avatar">' +
+         ' data-placement="top" title="' + noti.senderFirstName + '" alt="avatar">' +
          '<div class="status"><i class="material-icons online">' +
          ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
          '</p><span>' + noti.formattedDate + '</span></div></a>';

@@ -1,5 +1,6 @@
 let acceptedSenderId;
 let rejectedSenderId;
+let chatOpenContactId;
 
 $(document).on('click', '.fr-accept-btn', function() {
    acceptFriendRequest(this);
@@ -8,6 +9,28 @@ $(document).on('click', '.fr-accept-btn', function() {
 $(document).on('click', '.fr-reject-btn', function() {
    rejectFriendRequest(this);
 });
+
+$(document).on('click', '.filterDiscussions', function() {
+   chatClicked(this);
+});
+
+function chatClicked(element) {
+    const contactId = $(element).attr('id').replace('chatgroup-', '');
+    let color = $('#p-'+contactId).css('color');
+    console.log('color: ', color);
+    if(color === 'rgb(33, 37, 41)') {
+    $('#p-'+contactId).attr('style', 'color: #bdbac2;');
+    chatOpenContactId = contactId;
+    const payload = {
+              "contactId": contactId
+           }
+           const socketReq = {
+              "type" : "seenLastMsg",
+              "payload": payload
+           }
+        webSocket.send(JSON.stringify(socketReq));
+        }
+}
 
 function rejectFriendRequest(element) {
     let senderId = $(element).attr('id').replace('reject-', '');
@@ -23,31 +46,31 @@ function rejectFriendRequest(element) {
     webSocket.send(JSON.stringify(socketReq));
 }
 
-
 function createChatGroup(payload) {
    if (payload.status === 100) {
       let chatGroup = payload.data.chatGroups;
-      let data = '<a id="user-'+chatGroup.senderId+'" ' +
+      let data = '<a id="chatgroup-'+chatGroup.senderId+'" ' +
          'href="#chat-' + chatGroup.senderId + '" class="filterDiscussions all unread single" ' +
          'data-toggle="list"><img class="avatar-md" src="' + chatGroup.senderProfileImage + '" ' +
          'data-toggle="tooltip" data-placement="top" title="'+chatGroup.senderFirstName+'" ' +
          'alt="avatar"><div class="status"><i class="material-icons offline">' +
          'fiber_manual_record</i></div><div class="new bg-gray"><span>?</span></div>' +
          '<div class="data"><h5>' + chatGroup.senderFirstName + ' ' + chatGroup.senderLastName + '</h5>' +
-         '<span>' + chatGroup.chats[0].formattedDate + '</span><p>' + chatGroup.chats[0].message + '</p></div></a>';
+         '<span>' + chatGroup.chats[0].formattedDate + '</span><p id="p-'+chatGroup.senderId+'">' +
+          chatGroup.chats[0].message + '</p></div></a>';
       $('#chats').prepend(data);
    }
 }
 
 function acceptFriendRequest(element) {
    let senderId = $(element).attr('id').replace('accept-', '');
-    acceptedSenderId = senderId;
+   acceptedSenderId = senderId;
    $(element).prop('disabled', true);
    const payload = {
       "senderId": senderId
    }
    const socketReq = {
-      "type" : "acceptFriendRequest",
+      "type": "acceptFriendRequest",
       "payload": payload
    }
    webSocket.send(JSON.stringify(socketReq));
@@ -62,6 +85,32 @@ function ackAcceptFriendRequest(payload) {
    } else {
       alert(payload.message);
    }
+}
+
+function ackRejectFriendRequest(payload) {
+   if (payload.status === 100) {
+      $('#chatgroup-' + rejectedSenderId).remove();
+      $('#chat-' + rejectedSenderId).remove();
+   } else {
+      alert(payload.message);
+   }
+}
+
+function addContact(payload) {
+    if(payload.status === 100) {
+        const contact = payload.data.contacts;
+        addToContactList(contact);
+        let noti = payload.data.notifications;
+        let text = '<a href="#" class="filterNotifications all ' +
+            (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
+            ' data-toggle="list"> <img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
+            ' data-placement="top" title="' + noti.senderFirstName + '" alt="avatar">' +
+            '<div class="status"><i class="material-icons online">' +
+            ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
+            '</p><span>' + noti.formattedDate + '</span></div></a>';
+
+            $('#alerts').prepend(text);
+    }
 }
 
 function addToContactList(contact) {

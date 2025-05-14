@@ -13,10 +13,11 @@ import java.util.Date;
 @Builder
 public class NotificationDto {
     private String senderId;
+    private String senderFirstName;
+    private String senderLastName;
     private String receiverId;
     private String message;
     private Date createdAt;
-    private Boolean isRead;
     private String formattedDate;
     private String senderProfileImage;
     private Boolean isRecent;
