@@ -21,4 +21,5 @@ public class NotificationDto {
     private String formattedDate;
     private String senderProfileImage;
     private Boolean isRecent;
+    private Boolean isUserOnline;
 }

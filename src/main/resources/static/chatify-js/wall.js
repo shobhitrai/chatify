@@ -101,11 +101,12 @@ function addContact(payload) {
         const contact = payload.data.contacts;
         addToContactList(contact);
         let noti = payload.data.notifications;
+        let onlineStatus = noti.isUserOnline ? 'online' : 'offline';
         let text = '<a href="#" class="filterNotifications all ' +
             (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
             ' data-toggle="list"> <img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
             ' data-placement="top" title="' + noti.senderFirstName + '" alt="avatar">' +
-            '<div class="status"><i class="material-icons online">' +
+            '<div class="status"><i class="material-icons '+onlineStatus+'">' +
             ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
             '</p><span>' + noti.formattedDate + '</span></div></a>';
 

@@ -293,7 +293,8 @@ public class FriendReqServiceImpl implements FriendReqService {
                         .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                         .senderProfileImage(senderContact.getProfileImage())
                         .senderFirstName(senderContact.getFirstName())
-                        .senderLastName(senderContact.getLastName()).build();
+                        .senderLastName(senderContact.getLastName())
+                        .isUserOnline(SocketUtil.isUserConnected(senderContact.getUserId())).build();
                 Map<String, Object> data = new HashMap<>();
                 data.put(MessageConstant.NOTIFICATIONS, notificationDto);
                 data.put(MessageConstant.CONTACTS, senderContact);

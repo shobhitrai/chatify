@@ -91,7 +91,8 @@ public class WallServiceImpl implements WallService {
                     .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                     .senderProfileImage(senderDetails.getProfileImage())
                     .senderFirstName(senderDetails.getFirstName())
-                    .senderLastName(senderDetails.getLastName()).build();
+                    .senderLastName(senderDetails.getLastName())
+                    .isUserOnline(SocketUtil.isUserConnected(senderDetails.getUserId())).build();
         }).toList();
     }
 
