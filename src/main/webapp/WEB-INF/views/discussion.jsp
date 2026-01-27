@@ -27,7 +27,7 @@
                   <div class="new bg-gray">
                      <span>?</span>
                   </div>
-                  <div class="data"\t>
+                  <div class="data">
                      <h5>${chatGroup.senderFirstName} ${chatGroup.senderLastName}</h5>
                      <span>${chatGroup.chats[0].formattedDate}</span>
                      <p id="p-${chatGroup.senderId}">${chatGroup.chats[0].message}</p>

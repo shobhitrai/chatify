@@ -23,5 +23,4 @@ public class Notification {
     private String receiverId;
     private String message;
     private Date createdAt;
-    private Boolean isRead;
 }

@@ -48,18 +48,17 @@ function incoming(payload) {
          ackSearchedUsers(payload);
          break;
 
+      case "notification":
+         appendNotification(payload);
+         break;
+
       case "createChatGroup":
          createMainChat(payload);
          createChatGroup(payload);
-         appendNotification(payload);
          break;
 
       case "ackAcceptFriendRequest":
          ackAcceptFriendRequest(payload);
-         break;
-
-      case "ackRejectFriendRequest":
-         ackRejectFriendRequest(payload);
          break;
 
       case "addContact":

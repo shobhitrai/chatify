@@ -192,12 +192,12 @@
 		<script src="${path}/chatify-js/wall.js"></script>
 		<script src="${path}/chatify-js/chat.js"></script>
 		<script>
-		$(document).ready(function () {
-            $(document).on('mouseenter', '[data-toggle="tooltip"]', function () {
-                $(this).tooltip('dispose').tooltip();
+            $(document).ready(function () {
+                $(document).on('mouseenter', '[data-toggle="tooltip"]', function () {
+                    $(this).tooltip('dispose').tooltip();
+                });
             });
-            </script>
-        });
+        </script>
 	</body>
 
 </html>

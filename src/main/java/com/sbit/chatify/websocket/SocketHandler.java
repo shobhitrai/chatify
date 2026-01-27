@@ -90,6 +90,10 @@ public class SocketHandler extends TextWebSocketHandler {
                 friendReqService.rejectFriendRequest(userId,
                         mapper.convertValue(socketRequest.getPayload(), FriendRequestDto.class));
                 break;
+            case SocketConstant.CANCEL_FRIEND_REQUEST:
+                friendReqService.cancelFriendRequest(userId,
+                        mapper.convertValue(socketRequest.getPayload(), FriendRequestDto.class));
+                break;
             case SocketConstant.SEEN_LAST_MSG:
                 chatService.seenLastMsg(userId,
                         mapper.convertValue(socketRequest.getPayload(), ContactDto.class));

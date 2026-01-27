@@ -5,6 +5,7 @@ import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.Chat;
 import com.sbit.chatify.entity.User;
+import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.WallService;
 import com.sbit.chatify.utility.Util;
@@ -97,15 +98,15 @@ public class WallServiceImpl implements WallService {
     }
 
     private List<ChatGroup> getAllChats(String userId) {
-        var chats = chatDao.getAllChatsByUserId(userId);
+        List<Chat> chats = chatDao.getAllChatsByUserId(userId);
         if (chats.isEmpty())
             return Collections.emptyList();
-        var distinctSenderIds = chats.stream().map(Chat::getSenderId).distinct().toList();
-        var chatGroups = new ArrayList<ChatGroup>();
+        List<String> distinctSenderIds = chats.stream().map(Chat::getSenderId).distinct().toList();
+        List<ChatGroup> chatGroups = new ArrayList<>();
 
         distinctSenderIds.forEach(senderId -> {
-            var senderDetails = userDetailDao.findByUserId(senderId);
-            var chatMessages = chats.stream()
+            UserDetail senderDetails = userDetailDao.findByUserId(senderId);
+            List<ChatMessage> chatMessages = chats.stream()
                     .filter(chat -> chat.getSenderId().equals(senderId))
                     .map(chat -> ChatMessage.builder().type(chat.getType())
                             .message(chat.getMessage()).createdAt(chat.getCreatedAt())

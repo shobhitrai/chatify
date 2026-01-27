@@ -27,6 +27,7 @@ public class FriendRequest implements Serializable {
     private String receiverId;
     private Date createdAt;
     private Boolean isAccepted;
+    private Boolean isCanceled;
     private String message;
     private Boolean isActive;
 }

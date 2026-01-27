@@ -12,4 +12,6 @@ public interface FriendReqService {
     void acceptFriendRequest(String userId, FriendRequestDto accpetFR);
 
     void rejectFriendRequest(String userId, FriendRequestDto friendRequestDto);
+
+    void cancelFriendRequest(String userId, FriendRequestDto friendRequestDto);
 }

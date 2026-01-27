@@ -12,6 +12,7 @@ public interface SocketConstant {
     String ADD_CONTACT = "addContact";
     String REMOVE_CONTACT = "removeContact";
     String REJECT_FRIEND_REQUEST = "rejectFriendRequest";
-    String ACK_REJECT_FRIEND_REQUEST = "ackRejectFriendRequest";
+    String CANCEL_FRIEND_REQUEST = "cancelFriendRequest";
     String SEEN_LAST_MSG = "seenLastMsg";
+    String NOTIFICATION = "notification";
 }

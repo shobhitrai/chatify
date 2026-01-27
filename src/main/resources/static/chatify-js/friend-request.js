@@ -1,17 +1,44 @@
 let typingTimer; // Timer identifier
 const typingDelay = 200; // Delay in milliseconds
 let friendUserId;
+let friendFirstName;
+let friendLastName;
 let friendName;
+let friendProfileImage;
 const userId = sessionUserId;
 
 $('#send-frnd-req-btn').on('click', function(){
-	sendFriendRequest(this)
+	sendFriendRequest(this);
+	appendFriendRequestToChat();
+});
+
+$(document).on('click', '.fr-cancel-btn', function() {
+  console.log('fr-cancel-btn clicked', this);
+   cancelFriendRequest(this);
 });
 
 $('#close-friend-req-btn').on('click', function(){
 	resetFriendReq();
 	$('#friend-req-submit-error').html('&nbsp;');
 });
+
+function cancelFriendRequest(element) {
+   let receiver = $(element).attr('id').replace('cancel-', '');
+   $('#chat-' + receiver)
+      .find('[data-toggle="tooltip"]')
+      .tooltip('dispose')
+      .end()
+      .remove();
+   $('#chatgroup-' + receiver).remove();
+   const payload = {
+      "receiverId": receiver
+   }
+   const socketReq = {
+      "type": "cancelFriendRequest",
+      "payload": payload
+   }
+   webSocket.send(JSON.stringify(socketReq));
+}
 
 function sendFriendRequest(element) {
     const message = $('#welcome').val().trim();
@@ -39,6 +66,61 @@ function sendFriendRequest(element) {
     webSocket.send(JSON.stringify(socketReq));
 }
 
+function appendFriendRequestToChat() {
+
+   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+   const now2 = new Date();
+   const formatted2 = `${months[now2.getMonth()]} ${now2.getDate()}`;
+   const requestMessage = "You have send a friend request to " + friendFirstName + ' ' + friendLastName
+   + '. Waiting for acceptance.';
+
+   let data = '<div class="babble tab-pane fade" id="chat-' + friendUserId + '">' +
+      '<div class="chat"> <div class="top"> <div class="container"> <div class="col-md-12">' +
+      ' <div class="inside"> <a href="#"><img class="avatar-md" src="' + friendProfileImage + '" ' +
+      'data-toggle="tooltip" data-placement="top" title="' + friendFirstName + '" alt="avatar"></a>' +
+      ' <div class="status"> <i class="material-icons offline">fiber_manual_record</i>' +
+      ' </div> <div class="data"> <h5><a href="#">' + friendFirstName + ' ' + friendLastName + '</a></h5>' +
+      ' <span>Inactive</span> </div> <button class="btn disabled d-md-block d-none" disabled>' +
+      '<i class="material-icons md-30">phone_in_talk</i></button> <button class="btn disabled ' +
+      'd-md-block d-none" disabled><i class="material-icons md-36">videocam</i></button> <button ' +
+      'class="btn d-md-block disabled d-none" disabled><i class="material-icons md-30">info</i>' +
+      '</button> <div class="dropdown"> <button class="btn disabled" data-toggle="dropdown" ' +
+      'aria-haspopup="true" aria-expanded="false" disabled><i class="material-icons md-30">more_vert' +
+      '</i></button> <div class="dropdown-menu dropdown-menu-right"> <button class="dropdown-item">' +
+      '<i class="material-icons">phone_in_talk</i>Voice Call</button> <button class="dropdown-item">' +
+      '<i class="material-icons">videocam</i>Video Call</button> <hr> <button class="dropdown-item">' +
+      '<i class="material-icons">clear</i>Clear History</button> <button class="dropdown-item">' +
+      '<i class="material-icons">block</i>Block Contact</button> <button class="dropdown-item">' +
+      '<i class="material-icons">delete</i>Delete Contact</button> </div> </div> </div> </div>' +
+      ' </div> </div> <div class="content empty"> <div class="container"> <div class="col-md-12">' +
+      ' <div class="no-messages request"> <a href="#"><img class="avatar-xl" ' +
+      'src="' + friendProfileImage + '" data-toggle="tooltip" data-placement="top" ' +
+      'title="' + friendFirstName + '" alt="avatar"></a> <h5><span>' + requestMessage + '</span></h5>' +
+      ' <div class="options"><button class="btn button fr-cancel-btn" ' +
+      'id="cancel-' + friendUserId + '"><i class="material-icons">close</i></button> </div>' +
+      ' </div> </div> </div> </div> <div class="container"> <div class="col-md-12">' +
+      ' <div class="bottom"> <form class="position-relative w-100"> <textarea class="form-control"' +
+      ' placeholder="Messaging unavailable" rows="1" disabled></textarea> <button class="btn' +
+      ' emoticons disabled" disabled><i class="material-icons">insert_emoticon</i></button>' +
+      ' <button class="btn send disabled" disabled><i class="material-icons">send</i></button>' +
+      ' </form> <label> <input type="file" disabled> <span class="btn attach disabled ' +
+      'd-sm-block d-none"><i class="material-icons">attach_file</i></span></label></div>' +
+      ' </div></div></div>';
+
+   $('#nav-tabContent').append(data);
+
+   data = '<a id="chatgroup-' + friendUserId + '" ' +
+      'href="#chat-' + friendUserId + '" class="filterDiscussions all unread single" ' +
+      'data-toggle="list"><img class="avatar-md" src="' + friendProfileImage + '" ' +
+      'data-toggle="tooltip" data-placement="top" title="' + friendFirstName + '" ' +
+      'alt="avatar"><div class="status"><i class="material-icons offline">' +
+      'fiber_manual_record</i></div><div class="new bg-gray"><span>?</span></div>' +
+      '<div class="data"><h5>' + friendFirstName + ' ' + friendLastName + '</h5>' +
+      '<span>' + formatted2 + '</span><p id="p-' + friendUserId + '">' +
+      requestMessage + '</p></div></a>';
+   $('#chats').prepend(data);
+}
+
 function ackFriendRequest(payload) {
     $('#send-frnd-req-btn').prop('disabled', false);
     if (payload.status == 100) {
@@ -62,21 +144,21 @@ $('#searched-user').on('click', '.searched-user-btn', function () {
 });
 
 function getSearchedIcon(element) {
-   const firstName = $(element).data('firstname');
-   const lastName = $(element).data('lastname');
+   friendFirstName = $(element).data('firstname');
+   friendLastName = $(element).data('lastname');
    friendUserId = $(element).data('userid');
-   friendName = firstName + ' ' + lastName;
-   const profileImage = $(element).data('profileimage');
+   friendName = friendFirstName + ' ' + friendLastName;
+   friendProfileImage = $(element).data('profileimage');
    $('#searched-user').html('');
    var data = '<div class="user" id="contact">' +
-      '<img class="avatar-sm" src="' + profileImage + '" alt="avatar">' +
-      '<h5>' + firstName + ' ' + lastName + '</h5>' +
+      '<img class="avatar-sm" src="' + friendProfileImage + '" alt="avatar">' +
+      '<h5>' + friendFirstName + ' ' + friendLastName + '</h5>' +
       '<button class="btn"><i class="material-icons">close</i></button></div>';
    $('#searched-icon').html(data);
    $('#searched-icon').css('display', 'flex');
    $('#user').val('');
    $('#user').prop('disabled', true);
-   $('#welcome').val('Hi ' + firstName + ' ' + lastName + ', I would like to add you as a contact.')
+   $('#welcome').val('Hi ' + friendFirstName + ' ' + friendLastName + ', I would like to add you as a contact.')
 }
 
 $('#searched-icon').on('click', '.btn', function () {
@@ -145,5 +227,7 @@ function appendNotification(payload) {
          '</p><span>' + noti.formattedDate + '</span></div></a>';
 
       $('#alerts').prepend(text);
+   } else {
+      console.error('Failed to append notification: ' + payload.message);
    }
 }

@@ -34,7 +34,12 @@ function chatClicked(element) {
 
 function rejectFriendRequest(element) {
     let senderId = $(element).attr('id').replace('reject-', '');
-    $(element).prop('disabled', true);
+     $('#chat-' + senderId)
+           .find('[data-toggle="tooltip"]')
+           .tooltip('dispose')
+           .end()
+           .remove();
+     $('#chatgroup-' + senderId).remove();
     rejectedSenderId = senderId;
     const payload = {
           "senderId": senderId
@@ -44,22 +49,6 @@ function rejectFriendRequest(element) {
           "payload": payload
        }
     webSocket.send(JSON.stringify(socketReq));
-}
-
-function createChatGroup(payload) {
-   if (payload.status === 100) {
-      let chatGroup = payload.data.chatGroups;
-      let data = '<a id="chatgroup-'+chatGroup.senderId+'" ' +
-         'href="#chat-' + chatGroup.senderId + '" class="filterDiscussions all unread single" ' +
-         'data-toggle="list"><img class="avatar-md" src="' + chatGroup.senderProfileImage + '" ' +
-         'data-toggle="tooltip" data-placement="top" title="'+chatGroup.senderFirstName+'" ' +
-         'alt="avatar"><div class="status"><i class="material-icons offline">' +
-         'fiber_manual_record</i></div><div class="new bg-gray"><span>?</span></div>' +
-         '<div class="data"><h5>' + chatGroup.senderFirstName + ' ' + chatGroup.senderLastName + '</h5>' +
-         '<span>' + chatGroup.chats[0].formattedDate + '</span><p id="p-'+chatGroup.senderId+'">' +
-          chatGroup.chats[0].message + '</p></div></a>';
-      $('#chats').prepend(data);
-   }
 }
 
 function acceptFriendRequest(element) {
@@ -98,19 +87,19 @@ function ackRejectFriendRequest(payload) {
 
 function addContact(payload) {
     if(payload.status === 100) {
-        const contact = payload.data.contacts;
+        const contact = payload.data;
         addToContactList(contact);
-        let noti = payload.data.notifications;
-        let onlineStatus = noti.isUserOnline ? 'online' : 'offline';
-        let text = '<a href="#" class="filterNotifications all ' +
-            (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
-            ' data-toggle="list"> <img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
-            ' data-placement="top" title="' + noti.senderFirstName + '" alt="avatar">' +
-            '<div class="status"><i class="material-icons '+onlineStatus+'">' +
-            ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
-            '</p><span>' + noti.formattedDate + '</span></div></a>';
-
-            $('#alerts').prepend(text);
+//        let noti = payload.data.notifications;
+//        let onlineStatus = noti.isUserOnline ? 'online' : 'offline';
+//        let text = '<a href="#" class="filterNotifications all ' +
+//            (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
+//            ' data-toggle="list"> <img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
+//            ' data-placement="top" title="' + noti.senderFirstName + '" alt="avatar">' +
+//            '<div class="status"><i class="material-icons '+onlineStatus+'">' +
+//            ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
+//            '</p><span>' + noti.formattedDate + '</span></div></a>';
+//
+//            $('#alerts').prepend(text);
     }
 }
 

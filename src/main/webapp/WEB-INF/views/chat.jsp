@@ -79,7 +79,17 @@
    </c:forEach>
    <!-- End of Babble -->
 </div>
-<script>
+ <!-- <script>
    function scrollToBottom() { el.scrollTop = el.scrollHeight; }
    scrollToBottom(document.getElementById('content'));
+</script> -->
+<script>
+function scrollToBottom(el) {
+  if (!el) return;
+  el.scrollTop = el.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  scrollToBottom(document.getElementById('content'));
+});
 </script>
