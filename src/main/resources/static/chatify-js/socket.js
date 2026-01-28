@@ -54,7 +54,6 @@ function incoming(payload) {
 
       case "createChatGroup":
          createMainChat(payload);
-         createChatGroup(payload);
          break;
 
       case "ackAcceptFriendRequest":
@@ -63,6 +62,10 @@ function incoming(payload) {
 
       case "addContact":
         addContact(payload);
+        break;
+
+      case "removeContact":
+        removeContact(payload);
         break;
    }
 }

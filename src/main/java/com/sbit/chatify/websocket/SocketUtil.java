@@ -31,6 +31,8 @@ public class SocketUtil {
     }
 
     public static boolean isUserConnected(String userId) {
+        if (Objects.isNull(userId))
+            return false;
         return SOCKET_CONNECTIONS.containsKey(userId);
     }
 

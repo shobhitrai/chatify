@@ -14,11 +14,13 @@ import com.sbit.chatify.service.NotificationService;
 import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class NotificationServiceImpl implements NotificationService {
 
     @Autowired

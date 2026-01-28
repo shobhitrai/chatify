@@ -20,11 +20,11 @@ public interface MessageConstant {
     String HTTP_SESSION = "httpSession";
     String SESSION_ALREADY_EXISTS = "Session already exists";
     String FRIEND_REQUEST = "friendRequest";
-    String FRIEND_REQUESTS = "friendRequests";
     String USER = "user";
-    String FRIEND_REQUEST_MESSAGE = "has sent you a friend request on Chatify.";
-    String ACCEPT_FRIEND_REQUEST = "has accepted your friend request on Chatify.";
-    String REJECTED_FRIEND_REQUEST = "has rejected your friend request.";
+    String FRIEND_REQUEST_MESSAGE = " has sent you a friend request on Chatify.";
+    String ACCEPT_FRIEND_REQUEST = " has accepted your friend request on Chatify.";
+    String REJECTED_FRIEND_REQUEST = " has rejected your friend request.";
+    String CANCELED_FRIEND_REQUEST = " has canceled his friend request.";
     String NOTIFICATIONS = "notifications";
     String CHAT_GROUPS = "chatGroups";
     String INVALID_USER = "Invalid user";

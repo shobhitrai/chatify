@@ -9,5 +9,4 @@ public interface ChatDao {
 
     List<Chat> getAllChatsByUserId(String userId);
 
-    void inactiveFriendRequestMsg(String senderId, String userId);
 }

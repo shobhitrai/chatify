@@ -72,16 +72,7 @@ function ackAcceptFriendRequest(payload) {
       addToContactList(contact);
       updateMainChat(contact);
    } else {
-      alert(payload.message);
-   }
-}
-
-function ackRejectFriendRequest(payload) {
-   if (payload.status === 100) {
-      $('#chatgroup-' + rejectedSenderId).remove();
-      $('#chat-' + rejectedSenderId).remove();
-   } else {
-      alert(payload.message);
+      console.log(payload.message);
    }
 }
 
@@ -89,18 +80,21 @@ function addContact(payload) {
     if(payload.status === 100) {
         const contact = payload.data;
         addToContactList(contact);
-//        let noti = payload.data.notifications;
-//        let onlineStatus = noti.isUserOnline ? 'online' : 'offline';
-//        let text = '<a href="#" class="filterNotifications all ' +
-//            (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
-//            ' data-toggle="list"> <img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
-//            ' data-placement="top" title="' + noti.senderFirstName + '" alt="avatar">' +
-//            '<div class="status"><i class="material-icons '+onlineStatus+'">' +
-//            ' fiber_manual_record</i></div><div class="data"><p>' + noti.message +
-//            '</p><span>' + noti.formattedDate + '</span></div></a>';
-//
-//            $('#alerts').prepend(text);
     }
+}
+
+function removeContact(payload) {
+    const removedContactId = payload.data;
+    if (payload.status === 100) {
+           $('#chat-'+removedContactId)
+                .find('[data-toggle="tooltip"]')
+                .tooltip('dispose')
+                .end()
+                .remove();
+              $('#chatgroup-'+removedContactId).remove();
+       } else {
+          console.log(payload.message);
+       }
 }
 
 function addToContactList(contact) {
@@ -113,6 +107,7 @@ function addToContactList(contact) {
                 +'<p>Sofia, Bulgaria</p></div><div class="person-add"><i class="material-icons">person</i>												</div>											</a>';
     $('#contacts').prepend(data);
 }
+
 
 function updateMainChat(contact) {
 const status = contact.isOnline ? 'online' : 'offline';

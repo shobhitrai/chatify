@@ -9,11 +9,9 @@ const userId = sessionUserId;
 
 $('#send-frnd-req-btn').on('click', function(){
 	sendFriendRequest(this);
-	appendFriendRequestToChat();
 });
 
 $(document).on('click', '.fr-cancel-btn', function() {
-  console.log('fr-cancel-btn clicked', this);
    cancelFriendRequest(this);
 });
 
@@ -67,7 +65,6 @@ function sendFriendRequest(element) {
 }
 
 function appendFriendRequestToChat() {
-
    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
    const now2 = new Date();
    const formatted2 = `${months[now2.getMonth()]} ${now2.getDate()}`;
@@ -126,6 +123,7 @@ function ackFriendRequest(payload) {
     if (payload.status == 100) {
         $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
         resetFriendReq();
+        appendFriendRequestToChat();
     } else {
         $('#friend-req-submit-error').text(payload.message);
     }
@@ -217,7 +215,7 @@ function ackSearchedUsers(payload) {
 
 function appendNotification(payload) {
    if (payload.status === 100) {
-      let noti = payload.data.notifications;
+      let noti = payload.data;
       let text = '<a href="#" class="filterNotifications all ' +
          (noti.isRecent ? 'latest' : 'oldest') + ' notification"' +
          ' data-toggle="list"><img class="avatar-md" src="' + noti.senderProfileImage + '" data-toggle="tooltip"' +
