@@ -28,23 +28,34 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendNotification(UserDetail senderDetail, String receiverId, String message) {
-
-        var notification = Notification.builder().senderId(senderDetail.getUserId())
-                .receiverId(receiverId).message(message).createdAt(new Date()).build();
+        var notification = Notification.builder()
+                .senderId(senderDetail.getUserId())
+                .receiverId(receiverId)
+                .message(message)
+                .createdAt(new Date())
+                .build();
         notificationDao.save(notification);
 
         if (SocketUtil.isUserConnected(receiverId)) {
-            NotificationDto notificationDto = NotificationDto.builder().createdAt(notification.getCreatedAt())
-                    .message(notification.getMessage()).senderId(notification.getSenderId())
-                    .receiverId(receiverId).isRecent(Util.isRecent(notification.getCreatedAt()))
+            var notificationDto = NotificationDto.builder()
+                    .createdAt(notification.getCreatedAt())
+                    .message(notification.getMessage())
+                    .senderId(notification.getSenderId())
+                    .receiverId(receiverId)
+                    .isRecent(Util.isRecent(notification.getCreatedAt()))
                     .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                     .senderProfileImage(senderDetail.getProfileImage())
                     .senderFirstName(senderDetail.getFirstName())
-                    .senderLastName(senderDetail.getLastName()).build();
+                    .senderLastName(senderDetail.getLastName())
+                    .build();
 
-            var socketResponse = SocketResponse.builder().userId(receiverId)
-                    .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                    .type(SocketConstant.NOTIFICATION).data(notificationDto).build();
+            var socketResponse = SocketResponse.builder()
+                    .userId(receiverId)
+                    .status(StatusConstant.SUCCESS_CODE)
+                    .message(MessageConstant.SUCCESS)
+                    .type(SocketConstant.NOTIFICATION)
+                    .data(notificationDto)
+                    .build();
             SocketUtil.send(socketResponse);
         }
     }

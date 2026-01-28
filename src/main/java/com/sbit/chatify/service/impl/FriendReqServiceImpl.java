@@ -18,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -108,14 +105,21 @@ public class FriendReqServiceImpl implements FriendReqService {
     }
 
     private ChatGroup getChatDto(FriendRequest friendRequest, UserDetail senderDetail, String receiverId) {
-        var chatMessage = ChatMessage.builder().type(MessageConstant.FRIEND_REQUEST)
-                .message(friendRequest.getMessage()).createdAt(friendRequest.getCreatedAt())
-                .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt())).build();
+        var chatMessage = ChatMessage.builder()
+                .type(MessageConstant.FRIEND_REQUEST)
+                .message(friendRequest.getMessage())
+                .createdAt(friendRequest.getCreatedAt())
+                .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
+                .build();
 
-        return ChatGroup.builder().senderId(senderDetail.getUserId())
-                .senderFirstName(senderDetail.getFirstName()).receiverId(receiverId)
-                .senderLastName(senderDetail.getLastName()).chats(List.of(chatMessage))
-                .senderProfileImage(senderDetail.getProfileImage()).build();
+        return ChatGroup.builder()
+                .senderId(senderDetail.getUserId())
+                .senderFirstName(senderDetail.getFirstName())
+                .receiverId(receiverId)
+                .senderLastName(senderDetail.getLastName())
+                .chats(List.of(chatMessage))
+                .senderProfileImage(senderDetail.getProfileImage())
+                .build();
     }
 
     @Override
@@ -123,19 +127,18 @@ public class FriendReqServiceImpl implements FriendReqService {
         SocketResponse socketResponse = null;
         try {
             List<User> users = userDao.findByUserName(userDto.getUsername());
-
-            List<UserDto> foundUsers = new ArrayList<>();
-            users.stream().filter(user -> !user.getId().toString().equals(userId))
-                    .forEach(user -> {
-                        UserDto dto = mapper.convertValue(user, UserDto.class);
+            List<UserDto> foundUsers = users.stream()
+                    .filter(user -> !user.getId().toString().equals(userId))
+                    .map(user -> {
                         UserDetail userDetail = userDetailDao.findByUserId(user.getId().toString());
-                        dto.setFirstName(userDetail.getFirstName());
-                        dto.setLastName(userDetail.getLastName());
-                        dto.setProfileImage(userDetail.getProfileImage());
-                        dto.setUsername(user.getUsername());
-                        dto.setUserId(user.getId().toString());
-                        foundUsers.add(dto);
-                    });
+
+                        return UserDto.builder()
+                                .userId(user.getId().toString())
+                                .firstName(userDetail.getFirstName())
+                                .lastName(userDetail.getLastName())
+                                .profileImage(userDetail.getProfileImage())
+                                .build();
+                    }).toList();
 
             if (foundUsers.isEmpty())
                 socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
@@ -261,17 +264,21 @@ public class FriendReqServiceImpl implements FriendReqService {
 
 
     private ContactDto saveContact(String userId, String contactId) {
-        Contact contact = contactDao.findByUserId(userId);
-        if (Objects.isNull(contact))
-            contact = Contact.builder().userId(userId).contacts(new ArrayList<>()).build();
+        Contact contact = Optional.ofNullable(contactDao.findByUserId(userId))
+                .orElse(Contact.builder().userId(userId).contacts(new ArrayList<>()).build());
 
         UserDetail userDetails = userDetailDao.findByUserId(contactId);
         ContactInfo contactInfo = ContactInfo.builder()
-                .contactId(contactId).contactFirstName(userDetails.getFirstName())
-                .contactLastName(userDetails.getLastName()).createdAt(new Date())
-                .isLastMsgSeen(false).unreadMsgCount(0).build();
+                .contactId(contactId)
+                .contactFirstName(userDetails.getFirstName())
+                .contactLastName(userDetails.getLastName())
+                .createdAt(new Date())
+                .isLastMsgSeen(false)
+                .unreadMsgCount(0)
+                .build();
         contact.getContacts().add(contactInfo);
         contactDao.save(contact);
+
         return ContactDto.builder().userId(userDetails.getUserId())
                 .contactId(contactId)
                 .lastName(userDetails.getLastName())

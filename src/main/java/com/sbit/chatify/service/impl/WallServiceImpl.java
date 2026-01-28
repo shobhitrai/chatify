@@ -62,17 +62,19 @@ public class WallServiceImpl implements WallService {
         Contact contacts = contactDao.findByUserId(userId);
         if (Objects.isNull(contacts))
             return Collections.emptyList();
-        List<ContactDto> contactDtos = new ArrayList<>();
-        contacts.getContacts().forEach(contact -> {
-            UserDetail userDetail = userDetailDao.findByUserId(contact.getContactId());
-            boolean isOnline = SocketUtil.isUserConnected(contact.getContactId());
-            ContactDto contactDto = ContactDto.builder().contactId(contact.getContactId())
-                    .firstName(userDetail.getFirstName()).lastName(userDetail.getLastName()).userId(userId)
-                    .createdAt(contact.getCreatedAt()).profileImage(userDetail.getProfileImage())
-                    .isOnline(isOnline).build();
-            contactDtos.add(contactDto);
-        });
-        return contactDtos.stream()
+
+        return contacts.getContacts().stream().map(contact -> {
+                    UserDetail userDetail = userDetailDao.findByUserId(contact.getContactId());
+                    return ContactDto.builder()
+                            .contactId(contact.getContactId())
+                            .firstName(userDetail.getFirstName())
+                            .lastName(userDetail.getLastName())
+                            .userId(userId)
+                            .createdAt(contact.getCreatedAt())
+                            .profileImage(userDetail.getProfileImage())
+                            .isOnline(SocketUtil.isUserConnected(contact.getContactId()))
+                            .build();
+                })
                 .sorted(Comparator.comparing(ContactDto::getCreatedAt, Comparator.reverseOrder()))
                 .toList();
     }
@@ -81,21 +83,28 @@ public class WallServiceImpl implements WallService {
         List<Notification> notifications = notificationDao.findByReceiverId(userId);
         if (notifications.isEmpty())
             return Collections.emptyList();
+
         return notifications.stream().map(notification -> {
             UserDetail senderDetails = userDetailDao.findByUserId(notification.getSenderId());
-            return NotificationDto.builder().createdAt(notification.getCreatedAt())
-                    .message(notification.getMessage()).senderId(notification.getSenderId())
-                    .receiverId(userId).isRecent(Util.isRecent(notification.getCreatedAt()))
+            return NotificationDto.builder()
+                    .createdAt(notification.getCreatedAt())
+                    .message(notification.getMessage())
+                    .senderId(notification.getSenderId())
+                    .receiverId(userId)
+                    .isRecent(Util.isRecent(notification.getCreatedAt()))
                     .formattedDate(Util.getNotificationFormatedDate(notification.getCreatedAt()))
                     .senderProfileImage(senderDetails.getProfileImage())
                     .senderFirstName(senderDetails.getFirstName())
                     .senderLastName(senderDetails.getLastName())
-                    .isUserOnline(SocketUtil.isUserConnected(senderDetails.getUserId())).build();
+                    .isUserOnline(SocketUtil.isUserConnected(senderDetails.getUserId()))
+                    .build();
         }).toList();
     }
 
     private List<ChatGroup> getAllChats(String userId) {
         List<FriendRequest> friendRequests = friendRequestDao.findActivePendingRequest(userId);
+        if (friendRequests.isEmpty())
+            return Collections.emptyList();
 
         return friendRequests.stream().map(fr -> {
             boolean isSender = userId.equals(fr.getSenderId());
@@ -127,8 +136,13 @@ public class WallServiceImpl implements WallService {
 
     private UserDto getUserDetails(User user) {
         var userDetail = userDetailDao.findByUserId(user.getId().toString());
-        return UserDto.builder().userId(user.getId().toString()).email(user.getEmail())
-                .username(user.getUsername()).firstName(userDetail.getFirstName())
-                .lastName(userDetail.getLastName()).profileImage(userDetail.getProfileImage()).build();
+        return UserDto.builder()
+                .userId(user.getId().toString())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .firstName(userDetail.getFirstName())
+                .lastName(userDetail.getLastName())
+                .profileImage(userDetail.getProfileImage())
+                .build();
     }
 }
