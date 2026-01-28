@@ -9,7 +9,7 @@
          <!-- Start of Chat -->
          <c:forEach items="${cg.chats}" var="cgchat">
             <c:choose>
-               <c:when test="${cgchat.type == 'friendRequest'}">
+               <c:when test="${cgchat.type == 'receivedFriendRequest'}">
                   <div class="chat">
                      <div class="top">
                         <div class="container">
@@ -17,7 +17,7 @@
                               <div class="inside">
                                  <a href="#"><img class="avatar-md" src="${cg.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${cg.senderFirstName}" alt="avatar"></a>
                                  <div class="status">
-                                    <i class="material-icons offline">fiber_manual_record</i>
+                                    <i class="material-icons ${cg.isSenderOnline ? 'online' : 'offline'}">fiber_manual_record</i>
                                  </div>
                                  <div class="data">
                                     <h5><a href="#">${cg.senderFirstName} ${cg.senderLastName}</a></h5>
@@ -79,10 +79,7 @@
    </c:forEach>
    <!-- End of Babble -->
 </div>
- <!-- <script>
-   function scrollToBottom() { el.scrollTop = el.scrollHeight; }
-   scrollToBottom(document.getElementById('content'));
-</script> -->
+
 <script>
 function scrollToBottom(el) {
   if (!el) return;

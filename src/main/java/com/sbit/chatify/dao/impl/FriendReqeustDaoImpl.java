@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class FriendReqeustDaoImpl implements FriendRequestDao {
 
@@ -35,5 +37,17 @@ public class FriendReqeustDaoImpl implements FriendRequestDao {
         query.addCriteria(Criteria.where("senderId").is(senderId).and("receiverId").is(receiverId)
                 .and("isAccepted").is(false).and("isActive").is(true));
         return mongoTemplate.findOne(query, FriendRequest.class);
+    }
+
+    @Override
+    public List<FriendRequest> findActivePendingRequest(String userId) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("senderId").is(userId),
+                Criteria.where("receiverId").is(userId)));
+        query.addCriteria(Criteria.where("isActive").is(true)
+                .and("isAccepted").is(false)
+                .and("isCanceled").is(false));
+        return mongoTemplate.find(query, FriendRequest.class);
     }
 }

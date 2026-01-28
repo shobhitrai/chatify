@@ -7,6 +7,7 @@ import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.Contact;
 import com.sbit.chatify.entity.FriendRequest;
+import com.sbit.chatify.entity.User;
 import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.FriendReqService;
@@ -53,7 +54,7 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
-            var contact = contactDao.findByUserId(userId);
+            Contact contact = contactDao.findByUserId(userId);
             if (Objects.nonNull(contact) && contact.getContacts().stream()
                     .anyMatch(contactInfo ->
                             contactInfo.getContactId().equals(friendRequestDto.getReceiverId()))) {
@@ -121,13 +122,13 @@ public class FriendReqServiceImpl implements FriendReqService {
     public void getSearchedUsers(String userId, UserDto userDto) {
         SocketResponse socketResponse = null;
         try {
-            var users = userDao.findByUserName(userDto.getUsername());
+            List<User> users = userDao.findByUserName(userDto.getUsername());
 
-            var foundUsers = new ArrayList<>();
+            List<UserDto> foundUsers = new ArrayList<>();
             users.stream().filter(user -> !user.getId().toString().equals(userId))
                     .forEach(user -> {
-                        var dto = mapper.convertValue(user, UserDto.class);
-                        var userDetail = userDetailDao.findByUserId(user.getId().toString());
+                        UserDto dto = mapper.convertValue(user, UserDto.class);
+                        UserDetail userDetail = userDetailDao.findByUserId(user.getId().toString());
                         dto.setFirstName(userDetail.getFirstName());
                         dto.setLastName(userDetail.getLastName());
                         dto.setProfileImage(userDetail.getProfileImage());

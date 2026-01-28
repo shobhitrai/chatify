@@ -1,9 +1,6 @@
 package com.sbit.chatify.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,6 +8,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class ChatGroup {
     private String senderId;
     private String receiverId;
@@ -20,4 +18,5 @@ public class ChatGroup {
     private Boolean isRead;
     private Integer unreadCount;
     private List<ChatMessage> chats;
+    private Boolean isSenderOnline;
 }
