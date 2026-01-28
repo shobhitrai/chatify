@@ -7,7 +7,6 @@ import com.sbit.chatify.dao.NotificationDao;
 import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.Notification;
 import com.sbit.chatify.entity.UserDetail;
-import com.sbit.chatify.model.ChatGroup;
 import com.sbit.chatify.model.NotificationDto;
 import com.sbit.chatify.model.SocketResponse;
 import com.sbit.chatify.service.NotificationService;
@@ -17,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {

@@ -48,6 +48,5 @@ function createMainChat(payload) {
          '<span>' + cg.chats[0].formattedDate + '</span><p id="p-' + cg.senderId + '">' +
          cg.chats[0].message + '</p></div></a>';
       $('#chats').prepend(data);
-
    }
 }

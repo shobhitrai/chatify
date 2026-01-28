@@ -5,7 +5,9 @@ import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.*;
-import com.sbit.chatify.entity.*;
+import com.sbit.chatify.entity.Contact;
+import com.sbit.chatify.entity.FriendRequest;
+import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.NotificationService;
@@ -15,7 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service

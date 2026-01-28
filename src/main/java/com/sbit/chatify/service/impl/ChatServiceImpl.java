@@ -1,7 +1,6 @@
 package com.sbit.chatify.service.impl;
 
 import com.sbit.chatify.dao.ContactDao;
-import com.sbit.chatify.model.ChatDto;
 import com.sbit.chatify.model.ContactDto;
 import com.sbit.chatify.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;

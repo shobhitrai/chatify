@@ -22,9 +22,6 @@ import java.util.*;
 public class WallServiceImpl implements WallService {
 
     @Autowired
-    private HttpSession session;
-
-    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -43,7 +40,7 @@ public class WallServiceImpl implements WallService {
     private ContactDao contactDao;
 
     @Override
-    public String getWallData(Model model) {
+    public String getWallData(Model model, HttpSession session) {
         var userId = (String) session.getAttribute(MessageConstant.USER_ID);
         if (Objects.isNull(userId) || SocketUtil.isUserConnected(userId))
             return PageConstant.REDIRECT_LOGIN;
