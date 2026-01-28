@@ -80,6 +80,9 @@ function addContact(payload) {
     if(payload.status === 100) {
         const contact = payload.data;
         addToContactList(contact);
+        updateMainChat(contact);
+    } else {
+        console.log(payload.message)
     }
 }
 

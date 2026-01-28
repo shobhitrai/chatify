@@ -68,8 +68,8 @@ function appendFriendRequestToChat() {
    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
    const now2 = new Date();
    const formatted2 = `${months[now2.getMonth()]} ${now2.getDate()}`;
-   const requestMessage = "You have send a friend request to " + friendFirstName + ' ' + friendLastName
-   + '. Waiting for acceptance.';
+   const chatgroupMessage = 'You have sent a friend request to ' + friendFirstName + ' ' + friendLastName + '.';
+   const requestMessage = chatgroupMessage + '. Waiting for acceptance.';
 
    let data = '<div class="babble tab-pane fade" id="chat-' + friendUserId + '">' +
       '<div class="chat"> <div class="top"> <div class="container"> <div class="col-md-12">' +
@@ -114,7 +114,7 @@ function appendFriendRequestToChat() {
       'fiber_manual_record</i></div><div class="new bg-gray"><span>?</span></div>' +
       '<div class="data"><h5>' + friendFirstName + ' ' + friendLastName + '</h5>' +
       '<span>' + formatted2 + '</span><p id="p-' + friendUserId + '">' +
-      requestMessage + '</p></div></a>';
+      chatgroupMessage + '</p></div></a>';
    $('#chats').prepend(data);
 }
 
@@ -122,8 +122,8 @@ function ackFriendRequest(payload) {
     $('#send-frnd-req-btn').prop('disabled', false);
     if (payload.status == 100) {
         $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
-        resetFriendReq();
         appendFriendRequestToChat();
+        resetFriendReq();
     } else {
         $('#friend-req-submit-error').text(payload.message);
     }

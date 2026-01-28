@@ -166,26 +166,27 @@ public class FriendReqServiceImpl implements FriendReqService {
             friendRequest.setIsAccepted(true);
             friendRequest.setIsActive(false);
             friendRequestDao.save(friendRequest);
-            //for receiver
-            var receiverContact = saveContact(userId, friendRequestDto.getSenderId());
-            //for sender
-            var senderContact = saveContact(friendRequestDto.getSenderId(), userId);
 
-            // to sender
+            //add receiver to sender's contact list senderContact
+            ContactDto senderContact = saveContact(userId, friendRequestDto.getSenderId());
+            //add sender to receiver's contact list
+            ContactDto receiverContact = saveContact(friendRequestDto.getSenderId(), userId);
+
+            // send acknowledgement to the one who accepted the request
             socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
                     .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST)
-                    .data(receiverContact).build();
+                    .data(senderContact).build();
             SocketUtil.send(socketResponse);
 
-            // to receiver
-            socketResponse = SocketResponse.builder().userId(friendRequestDto.getSenderId())
+            // notify the sender about acceptance
+            socketResponse = SocketResponse.builder().userId(senderContact.getUserId())
                     .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                    .type(SocketConstant.ADD_CONTACT).data(senderContact).build();
+                    .type(SocketConstant.ADD_CONTACT).data(receiverContact).build();
             SocketUtil.send(socketResponse);
 
             String message = receiverContact.getFirstName() + MessageConstant.ACCEPT_FRIEND_REQUEST;
-            UserDetail senderDetail = userDetailDao.findByUserId(userId);
-            notificationService.sendNotification(senderDetail, friendRequestDto.getSenderId(), message);
+            UserDetail receiverDetail = userDetailDao.findByUserId(receiverContact.getUserId());
+            notificationService.sendNotification(receiverDetail, senderContact.getUserId(), message);
 
         } catch (Exception e) {
             log.error("Error while accepting friend request: {}", e.getMessage());
@@ -253,23 +254,24 @@ public class FriendReqServiceImpl implements FriendReqService {
     }
 
 
-    private ContactDto saveContact(String userId, String userId2) {
+    private ContactDto saveContact(String userId, String contactId) {
         Contact contact = contactDao.findByUserId(userId);
         if (Objects.isNull(contact))
             contact = Contact.builder().userId(userId).contacts(new ArrayList<>()).build();
 
-        UserDetail userDetails = userDetailDao.findByUserId(userId2);
+        UserDetail userDetails = userDetailDao.findByUserId(contactId);
         ContactInfo contactInfo = ContactInfo.builder()
-                .contactId(userId2).contactFirstName(userDetails.getFirstName())
+                .contactId(contactId).contactFirstName(userDetails.getFirstName())
                 .contactLastName(userDetails.getLastName()).createdAt(new Date())
                 .isLastMsgSeen(false).unreadMsgCount(0).build();
         contact.getContacts().add(contactInfo);
         contactDao.save(contact);
-        return ContactDto.builder().contactId(userDetails.getUserId())
+        return ContactDto.builder().userId(userDetails.getUserId())
+                .contactId(contactId)
                 .lastName(userDetails.getLastName())
                 .firstName(userDetails.getFirstName())
                 .profileImage(userDetails.getProfileImage())
-                .createdAt(contactInfo.getCreatedAt()).userId(userId)
+                .createdAt(contactInfo.getCreatedAt())
                 .isOnline(SocketUtil.isUserConnected(userDetails.getUserId())).build();
     }
 
