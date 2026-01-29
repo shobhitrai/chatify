@@ -9,7 +9,7 @@
          <!-- Start of Chat -->
          <c:forEach items="${cg.chats}" var="cgchat">
             <c:choose>
-               <c:when test="${cgchat.type == 'receivedFriendRequest'}">
+               <c:when test="${fn:contains(cgchat.type, 'FriendRequest')}">
                   <div class="chat">
                      <div class="top">
                         <div class="container">
@@ -48,8 +48,15 @@
                                  <a href="#"><img class="avatar-xl" src="${cg.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${cg.senderFirstName}" alt="avatar"></a>
                                  <h5><span>${cgchat.message}</span></h5>
                                  <div class="options">
-                                    <button class="btn button fr-accept-btn" id="accept-${cg.senderId}"><i class="material-icons">check</i></button>
-                                    <button class="btn button fr-reject-btn" id="reject-${cg.senderId}"><i class="material-icons">close</i></button>
+                                    <c:choose>
+                                       <c:when test="${cgchat.type == 'receivedFriendRequest'}">
+                                          <button class="btn button fr-accept-btn" id="accept-${cg.senderId}"><i class="material-icons">check</i></button>
+                                          <button class="btn button fr-reject-btn" id="reject-${cg.senderId}"><i class="material-icons">close</i></button>
+                                       </c:when>
+                                       <c:when test="${cgchat.type == 'sentFriendRequest'}">
+                                          <button class="btn button fr-cancel-btn" id="cancel-${cg.senderId}"><i class="material-icons">close</i></button>
+                                       </c:when>
+                                    </c:choose>
                                  </div>
                               </div>
                            </div>
@@ -79,14 +86,13 @@
    </c:forEach>
    <!-- End of Babble -->
 </div>
-
 <script>
-function scrollToBottom(el) {
-  if (!el) return;
-  el.scrollTop = el.scrollHeight;
-}
+   function scrollToBottom(el) {
+     if (!el) return;
+     el.scrollTop = el.scrollHeight;
+   }
 
-document.addEventListener('DOMContentLoaded', function () {
-  scrollToBottom(document.getElementById('content'));
-});
+   document.addEventListener('DOMContentLoaded', function () {
+     scrollToBottom(document.getElementById('content'));
+   });
 </script>

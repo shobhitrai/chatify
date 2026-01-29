@@ -137,6 +137,7 @@ public class FriendReqServiceImpl implements FriendReqService {
                                 .firstName(userDetail.getFirstName())
                                 .lastName(userDetail.getLastName())
                                 .profileImage(userDetail.getProfileImage())
+                                .username(user.getUsername())
                                 .build();
                     }).toList();
 
