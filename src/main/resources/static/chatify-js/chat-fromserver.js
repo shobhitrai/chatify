@@ -16,7 +16,7 @@ function createMainChat(payload) {
    }
 }
 
-function getChat(payload) {
+function ackGetChat(payload) {
     if (payload.status === 100) {
         if(payload.data.chat.length === 1 && payload.data.chat[0].type === 'friendRequest') {
             appendFriendRequestChat(payload.data);

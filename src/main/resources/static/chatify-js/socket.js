@@ -76,7 +76,7 @@ function incoming(payload) {
         break;
 
       case "ackGetChat":
-        getChat(payload);
+        ackGetChat(payload);
         break;
    }
 }

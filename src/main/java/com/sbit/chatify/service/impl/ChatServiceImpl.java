@@ -55,6 +55,7 @@ public class ChatServiceImpl implements ChatService {
                     : friendRequestChat(userId, contactId);
 
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Error in getChat: {}", e.getMessage());
             socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
                     .message(MessageConstant.INTERNAL_SERVER_ERROR).type(SocketConstant.ACK_GET_CHAT).build();
