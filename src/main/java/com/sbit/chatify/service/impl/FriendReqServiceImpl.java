@@ -86,10 +86,18 @@ public class FriendReqServiceImpl implements FriendReqService {
             //to receiver
             UserDetail senderDetail = userDetailDao.findByUserId(userId);
             if (SocketUtil.isUserConnected(friendRequest.getReceiverId())) {
-                ChatGroup chatGroup = getChatDto(friendRequest, senderDetail, friendRequest.getReceiverId());
+                var chatDto = ChatDto.builder()
+                        .type(MessageConstant.FRIEND_REQUEST)
+                        .message(friendRequest.getMessage())
+                        .createdAt(friendRequest.getCreatedAt())
+                        .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
+                        .build();
+                Map<String, Object> data = new HashMap<>();
+                data.put("sender", senderDetail);
+                data.put("chat", chatDto);
                 socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                        .type(SocketConstant.CREATE_CHAT_GROUP).data(chatGroup).build();
+                        .type(SocketConstant.CREATE_CHAT_GROUP).data(data).build();
                 SocketUtil.send(socketResponse);
             }
             notificationService.sendNotification(senderDetail, friendRequestDto.getReceiverId(),
@@ -102,24 +110,6 @@ public class FriendReqServiceImpl implements FriendReqService {
                     .type(SocketConstant.ACK_FRIEND_REQUEST).build();
             SocketUtil.send(socketResponse);
         }
-    }
-
-    private ChatGroup getChatDto(FriendRequest friendRequest, UserDetail senderDetail, String receiverId) {
-        var chatMessage = ChatMessage.builder()
-                .type(MessageConstant.FRIEND_REQUEST)
-                .message(friendRequest.getMessage())
-                .createdAt(friendRequest.getCreatedAt())
-                .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
-                .build();
-
-        return ChatGroup.builder()
-                .senderId(senderDetail.getUserId())
-                .senderFirstName(senderDetail.getFirstName())
-                .receiverId(receiverId)
-                .senderLastName(senderDetail.getLastName())
-                .chats(List.of(chatMessage))
-                .senderProfileImage(senderDetail.getProfileImage())
-                .build();
     }
 
     @Override

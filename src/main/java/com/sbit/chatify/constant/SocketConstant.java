@@ -15,4 +15,5 @@ public interface SocketConstant {
     String CANCEL_FRIEND_REQUEST = "cancelFriendRequest";
     String SEEN_LAST_MSG = "seenLastMsg";
     String NOTIFICATION = "notification";
+    String GET_CHAT = "getChat";
 }

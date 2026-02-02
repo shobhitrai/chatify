@@ -1,8 +1,8 @@
-let friendUserId;
-let friendFirstName;
-let friendLastName;
-let friendName;
-let friendProfileImage;
+let friendUserId = null;
+let friendFirstName = null;
+let friendLastName = null;
+let friendName = null;
+let friendProfileImage = null;
 const userId = sessionUserId;
 
 function resetFriendReq() {

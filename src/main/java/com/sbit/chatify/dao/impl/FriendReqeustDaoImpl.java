@@ -40,14 +40,14 @@ public class FriendReqeustDaoImpl implements FriendRequestDao {
     }
 
     @Override
-    public List<FriendRequest> findActivePendingRequest(String userId) {
+    public FriendRequest findActivePendingRequest(String userId, String contactId) {
         Query query = new Query();
         query.addCriteria(new Criteria().orOperator(
-                Criteria.where("senderId").is(userId),
-                Criteria.where("receiverId").is(userId)));
+                Criteria.where("senderId").is(userId).and("receiverId").is(contactId),
+                Criteria.where("senderId").is(contactId).and("receiverId").is(userId)));
         query.addCriteria(Criteria.where("isActive").is(true)
                 .and("isAccepted").is(false)
                 .and("isCanceled").is(false));
-        return mongoTemplate.find(query, FriendRequest.class);
+        return mongoTemplate.findOne(query, FriendRequest.class);
     }
 }

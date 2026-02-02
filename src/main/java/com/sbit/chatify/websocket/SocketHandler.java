@@ -101,6 +101,10 @@ public class SocketHandler extends TextWebSocketHandler {
                 chatService.seenLastMsg(userId,
                         mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
                 break;
+            case SocketConstant.GET_CHAT:
+                chatService.getChat(userId,
+                        mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
+                break;
 
 
         }

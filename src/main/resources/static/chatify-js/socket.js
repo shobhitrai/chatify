@@ -5,9 +5,16 @@ $(document).ready(function () {
 var webSocket;
 
 function connect() {
-   const socketUrl = 'ws://' + document.location.host + sessionPath + '/chat';
+   const socketUrl = 'wss://' + document.location.host + sessionPath + '/chat';
    console.log("Connecting to socket: " + socketUrl);
-   webSocket = new WebSocket(socketUrl);
+
+   try {
+        webSocket = new WebSocket(socketUrl);
+   } catch(e) {
+        alert("WebSocket connection failed: " + e.message);
+        window.location.href = sessionPath + '/login'
+        return;
+   }
 
    webSocket.onopen = () => {
       console.log("Connected to socket");

@@ -47,13 +47,13 @@ public class WallServiceImpl implements WallService {
 
         User user = userDao.findById(new ObjectId(userId));
         UserDto userDto = getUserDetails(user);
-        List<ChatGroup> chats = getAllChats(userId);
+//        List<ChatGroup> chats = getAllChats(userId);
         List<NotificationDto> notifications = getAllNotifications(userId);
         List<ContactDto> contacts = getAllContacts(userId);
 
         model.addAttribute(MessageConstant.USER, userDto);
         model.addAttribute(MessageConstant.CONTACTS, contacts);
-        model.addAttribute(MessageConstant.CHAT_GROUPS, chats);
+//        model.addAttribute(MessageConstant.CHAT_GROUPS, chats);
         model.addAttribute(MessageConstant.NOTIFICATIONS, notifications);
         return PageConstant.WALL;
     }
@@ -101,38 +101,38 @@ public class WallServiceImpl implements WallService {
         }).toList();
     }
 
-    private List<ChatGroup> getAllChats(String userId) {
-        List<FriendRequest> friendRequests = friendRequestDao.findActivePendingRequest(userId);
-        if (friendRequests.isEmpty())
-            return Collections.emptyList();
-
-        return friendRequests.stream().map(fr -> {
-            boolean isSender = userId.equals(fr.getSenderId());
-            String otherUserId = isSender ? fr.getReceiverId() : fr.getSenderId();
-            UserDetail userDetail = userDetailDao.findByUserId(otherUserId);
-
-            ChatMessage chatMessage = ChatMessage.builder()
-                    .type(isSender ? MessageConstant.SENT_FRIEND_REQUEST
-                            : MessageConstant.RECEIVED_FRIEND_REQUEST)
-                    .message(isSender ? MessageConstant.SENT_FRIEND_REQUEST_MESSAGE
-                            + userDetail.getFirstName() + " " + userDetail.getLastName()
-                            : fr.getMessage())
-                    .createdAt(fr.getCreatedAt())
-                    .formattedDate(Util.getChatFormatedDate(fr.getCreatedAt()))
-                    .build();
-
-            return ChatGroup.builder()
-                    .senderId(otherUserId)
-                    .senderFirstName(userDetail.getFirstName())
-                    .senderLastName(userDetail.getLastName())
-                    .receiverId(userId)
-                    .senderProfileImage(userDetail.getProfileImage())
-                    .chats(List.of(chatMessage))
-                    .isSenderOnline(SocketUtil.isUserConnected(otherUserId))
-                    .build();
-        }).sorted(Comparator.comparing(chatGroup -> chatGroup.getChats().get(0).getCreatedAt(),
-                Comparator.reverseOrder())).toList();
-    }
+//    private List<ChatGroup> getAllChats(String userId) {
+//        List<FriendRequest> friendRequests = friendRequestDao.findActivePendingRequest(userId);
+//        if (friendRequests.isEmpty())
+//            return Collections.emptyList();
+//
+//        return friendRequests.stream().map(fr -> {
+//            boolean isSender = userId.equals(fr.getSenderId());
+//            String otherUserId = isSender ? fr.getReceiverId() : fr.getSenderId();
+//            UserDetail userDetail = userDetailDao.findByUserId(otherUserId);
+//
+//            ChatMessage chatMessage = ChatMessage.builder()
+//                    .type(isSender ? MessageConstant.SENT_FRIEND_REQUEST
+//                            : MessageConstant.RECEIVED_FRIEND_REQUEST)
+//                    .message(isSender ? MessageConstant.SENT_FRIEND_REQUEST_MESSAGE
+//                            + userDetail.getFirstName() + " " + userDetail.getLastName()
+//                            : fr.getMessage())
+//                    .createdAt(fr.getCreatedAt())
+//                    .formattedDate(Util.getChatFormatedDate(fr.getCreatedAt()))
+//                    .build();
+//
+//            return ChatGroup.builder()
+//                    .senderId(otherUserId)
+//                    .senderFirstName(userDetail.getFirstName())
+//                    .senderLastName(userDetail.getLastName())
+//                    .receiverId(userId)
+//                    .senderProfileImage(userDetail.getProfileImage())
+//                    .chats(List.of(chatMessage))
+//                    .isSenderOnline(SocketUtil.isUserConnected(otherUserId))
+//                    .build();
+//        }).sorted(Comparator.comparing(chatGroup -> chatGroup.getChats().get(0).getCreatedAt(),
+//                Comparator.reverseOrder())).toList();
+//    }
 
     private UserDto getUserDetails(User user) {
         var userDetail = userDetailDao.findByUserId(user.getId().toString());

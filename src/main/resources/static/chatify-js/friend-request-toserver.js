@@ -1,7 +1,7 @@
-let typingTimer; // Timer identifier
+let typingTimer = null; // Timer identifier
 const typingDelay = 200;
-let acceptedSenderId;
-let rejectedSenderId;
+let acceptedSenderId = null;
+let rejectedSenderId = null;
 
 $('#user').on('keyup', function (e) {
      clearTimeout(typingTimer); // Clear the previous timer

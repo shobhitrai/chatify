@@ -19,7 +19,7 @@
       <h1>Chats</h1>
       <div class="list-group" id="chats" role="tablist">
          <c:forEach items="${chatGroups}" var="chatGroup">
-               <a id="chatgroup-${chatGroup.senderId}" href="#chat-${chatGroup.senderId}" class="filterDiscussions all unread single" data-toggle="list">
+               <a id="chatgroup-${chatGroup.senderId}" href="#" class="filterDiscussions all unread single" data-toggle="list">
                   <img class="avatar-md" src="${chatGroup.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${chatGroup.senderFirstName}" alt="avatar">
                   <div class="status">
                      <i class="material-icons offline">fiber_manual_record</i>

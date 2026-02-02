@@ -33,4 +33,5 @@ public interface MessageConstant {
     String INVALID_USER = "Invalid user";
     String CONTACTS = "contacts";
     String ALREADY_CONTACT = "User is already your contact";
+    String NO_CHAT_FOUND = "No chat found between users";
 }
