@@ -19,20 +19,26 @@
       <h1>Chats</h1>
       <div class="list-group" id="chats" role="tablist">
          <c:forEach items="${chatGroups}" var="chatGroup">
-               <a id="chatgroup-${chatGroup.senderId}" href="#" class="filterDiscussions all unread single" data-toggle="list">
-                  <img class="avatar-md" src="${chatGroup.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${chatGroup.senderFirstName}" alt="avatar">
-                  <div class="status">
-                     <i class="material-icons offline">fiber_manual_record</i>
-                  </div>
-                  <div class="new bg-gray">
-                     <span>?</span>
-                  </div>
-                  <div class="data">
-                     <h5>${chatGroup.senderFirstName} ${chatGroup.senderLastName}</h5>
-                     <span>${chatGroup.chats[0].formattedDate}</span>
-                     <p id="p-${chatGroup.senderId}">${chatGroup.chats[0].message}</p>
-                  </div>
-               </a>
+            <a id="chatgroup-${chatGroup.contact.userId}" href="#" class="filterDiscussions all unread single" data-toggle="list">
+               <img class="avatar-md" src="${chatGroup.contact.profileImage}" data-toggle="tooltip"
+                  data-placement="top" title="${chatGroup.contact.firstName}" alt="avatar">
+               <div class="status">
+                  <i class="material-icons ${chatGroup.contact.isOnline ? 'online' : 'offline'}">fiber_manual_record</i>
+               </div>
+               <div class="new bg-gray">
+                  <span>?</span>
+               </div>
+               <div class="data">
+                  <h5>${chatGroup.contact.firstName} ${chatGroup.contact.lastName}</h5>
+                  <span>${chatGroup.chat.formattedDate}</span>
+                  <p id="p-${chatGroup.contact.userId}">
+                     ${chatGroup.chat.message}
+                     <c:if test="${sessionScope.userId == chatGroup.chat.senderId}">
+                        ${chatGroup.contact.firstName} ${chatGroup.contact.lastName}
+                     </c:if>
+                  </p>
+               </div>
+            </a>
          </c:forEach>
       </div>
    </div>

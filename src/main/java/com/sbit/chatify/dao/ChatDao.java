@@ -7,6 +7,6 @@ import java.util.List;
 public interface ChatDao {
     void save(Chat chat);
 
-    List<Chat> getAllChatsByUserId(String userId);
+    List<Chat> findChatBySenderAndReceiverId(String senderId, String receiverId);
 
 }

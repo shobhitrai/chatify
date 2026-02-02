@@ -20,8 +20,6 @@ public interface MessageConstant {
     String HTTP_SESSION = "httpSession";
     String SESSION_ALREADY_EXISTS = "Session already exists";
     String FRIEND_REQUEST = "friendRequest";
-    String SENT_FRIEND_REQUEST = "sentFriendRequest";
-    String RECEIVED_FRIEND_REQUEST = "receivedFriendRequest";
     String SENT_FRIEND_REQUEST_MESSAGE = "You have send a friend request to ";
     String USER = "user";
     String FRIEND_REQUEST_MESSAGE = " has sent you a friend request on Chatify.";
@@ -34,4 +32,5 @@ public interface MessageConstant {
     String CONTACTS = "contacts";
     String ALREADY_CONTACT = "User is already your contact";
     String NO_CHAT_FOUND = "No chat found between users";
+    String SOMETHING_WENT_WRONG = "Something went wrong";
 }

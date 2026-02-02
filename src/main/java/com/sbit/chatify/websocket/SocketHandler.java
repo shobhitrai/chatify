@@ -46,7 +46,6 @@ public class SocketHandler extends TextWebSocketHandler {
             boolean httpSessionStatus = socketService.validateHttpSession(session);
             if (!httpSessionStatus)
                 return;
-            log.info("Received from socket message: {}", message.getPayload());
             processMessage(session, message);
 
         } catch (Exception e) {
@@ -73,6 +72,8 @@ public class SocketHandler extends TextWebSocketHandler {
     private void processMessage(WebSocketSession session, TextMessage message) throws Exception {
         SocketRequest socketRequest = mapper.readValue(message.getPayload(), SocketRequest.class);
         String userId = getUserIdFromSession(session);
+        log.info("Received from socket {}, message: {}", userId, message.getPayload());
+
         switch (socketRequest.getType()) {
             case SocketConstant.FRIEND_REQUEST:
                 friendReqService.sendFriendRequest(userId,
@@ -105,8 +106,6 @@ public class SocketHandler extends TextWebSocketHandler {
                 chatService.getChat(userId,
                         mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
                 break;
-
-
         }
     }
 

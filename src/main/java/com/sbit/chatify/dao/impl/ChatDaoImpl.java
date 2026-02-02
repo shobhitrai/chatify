@@ -2,6 +2,7 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.ChatDao;
 import com.sbit.chatify.entity.Chat;
+import com.sbit.chatify.entity.FriendRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -23,11 +24,13 @@ public class ChatDaoImpl implements ChatDao {
     }
 
     @Override
-    public List<Chat> getAllChatsByUserId(String userId) {
-        var query = new Query();
-        query.addCriteria(Criteria.where("receiverId").is(userId)
-                .and("isActive").is(true).and("isRead").is(false));
-        query.with(Sort.by(Sort.Direction.DESC, "createdAt"));
+    public List<Chat> findChatBySenderAndReceiverId(String senderId, String receiverId) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("senderId").is(senderId).and("receiverId").is(receiverId),
+                Criteria.where("senderId").is(receiverId).and("receiverId").is(senderId)));
+        query.addCriteria(Criteria.where("isActive").is(true));
+        query.with(Sort.by(Sort.Direction.ASC, "createdAt"));
         return mongoTemplate.find(query, Chat.class);
     }
 }

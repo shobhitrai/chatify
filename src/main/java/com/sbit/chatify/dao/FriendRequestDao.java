@@ -12,4 +12,6 @@ public interface FriendRequestDao {
     FriendRequest findBySenderIdAndReceiverId(String senderId, String receiverId);
 
     FriendRequest findActivePendingRequest(String userId, String contactId);
+
+    List<FriendRequest> findActivePendingRequest(String userId);
 }

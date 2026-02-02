@@ -16,4 +16,5 @@ public interface SocketConstant {
     String SEEN_LAST_MSG = "seenLastMsg";
     String NOTIFICATION = "notification";
     String GET_CHAT = "getChat";
+    String ACK_GET_CHAT = "ackGetChat";
 }

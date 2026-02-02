@@ -86,6 +86,13 @@ public class FriendReqServiceImpl implements FriendReqService {
             //to receiver
             UserDetail senderDetail = userDetailDao.findByUserId(userId);
             if (SocketUtil.isUserConnected(friendRequest.getReceiverId())) {
+                UserDto userDto = UserDto.builder()
+                        .userId(senderDetail.getUserId())
+                        .firstName(senderDetail.getFirstName())
+                        .lastName(senderDetail.getLastName())
+                        .profileImage(senderDetail.getProfileImage())
+                        .isOnline(SocketUtil.isUserConnected(senderDetail.getUserId()))
+                        .build();
                 var chatDto = ChatDto.builder()
                         .type(MessageConstant.FRIEND_REQUEST)
                         .message(friendRequest.getMessage())
@@ -93,7 +100,7 @@ public class FriendReqServiceImpl implements FriendReqService {
                         .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
                         .build();
                 Map<String, Object> data = new HashMap<>();
-                data.put("sender", senderDetail);
+                data.put("sender", userDto);
                 data.put("chat", chatDto);
                 socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
@@ -179,9 +186,10 @@ public class FriendReqServiceImpl implements FriendReqService {
             SocketUtil.send(socketResponse);
 
             // notify the sender about acceptance
-            socketResponse = SocketResponse.builder().userId(senderContact.getUserId())
-                    .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                    .type(SocketConstant.ADD_CONTACT).data(receiverContact).build();
+            if (SocketUtil.isUserConnected(senderContact.getUserId()))
+                socketResponse = SocketResponse.builder().userId(senderContact.getUserId())
+                        .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
+                        .type(SocketConstant.ADD_CONTACT).data(receiverContact).build();
             SocketUtil.send(socketResponse);
 
             String message = receiverContact.getFirstName() + MessageConstant.ACCEPT_FRIEND_REQUEST;
@@ -228,12 +236,13 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Override
     public void cancelFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
-            FriendRequest friendRequest = friendRequestDao.findBySenderIdAndReceiverId(userId, friendRequestDto.getReceiverId());
+            FriendRequest friendRequest = friendRequestDao.findBySenderIdAndReceiverId(userId,
+                    friendRequestDto.getReceiverId());
             if (Objects.isNull(friendRequest))
                 return;
 
             friendRequest.setIsActive(false);
-            friendRequest.setIsCanceled(false);
+            friendRequest.setIsCanceled(true);
             friendRequestDao.save(friendRequest);
 
             if (SocketUtil.isUserConnected(friendRequestDto.getReceiverId())) {

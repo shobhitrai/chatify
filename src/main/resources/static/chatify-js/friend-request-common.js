@@ -3,7 +3,6 @@ let friendFirstName = null;
 let friendLastName = null;
 let friendName = null;
 let friendProfileImage = null;
-const userId = sessionUserId;
 
 function resetFriendReq() {
      $('#searched-icon').html('');

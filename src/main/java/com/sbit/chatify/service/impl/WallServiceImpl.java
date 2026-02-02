@@ -47,15 +47,48 @@ public class WallServiceImpl implements WallService {
 
         User user = userDao.findById(new ObjectId(userId));
         UserDto userDto = getUserDetails(user);
-//        List<ChatGroup> chats = getAllChats(userId);
+        List<Map<String, Object>> chats = getAllFriendRequest(userId);
         List<NotificationDto> notifications = getAllNotifications(userId);
         List<ContactDto> contacts = getAllContacts(userId);
 
         model.addAttribute(MessageConstant.USER, userDto);
         model.addAttribute(MessageConstant.CONTACTS, contacts);
-//        model.addAttribute(MessageConstant.CHAT_GROUPS, chats);
+        model.addAttribute(MessageConstant.CHAT_GROUPS, chats);
         model.addAttribute(MessageConstant.NOTIFICATIONS, notifications);
         return PageConstant.WALL;
+    }
+
+    private List<Map<String, Object>> getAllFriendRequest(String userId) {
+        List<FriendRequest> friendRequests = friendRequestDao.findActivePendingRequest(userId);
+        if (friendRequests.isEmpty()) return Collections.emptyList();
+
+        return friendRequests.stream().map(friendRequest -> {
+            boolean isSender = userId.equals(friendRequest.getSenderId());
+            String contactId = isSender ? friendRequest.getReceiverId() : friendRequest.getSenderId();
+            ChatDto chatDto = ChatDto.builder()
+                    .senderId(friendRequest.getSenderId())
+                    .receiverId(friendRequest.getReceiverId())
+                    .type(MessageConstant.FRIEND_REQUEST)
+                    .message(isSender ? MessageConstant.SENT_FRIEND_REQUEST_MESSAGE : friendRequest.getMessage())
+                    .createdAt(friendRequest.getCreatedAt())
+                    .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
+                    .build();
+            Map<String, Object> chatgroup = new HashMap<>();
+            chatgroup.put("contact", buildUserDto(contactId));
+            chatgroup.put("chat", chatDto);
+            return chatgroup;
+        }).toList();
+    }
+
+    private Object buildUserDto(String contactId) {
+        UserDetail userDetail = userDetailDao.findByUserId(contactId);
+        return UserDto.builder()
+                .userId(userDetail.getUserId())
+                .firstName(userDetail.getFirstName())
+                .lastName(userDetail.getLastName())
+                .profileImage(userDetail.getProfileImage())
+                .isOnline(SocketUtil.isUserConnected(contactId))
+                .build();
     }
 
     private List<ContactDto> getAllContacts(String userId) {
