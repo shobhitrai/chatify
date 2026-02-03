@@ -191,8 +191,8 @@
 		<script src="${path}/js/swipe.min.js"></script>
 		<script src="${path}/js/bootstrap.min.js"></script>
 		<script src="${path}/chatify-js/socket.js"></script>
-		<script src="${path}/chatify-js/friend-request-common.js"></script>
-		<script src="${path}/chatify-js/chat-common.js"></script>
+		<script src="${path}/chatify-js/common-variable.js"></script>
+		<script src="${path}/chatify-js/common-function.js"></script>
 		<script src="${path}/chatify-js/friend-request-fromserver.js"></script>
 		<script src="${path}/chatify-js/friend-request-toserver.js"></script>
         <script src="${path}/chatify-js/chat-fromserver.js"></script>

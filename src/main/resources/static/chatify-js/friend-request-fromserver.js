@@ -33,7 +33,7 @@ function addContact(payload) {
    if (payload.status === 100) {
       const contact = payload.data;
       addToContactList(contact);
-      if(contact.contactId === chatWindowOpenUserId) {
+      if(contact.contactId === chatOpenUserId) {
         updateMainChat(contact);
       }
    } else {

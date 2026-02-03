@@ -17,4 +17,7 @@ public interface SocketConstant {
     String NOTIFICATION = "notification";
     String GET_CHAT = "getChat";
     String ACK_GET_CHAT = "ackGetChat";
+    String TEXT_MESSAGE = "textMessage";
+    String ACK_TEXT_MESSAGE = "ackTextMessage";
+    String RECEIVED_TEXT_MESSAGE = "receivedTextMessage";
 }

@@ -1,33 +1,29 @@
-$(document).on('click', '.bottom .send', function () {
-   const $container = $(this).closest('.bottom');
-   const $textarea = $container.find('textarea');
-   let message = $textarea.val().trim();
-
-   if (!message) return;
-
-   if (message.length > 500) {
-      alert('Message cannot exceed 500 characters.');
-      message = message.substring(0, 500);
+function receivedTextMessage(payload) {
+   if (payload.status === 100) {
+      const senderId = payload.data.senderId;
+      if (chatOpenUserId === senderId) {
+         const message = payload.data.message;
+         const time = globalGetChatTimeByTimeStamp(payload.data.createdAt);
+         const context = `
+            <div class="message">
+              <img class="avatar-md" src="${chatOpenProfileImage}" data-toggle="tooltip" data-placement="top"
+                    title="${chatOpenFirstName}" alt="avatar">
+              <div class="text-main">
+                <div class="text-group">
+                  <div class="text">
+                    <p>${message}</p>
+                  </div>
+                </div>
+                <span>${time}</span>
+              </div>
+            </div>
+         `;
+         globalAppendMessage(context);
+      }
+   } else {
+      console.error("Error receiving text message: " + payload.message);
    }
-
-   console.log('Message to send:', message);
-
-   $textarea.val('');
-});
-
-$(document).on('keypress', '.bottom textarea', function (e) {
-   if (e.which === 13 && !e.shiftKey) {
-      e.preventDefault();
-      $(this).closest('.bottom').find('.send').click();
-   }
-});
-
-$(document).on('input', '.bottom textarea', function () {
-   const maxLength = 500;
-   if (this.value.length > maxLength) {
-      this.value = this.value.substring(0, maxLength);
-   }
-});
+}
 
 function createMainChat(payload) {
    if (payload.status === 100) {
@@ -53,14 +49,31 @@ function createMainChat(payload) {
 
 function ackGetChat(payload) {
    if (payload.status === 100) {
-      if (payload.data.chat.length === 1 && payload.data.chat[0].type === 'friendRequest') {
-         appendFriendRequestChat(payload.data);
-      } else if (payload.data.chat.length === 0) {
-         appendNoChatFoundScreen(payload.data);
-      } else {}
+      const contact = payload.data.otherUser;
+      if (contact.userId === chatOpenUserId) {
+         initializeChatVariables(contact);
+         if (payload.data.chat.length === 1 && payload.data.chat[0].type === 'friendRequest') {
+            appendFriendRequestChat(payload.data);
+         } else if (payload.data.chat.length === 0) {
+            appendNoChatFoundScreen(payload.data);
+         } else {
+            isChatEmpty = false;
+         }
+      } else {
+         console.warn("Received chat data for a different user than currently open.");
+         alert("Something went wrong while opening the chat. Please reload the page.");
+      }
    } else {
+      console.error("Error getting chat: " + payload.message);
       alert(payload.message);
    }
+}
+
+function initializeChatVariables(contact) {
+    chatOpenProfileImage = contact.profileImage;
+    chatOpenFirstName = contact.firstName;
+    chatOpenLastName = contact.lastName;
+    chatOpenFullName = contact.firstName + ' ' + contact.lastName;
 }
 
 function appendFriendRequestChat(data) {

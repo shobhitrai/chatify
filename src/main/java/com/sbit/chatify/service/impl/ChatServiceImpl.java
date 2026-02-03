@@ -64,6 +64,43 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
+    @Override
+    public void sendTextMessage(String userId, ChatDto chatDto) {
+        SocketResponse socketResponse = null;
+        try {
+            String message = chatDto.getMessage();
+            String receiverId = chatDto.getReceiverId();
+
+            if (message == null || receiverId == null || message.isBlank() || receiverId.isBlank())
+                return;
+
+            if (!isFriend(userId, receiverId))
+                return;
+
+            Date date = new Date();
+            ChatDto dataForReceiver = ChatDto.builder().senderId(userId).receiverId(receiverId)
+                    .type(MessageConstant.TEXT).message(message).createdAt(date)
+                    .formattedDate(Util.getChatFormatedDate(date)).build();
+
+            if (SocketUtil.isUserConnected(receiverId))
+                socketResponse = SocketResponse.builder().userId(receiverId).status(StatusConstant.SUCCESS_CODE).data(dataForReceiver)
+                        .type(SocketConstant.RECEIVED_TEXT_MESSAGE).build();
+            SocketUtil.send(socketResponse);
+
+            Chat chat = Chat.builder().senderId(userId).receiverId(receiverId).type(MessageConstant.TEXT)
+                    .message(message).createdAt(date).build();
+            chatDao.save(chat);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Error in sendTextMessage: {}", e.getMessage());
+            socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.INTERNAL_SERVER_ERROR_CODE)
+                    .message(MessageConstant.SOMETHING_WENT_WRONG).type(SocketConstant.ACK_TEXT_MESSAGE).build();
+            SocketUtil.send(socketResponse);
+        }
+
+    }
+
     private boolean isFriend(String userId, String contactId) {
         return Optional.ofNullable(contactDao.findByUserId(userId))
                 .map(Contact::getContacts).orElse(Collections.emptyList())

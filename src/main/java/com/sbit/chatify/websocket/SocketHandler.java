@@ -3,10 +3,7 @@ package com.sbit.chatify.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
-import com.sbit.chatify.model.ContactDto;
-import com.sbit.chatify.model.FriendRequestDto;
-import com.sbit.chatify.model.SocketRequest;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.ChatService;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;
@@ -105,6 +102,10 @@ public class SocketHandler extends TextWebSocketHandler {
             case SocketConstant.GET_CHAT:
                 chatService.getChat(userId,
                         mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
+                break;
+            case SocketConstant.TEXT_MESSAGE:
+                chatService.sendTextMessage(userId,
+                        mapper.convertValue(socketRequest.getPayload(), ChatDto.class));
                 break;
         }
     }

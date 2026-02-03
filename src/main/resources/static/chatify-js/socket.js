@@ -9,11 +9,11 @@ function connect() {
    console.log("Connecting to socket: " + socketUrl);
 
    try {
-        webSocket = new WebSocket(socketUrl);
-   } catch(e) {
-        alert("WebSocket connection failed: " + e.message);
-        window.location.href = sessionPath + '/login'
-        return;
+      webSocket = new WebSocket(socketUrl);
+   } catch (e) {
+      alert("WebSocket connection failed: " + e.message);
+      window.location.href = sessionPath + '/login'
+      return;
    }
 
    webSocket.onopen = () => {
@@ -38,6 +38,22 @@ function connect() {
    webSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
    };
+}
+
+function globalSendToSocket(payload) {
+   return new Promise((resolve, reject) => {
+      try {
+         if (!webSocket || webSocket.readyState !== WebSocket.OPEN) {
+            return reject(new Error('WebSocket is not connected'));
+         }
+
+         webSocket.send(JSON.stringify(payload));
+         // sending to socket succeeded
+         resolve();
+      } catch (error) {
+         reject(error);
+      }
+   });
 }
 
 function incoming(payload) {
@@ -68,15 +84,22 @@ function incoming(payload) {
          break;
 
       case "addContact":
-        addContact(payload);
-        break;
+         addContact(payload);
+         break;
 
       case "removeContact":
-        removeContact(payload);
-        break;
+         removeContact(payload);
+         break;
 
       case "ackGetChat":
-        ackGetChat(payload);
-        break;
+         ackGetChat(payload);
+         break;
+
+      case "receivedTextMessage":
+         receivedTextMessage(payload);
+         break;
+
+      default:
+         console.warn("Unknown payload type:", payload.type);
    }
 }
