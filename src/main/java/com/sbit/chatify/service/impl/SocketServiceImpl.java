@@ -13,6 +13,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -22,96 +23,95 @@ public class SocketServiceImpl implements SocketService {
     @Override
     public void register(WebSocketSession session) {
         try {
-            String userId = getUserIdFromSession(session);
-            if (Objects.nonNull(userId)) {
-                SocketUtil.addConnection(userId, session);
-                log.info("User connected: {}, Session Id: {}, Total users: {}",
-                        userId, session.getId(), SocketUtil.getConnectionSize());
-            } else {
-                log.warn("UserId not found in session attributes.");
+            String userId = extractUserId(session);
+
+            if (userId == null) {
+                log.warn("WebSocket registration failed: userId missing");
+                safeClose(session, CloseStatus.NOT_ACCEPTABLE);
+                return;
             }
-        } catch (Exception e) {
-            log.error("Error during registration: {}", e.getMessage());
-        }
-    }
 
-    @Override
-    public void closeConnection(WebSocketSession session, CloseStatus status) {
-        try {
-            //dont get userId from session, its already invalidated by logout.
-            String userId = SocketUtil.getUserIdFromConnection(session);
-            SocketUtil.removeConnection(userId);
-            session.close(status);
-            log.info("Connection closed for user: {}, code: {}, reason: {}, Total connected: {}",
-                    userId, status.getCode(), status.getReason(), SocketUtil.getConnectionSize());
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("Error closing connection: {}", e.getMessage());
-        }
-    }
+            SocketUtil.addConnection(userId, session);
 
-    @Override
-    public void transportError(WebSocketSession session, Throwable exception) {
-        exception.printStackTrace();
-        try {
-            String userId = getUserIdFromSession(session);
-            log.error("Transport error for user: {}. Error: {}", userId, exception.getMessage());
-            closeConnection(session);
-        } catch (Exception e) {
-            log.error("Error during transport error handling: {}", e.getMessage());
-        }
-    }
+            log.info("WebSocket connected | userId={} | sessionId={} | total={}",
+                    userId, session.getId(), SocketUtil.getConnectionSize());
 
-    private String getUserIdFromSession(WebSocketSession session) {
-        HttpSession httpSession = (HttpSession) session.getAttributes().get(MessageConstant.HTTP_SESSION);
-        return httpSession.getAttribute(MessageConstant.USER_ID).toString();
+        } catch (Exception e) {
+            log.error("WebSocket registration error", e);
+            safeClose(session, CloseStatus.SERVER_ERROR);
+        }
     }
 
     @Override
     public boolean validateHttpSession(WebSocketSession session) {
-        HttpSession httpSession = (HttpSession) session.getAttributes().get(MessageConstant.HTTP_SESSION);
-        if (httpSession == null || httpSession.getAttribute(MessageConstant.USER_ID) == null) {
-            log.warn("Invalid HttpSession or userId. Closing WebSocket session.");
-            closeConnection(session);
+        String userId = extractUserId(session);
+
+        if (userId == null) {
+            log.warn("Invalid HttpSession detected");
+            sendInvalidSessionAndClose(session);
             return false;
         }
         return true;
     }
 
-    private void closeConnection(WebSocketSession session) {
+    @Override
+    public void transportError(WebSocketSession session, Throwable exception) {
         String userId = SocketUtil.getUserIdFromConnection(session);
 
-        if (Objects.isNull(userId)) {
-            log.warn("Session not found in SOCKET_CONNECTIONS.");
-            return;
-        }
+        log.error(
+                "WebSocket transport error | userId={} | sessionId={}",
+                userId, session.getId(), exception
+        );
 
-        // Implementing the CompletableFuture to close the session after sending the message
-        CompletableFuture<Void> sendFuture = CompletableFuture.runAsync(() -> {
+        sendInvalidSessionAndClose(session);
+    }
+
+    @Override
+    public void closeConnection(WebSocketSession session, CloseStatus status) {
+        String userId = SocketUtil.getUserIdFromConnection(session);
+
+        log.info(
+                "WebSocket closing | userId={} | code={} | reason={}",
+                userId, status.getCode(), status.getReason()
+        );
+
+        safeClose(session, status);
+    }
+
+    /* ================= INTERNAL ================= */
+
+    private void sendInvalidSessionAndClose(WebSocketSession session) {
+        String userId = SocketUtil.getUserIdFromConnection(session);
+
+        if (userId != null) {
             SocketUtil.send(SocketResponse.builder()
                     .type(SocketConstant.INVALID_SESSION)
-                    .userId(userId).build());
-            log.info("Task executed by: " + Thread.currentThread().getName());
-        });
-        sendFuture.thenRun(() -> {
-            closeSession(session, userId);
-            log.info("Message sent and session closed for user: {}, total open connection: {}"
-                    , userId, SocketUtil.getConnectionSize());
-        }).exceptionally(ex -> {
-            log.error("Error while sending message: {}", ex.getMessage());
-            closeSession(session, userId);
-            return null;
-        });
+                    .userId(userId)
+                    .build());
+        }
+
+        safeClose(session, CloseStatus.NORMAL);
     }
 
-    private static void closeSession(WebSocketSession session, String userId) {
+    private void safeClose(WebSocketSession session, CloseStatus status) {
         try {
-            SocketUtil.removeConnection(userId);
-            if (session != null && session.isOpen())
-                session.close();
+            String userId = SocketUtil.getUserIdFromConnection(session);
+            if (userId != null) {
+                SocketUtil.removeConnection(userId);
+            }
+
+            if (session != null && session.isOpen()) {
+                session.close(status);
+            }
+
         } catch (IOException e) {
-            log.error("Error closing session: {}", e.getMessage());
+            log.error("Error closing WebSocket", e);
         }
     }
 
+    private String extractUserId(WebSocketSession session) {
+        return Optional.ofNullable(session.getAttributes().get(MessageConstant.USER_ID))
+                .map(Object::toString)
+                .orElse(null);
+    }
 }

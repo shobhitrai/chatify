@@ -17,6 +17,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.Optional;
+
 @Slf4j
 @Component
 public class SocketHandler extends TextWebSocketHandler {
@@ -111,7 +113,8 @@ public class SocketHandler extends TextWebSocketHandler {
     }
 
     private String getUserIdFromSession(WebSocketSession session) {
-        HttpSession httpSession = (HttpSession) session.getAttributes().get(MessageConstant.HTTP_SESSION);
-        return httpSession.getAttribute(MessageConstant.USER_ID).toString();
+        return Optional.ofNullable(session.getAttributes().get(MessageConstant.USER_ID))
+                .map(Object::toString)
+                .orElse(null);
     }
 }

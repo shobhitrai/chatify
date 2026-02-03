@@ -1356,9 +1356,9 @@ input:checked + .slider:before {
   height: calc(100vh - 218px);
   overflow-y: scroll;
 }
-.main .chat .content > div {
+/*.main .chat .content > div {
   margin-top: auto;
-}
+}*/
 .main .chat .content::-webkit-scrollbar {
   display: none;
 }

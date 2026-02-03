@@ -1,6 +1,8 @@
 package com.sbit.chatify.constant;
 
 public interface SocketConstant {
+    long HEARTBEAT_TIMEOUT_MS = 90_000;
+    long HEARTBEAT_CHECK_INTERVAL_MS = 30_000;
     String INVALID_SESSION = "invalidSession";
     String FRIEND_REQUEST = "friendRequest";
     String ACK_FRIEND_REQUEST = "ackFriendRequest";

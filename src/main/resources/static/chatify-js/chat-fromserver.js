@@ -57,7 +57,7 @@ function ackGetChat(payload) {
          } else if (payload.data.chat.length === 0) {
             appendNoChatFoundScreen(payload.data);
          } else {
-            isChatEmpty = false;
+            loadChatMessages(payload.data);
          }
       } else {
          console.warn("Received chat data for a different user than currently open.");
@@ -67,6 +67,10 @@ function ackGetChat(payload) {
       console.error("Error getting chat: " + payload.message);
       alert(payload.message);
    }
+}
+
+function loadChatMessages(data) {
+    let other = data.otherUser;
 }
 
 function initializeChatVariables(contact) {

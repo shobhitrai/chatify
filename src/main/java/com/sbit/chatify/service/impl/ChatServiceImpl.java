@@ -79,13 +79,13 @@ public class ChatServiceImpl implements ChatService {
 
             Date date = new Date();
             ChatDto dataForReceiver = ChatDto.builder().senderId(userId).receiverId(receiverId)
-                    .type(MessageConstant.TEXT).message(message).createdAt(date)
-                    .formattedDate(Util.getChatFormatedDate(date)).build();
+                    .type(MessageConstant.TEXT).message(message).createdAt(date).build();
 
-            if (SocketUtil.isUserConnected(receiverId))
-                socketResponse = SocketResponse.builder().userId(receiverId).status(StatusConstant.SUCCESS_CODE).data(dataForReceiver)
-                        .type(SocketConstant.RECEIVED_TEXT_MESSAGE).build();
-            SocketUtil.send(socketResponse);
+            if (SocketUtil.isUserConnected(receiverId)) {
+                socketResponse = SocketResponse.builder().userId(receiverId).status(StatusConstant.SUCCESS_CODE)
+                        .data(dataForReceiver).type(SocketConstant.RECEIVED_TEXT_MESSAGE).build();
+                SocketUtil.send(socketResponse);
+            }
 
             Chat chat = Chat.builder().senderId(userId).receiverId(receiverId).type(MessageConstant.TEXT)
                     .message(message).createdAt(date).build();
@@ -163,7 +163,6 @@ public class ChatServiceImpl implements ChatService {
                 .type(chat.getType())
                 .message(chat.getMessage())
                 .createdAt(chat.getCreatedAt())
-                .formattedDate(Util.getChatFormatedDate(chat.getCreatedAt()))
                 .build();
     }
 }
