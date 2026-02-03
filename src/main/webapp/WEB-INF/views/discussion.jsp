@@ -19,7 +19,7 @@
       <h1>Chats</h1>
       <div class="list-group" id="chats" role="tablist">
          <c:forEach items="${chatGroups}" var="chatGroup">
-            <a id="chatgroup-${chatGroup.contact.userId}" href="#" class="filterDiscussions all unread single" data-toggle="list">
+            <a id="chatgroup-${chatGroup.contact.userId}" href="#" class="filterDiscussions all unread single">
                <img class="avatar-md" src="${chatGroup.contact.profileImage}" data-toggle="tooltip"
                   data-placement="top" title="${chatGroup.contact.firstName}" alt="avatar">
                <div class="status">

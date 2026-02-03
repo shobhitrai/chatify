@@ -1,7 +1,32 @@
-$('.botton form').on('submit', function (e) {
-   e.preventDefault();
-   const message = $(this).find('textarea').val().trim();
+$(document).on('click', '.bottom .send', function () {
+   const $container = $(this).closest('.bottom');
+   const $textarea = $container.find('textarea');
+   let message = $textarea.val().trim();
+
+   if (!message) return;
+
+   if (message.length > 500) {
+      alert('Message cannot exceed 500 characters.');
+      message = message.substring(0, 500);
+   }
+
    console.log('Message to send:', message);
+
+   $textarea.val('');
+});
+
+$(document).on('keypress', '.bottom textarea', function (e) {
+   if (e.which === 13 && !e.shiftKey) {
+      e.preventDefault();
+      $(this).closest('.bottom').find('.send').click();
+   }
+});
+
+$(document).on('input', '.bottom textarea', function () {
+   const maxLength = 500;
+   if (this.value.length > maxLength) {
+      this.value = this.value.substring(0, maxLength);
+   }
 });
 
 function createMainChat(payload) {
@@ -10,7 +35,7 @@ function createMainChat(payload) {
       let chat = payload.data.chat;
       let onlineStatus = sender.isOnline ? 'online' : 'offline';
       const context = `
-      <a id="chatgroup-${sender.userId}" href="#" class="filterDiscussions all unread single" data-toggle="list">
+      <a id="chatgroup-${sender.userId}" href="#" class="filterDiscussions all unread single">
         <img class="avatar-md" src="${sender.profileImage}" data-toggle="tooltip"
             data-placement="top" title="${sender.firstName}" alt="avatar">
         <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
@@ -197,7 +222,7 @@ function appendNoChatFoundScreen(data) {
             <div class="col-md-12">
               <div class="inside">
                 <a href="#"><img class="avatar-md" src="${other.profileImage}" data-toggle="tooltip"
-                data-placement="top" title="Lean" alt="avatar"></a>
+                data-placement="top" title="${other.firstName}" alt="avatar"></a>
                 <div class="status"><i class="material-icons ${status}">fiber_manual_record</i></div>
                 <div class="data"><h5><a href="#">${other.firstName} ${other.lastName}</a></h5><span>${status2}</span></div>
 
@@ -240,7 +265,7 @@ function appendNoChatFoundScreen(data) {
               <form class="position-relative w-100">
                 <textarea class="form-control" placeholder="Start typing for reply..." rows="1"></textarea>
                 <button class="btn emoticons"><i class="material-icons">insert_emoticon</i></button>
-                <button type="submit" class="btn send"><i class="material-icons">send</i></button>
+                <button type="button" class="btn send"><i class="material-icons">send</i></button>
               </form>
               <label>
                 <input type="file">
@@ -258,7 +283,7 @@ function appendNoChatFoundScreen(data) {
               <div class="inside">
                 <div class="panel">
                   <div class="participant">
-                    <img class="avatar-xxl" src="${data.profileImage}" alt="avatar">
+                    <img class="avatar-xxl" src="${other.profileImage}" alt="avatar">
                     <span>Connecting</span>
                   </div>
                   <div class="options">

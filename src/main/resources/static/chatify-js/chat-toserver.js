@@ -1,8 +1,10 @@
-$(document).on('click', '.filterDiscussions', function () {
+$(document).on('click', '.filterDiscussions', function(e) {
+   e.preventDefault();
    chatClicked(this);
 });
 
-$(document).on('click', '.filterMembers', function () {
+$(document).on('click', '.filterMembers', function(e) {
+   e.preventDefault();
    openChat(this);
 });
 

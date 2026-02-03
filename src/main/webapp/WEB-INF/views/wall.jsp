@@ -72,8 +72,10 @@
                                       <h1>Contacts</h1>
                                       <div class="list-group" id="contacts" role="tablist">
                                          <c:forEach items="${contacts}" var="contact">
-                                            <a href="#" id="contact-${contact.contactId}" class="filterMembers all ${contact.isOnline ? 'online' : 'offline'} contact" data-toggle="list">
-                                               <img class="avatar-md" src="${contact.profileImage}" data-toggle="tooltip" data-placement="top" title="${contact.firstName}" alt="avatar">
+                                            <a href="javascript:void(0)" id="contact-${contact.contactId}"
+                                                class="filterMembers all ${contact.isOnline ? 'online' : 'offline'} contact">
+                                               <img class="avatar-md" src="${contact.profileImage}" data-toggle="tooltip"
+                                                  data-placement="top" title="${contact.firstName}" alt="avatar">
                                                <div class="status">
                                                   <i class="material-icons ${contact.isOnline ? 'online' : 'offline'}">fiber_manual_record</i>
                                                </div>
@@ -197,8 +199,13 @@
         <script src="${path}/chatify-js/chat-toserver.js"></script>
 		<script>
             $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+
                 $(document).on('mouseenter', '[data-toggle="tooltip"]', function () {
-                    $(this).tooltip('dispose').tooltip();
+                    if (!$(this).data('bs.tooltip')) {
+                        $(this).tooltip();
+                        $(this).tooltip('show');
+                    }
                 });
             });
         </script>

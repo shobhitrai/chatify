@@ -19,7 +19,8 @@
       <div class="list-group" id="alerts" role="tablist">
             <c:forEach items="${notifications}" var="noti">
             <a href="#" class="filterNotifications all ${noti.isRecent ? 'latest' : 'oldest'} notification" data-toggle="list">
-               <img class="avatar-md" src="${noti.senderProfileImage}" data-toggle="tooltip" data-placement="top" title="${noti.senderFirstName}" alt="avatar">
+               <img class="avatar-md" src="${noti.senderProfileImage}" data-toggle="tooltip"
+                    data-placement="top" title="${noti.senderFirstName}" alt="avatar">
                <div class="status">
                   <i class="material-icons ${noti.isUserOnline ? 'online' : 'offline'}">fiber_manual_record</i>
                </div>

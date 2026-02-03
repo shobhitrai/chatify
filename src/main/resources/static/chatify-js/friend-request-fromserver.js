@@ -54,7 +54,7 @@ function removeContact(payload) {
 function addToContactList(contact) {
    const status = contact.isOnline ? 'online' : 'offline';
    const data = `
-   <a href="#" id="contact-${contact.contactId}" class="filterMembers all ${status} contact" data-toggle="list">
+   <a href="#" id="contact-${contact.contactId}" class="filterMembers all ${status} contact">
      <img class="avatar-md" src="${contact.profileImage}" data-toggle="tooltip" data-placement="top"
         title="${contact.firstName}" alt="avatar">
      <div class="status"><i class="material-icons ${status}">fiber_manual_record</i></div>
@@ -84,7 +84,7 @@ function appendFriendRequestToChat() {
    const formatted2 = `${months[now2.getMonth()]} ${now2.getDate()}`;
    const chatgroupMessage = "You have send a friend request to " + friendFirstName + ' ' + friendLastName;
    const data = `
-   <a id="chatgroup-${friendUserId}" href="#" class="filterDiscussions all unread single" data-toggle="list">
+   <a id="chatgroup-${friendUserId}" href="#" class="filterDiscussions all unread single">
      <img class="avatar-md" src="${friendProfileImage}" data-toggle="tooltip" data-placement="top" title="${friendFirstName}" alt="avatar">
      <div class="status"><i class="material-icons offline">fiber_manual_record</i></div>
      <div class="new bg-gray"><span>?</span></div>
@@ -102,7 +102,7 @@ function appendNotification(payload) {
    if (payload.status === 100) {
       const noti = payload.data;
       const text = `
-      <a href="#" class="filterNotifications all ${noti.isRecent ? 'latest' : 'oldest'} notification" data-toggle="list">
+      <a href="#" class="filterNotifications all ${noti.isRecent ? 'latest' : 'oldest'} notification">
         <img class="avatar-md" src="${noti.senderProfileImage}" data-toggle="tooltip" data-placement="top"
             title="${noti.senderFirstName}" alt="avatar">
         <div class="status"><i class="material-icons online">fiber_manual_record</i></div>
@@ -169,7 +169,7 @@ function updateMainChat(contact) {
               <form class="position-relative w-100">
                 <textarea class="form-control" placeholder="Start typing for reply..." rows="1"></textarea>
                 <button class="btn emoticons"><i class="material-icons">insert_emoticon</i></button>
-                <button type="submit" class="btn send"><i class="material-icons">send</i></button>
+                <button type="button" class="btn send"><i class="material-icons">send</i></button>
               </form>
               <label>
                 <input type="file">
