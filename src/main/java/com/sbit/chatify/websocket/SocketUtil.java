@@ -134,6 +134,7 @@ public final class SocketUtil {
 
                     String payload = MAPPER.writeValueAsString(response);
                     session.sendMessage(new TextMessage(payload));
+                    log.info("Sent to socket {}, payload {}", response.getUserId(), payload);
 
                 } catch (Exception e) {
                     log.error("Failed to send message | userId={} | sessionId={}", response.getUserId(), sessionId, e);

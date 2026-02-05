@@ -19,8 +19,12 @@ function globalAppendMessage(contextHtml) {
    }
 
    $messageContainer.append(contextHtml);
-   const ok = document.querySelector('.main .chat .content');
-     ok.scrollTop = ok.scrollHeight - ok.clientHeight;
+   globalAdjustScroll();
+}
+
+function globalAdjustScroll() {
+    const ok = document.querySelector('.main .chat .content');
+         ok.scrollTop = ok.scrollHeight - ok.clientHeight;
 }
 
 function globalGetChatTimeByTimeStamp(timestamp) {

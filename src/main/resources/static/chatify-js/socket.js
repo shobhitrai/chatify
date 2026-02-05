@@ -5,7 +5,7 @@ $(document).ready(function () {
 var webSocket;
 
 function connect() {
-   const socketUrl = 'wss://' + document.location.host + sessionPath + '/chat';
+   const socketUrl = 'ws://' + document.location.host + sessionPath + '/chat';
    console.log("Connecting to socket: " + socketUrl);
 
    try {
@@ -97,6 +97,14 @@ function incoming(payload) {
 
       case "receivedTextMessage":
          receivedTextMessage(payload);
+         break;
+
+      case "onlineNotification":
+         onlineNotification(payload);
+         break;
+
+      case "offlineNotification":
+         offlineNotification(payload);
          break;
 
       default:

@@ -3,10 +3,12 @@ package com.sbit.chatify.service.impl;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.model.SocketResponse;
+import com.sbit.chatify.service.NotificationService;
 import com.sbit.chatify.service.SocketService;
 import com.sbit.chatify.websocket.SocketUtil;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
@@ -20,6 +22,9 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class SocketServiceImpl implements SocketService {
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public void register(WebSocketSession session) {
         try {
@@ -32,6 +37,7 @@ public class SocketServiceImpl implements SocketService {
             }
 
             SocketUtil.addConnection(userId, session);
+            notificationService.sendOnlineNotificationToContacts(userId);
 
             log.info("WebSocket connected | userId={} | sessionId={} | total={}",
                     userId, session.getId(), SocketUtil.getConnectionSize());
@@ -76,6 +82,11 @@ public class SocketServiceImpl implements SocketService {
         );
 
         safeClose(session, status);
+        notificationService.sendOfflineNotificationToContacts(userId);
+    }
+
+    private void sendOfflineNotificationToContacts(String userId) {
+
     }
 
     /* ================= INTERNAL ================= */
@@ -89,7 +100,6 @@ public class SocketServiceImpl implements SocketService {
                     .userId(userId)
                     .build());
         }
-
         safeClose(session, CloseStatus.NORMAL);
     }
 

@@ -71,6 +71,10 @@ function sendMessageToSocket(message) {
 
 function chatClicked(element) {
    const contactId = $(element).attr('id').replace('chatgroup-', '');
+   let status = checkIfChatAlreadyOpen(contactId);
+   if (status) {
+      return;
+   }
    chatOpenUserId = contactId;
    let color = $('#p-' + contactId).css('color');
    if (color === 'rgb(33, 37, 41)') {
@@ -81,8 +85,16 @@ function chatClicked(element) {
 
 function openChat(element) {
    const contactId = $(element).attr('id').replace('contact-', '');
+   let status = checkIfChatAlreadyOpen(contactId);
+   if (status) {
+      return;
+   }
    chatOpenUserId = contactId;
    sendPayloadToGetChat(contactId);
+}
+
+function checkIfChatAlreadyOpen(contactId) {
+   return chatOpenUserId === contactId
 }
 
 function sendPayloadToGetChat(contactId) {

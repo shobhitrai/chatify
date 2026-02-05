@@ -115,6 +115,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             }
 
             session.setAttribute(MessageConstant.USER_ID, user.getId().toString());
+            log.info("Session timeout = {} seconds", session.getMaxInactiveInterval());
             log.info("Session created for user: {} with session Id: {}", user.getId(), session.getId());
             return PageConstant.REDIRECT_WALL;
 

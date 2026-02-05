@@ -22,4 +22,6 @@ public interface SocketConstant {
     String TEXT_MESSAGE = "textMessage";
     String ACK_TEXT_MESSAGE = "ackTextMessage";
     String RECEIVED_TEXT_MESSAGE = "receivedTextMessage";
+    String OFFLINE_NOTIFICATION = "offlineNotification";
+    String ONLINE_NOTIFICATION = "onlineNotification";
 }

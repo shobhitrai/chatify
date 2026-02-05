@@ -295,4 +295,5 @@ function loadChatMessages(data) {
     </div>
     `;
    $('#nav-tabContent').empty().append(context);
+   globalAdjustScroll();
 }
