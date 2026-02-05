@@ -5,7 +5,7 @@ $(document).ready(function () {
 var webSocket;
 
 function connect() {
-   const socketUrl = 'ws://' + document.location.host + sessionPath + '/chat';
+   const socketUrl = 'wss://' + document.location.host + sessionPath + '/chat';
    console.log("Connecting to socket: " + socketUrl);
 
    try {

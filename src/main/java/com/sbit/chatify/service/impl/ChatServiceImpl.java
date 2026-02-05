@@ -88,7 +88,7 @@ public class ChatServiceImpl implements ChatService {
             }
 
             Chat chat = Chat.builder().senderId(userId).receiverId(receiverId).type(MessageConstant.TEXT)
-                    .message(message).createdAt(date).build();
+                    .message(message).createdAt(date).isActive(true).build();
             chatDao.save(chat);
 
         } catch (Exception e) {
@@ -108,9 +108,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private SocketResponse getChatsBetweenUsers(String userId, String contactId) {
-        List<ChatDto> chats = chatDao.findChatBySenderAndReceiverId(userId, contactId)
-                .stream().map(this::mapToChatDto).toList();
-        Map<String, Object> data = buildData(contactId, chats);
+        List<Chat> chats = chatDao.findChatBySenderAndReceiverId(userId, contactId);
+        List<ChatDto> chatDtos = chats.stream().map(this::mapToChatDto).toList();
+        Map<String, Object> data = buildData(contactId, chatDtos);
         return SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE).data(data)
                 .type(SocketConstant.ACK_GET_CHAT).build();
     }

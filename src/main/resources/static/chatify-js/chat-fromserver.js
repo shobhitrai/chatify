@@ -54,8 +54,6 @@ function ackGetChat(payload) {
          initializeChatVariables(contact);
          if (payload.data.chat.length === 1 && payload.data.chat[0].type === 'friendRequest') {
             appendFriendRequestChat(payload.data);
-         } else if (payload.data.chat.length === 0) {
-            appendNoChatFoundScreen(payload.data);
          } else {
             loadChatMessages(payload.data);
          }
@@ -69,10 +67,6 @@ function ackGetChat(payload) {
    }
 }
 
-function loadChatMessages(data) {
-    let other = data.otherUser;
-}
-
 function initializeChatVariables(contact) {
     chatOpenProfileImage = contact.profileImage;
     chatOpenFirstName = contact.firstName;
@@ -81,156 +75,148 @@ function initializeChatVariables(contact) {
 }
 
 function appendFriendRequestChat(data) {
-   let other = data.otherUser;
-   let chat = data.chat[0];
-   let context = null;
-   let onlineStatus = other.isOnline ? 'online' : 'offline';
+   const other = data.otherUser;
+   const chat = data.chat[0];
+   const onlineStatus = other.isOnline ? 'online' : 'offline';
+
+   let requestText = '';
+   let actionButtons = '';
+
    if (sessionUserId === chat.senderId) {
-      context = `
-            <div class="babble tab-pane fade active show" id="chat-${other.userId}">
-              <div class="chat">
-                <div class="top">
-                  <div class="container">
-                    <div class="col-md-12">
-                      <div class="inside">
-                        <a href="#"><img class="avatar-md" src="${other.profileImage}" data-toggle="tooltip"
-                            data-placement="top" title="${other.firstName}" alt="avatar"></a>
-                        <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
-                        <div class="data"><h5><a href="#">${other.firstName} ${other.lastName}</a></h5><span>Inactive</span></div>
-
-                        <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-30">phone_in_talk</i></button>
-                        <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-36">videocam</i></button>
-                        <button class="btn d-md-block disabled d-none" disabled><i class="material-icons md-30">info</i></button>
-
-                        <div class="dropdown">
-                          <button class="btn disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
-                            <i class="material-icons md-30">more_vert</i>
-                          </button>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item"><i class="material-icons">phone_in_talk</i>Voice Call</button>
-                            <button class="dropdown-item"><i class="material-icons">videocam</i>Video Call</button>
-                            <hr>
-                            <button class="dropdown-item"><i class="material-icons">clear</i>Clear History</button>
-                            <button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
-                            <button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="content empty">
-                  <div class="container">
-                    <div class="col-md-12">
-                      <div class="no-messages request">
-                        <a href="#"><img class="avatar-xl" src="${other.profileImage}" data-toggle="tooltip"
-                            data-placement="top" title="${other.firstName}" alt="avatar"></a>
-                        <h5><span>You have send a friend request to ${other.firstName} ${other.lastName}, Waiting for acceptance.</span></h5>
-                        <div class="options">
-                          <button class="btn button fr-cancel-btn" id="cancel-${other.userId}">
-                            <i class="material-icons">close</i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="container">
-                  <div class="col-md-12">
-                    <div class="bottom">
-                      <form class="position-relative w-100">
-                        <textarea class="form-control" placeholder="Messaging unavailable" rows="1" disabled></textarea>
-                        <button class="btn emoticons disabled" disabled><i class="material-icons">insert_emoticon</i></button>
-                        <button class="btn send disabled" disabled><i class="material-icons">send</i></button>
-                      </form>
-                      <label>
-                        <input type="file" disabled>
-                        <span class="btn attach disabled d-sm-block d-none"><i class="material-icons">attach_file</i></span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            `;
+      requestText = `You have sent a friend request to ${other.firstName} ${other.lastName}, Waiting for acceptance.`;
+      actionButtons =
+         `<button class="btn button fr-cancel-btn" id="cancel-${other.userId}">
+         <i class="material-icons">close</i>
+       </button>`;
    } else {
-      context = `
-            <div class="babble tab-pane fade active show" id="chat-${other.userId}">
-              <div class="chat">
-                <div class="top">
-                  <div class="container">
-                    <div class="col-md-12">
-                      <div class="inside">
-                        <a href="#"><img class="avatar-md" src="${other.profileImage}" data-toggle="tooltip"
-                            data-placement="top" title="${other.firstName}" alt="avatar"></a>
-                        <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
-                        <div class="data"><h5><a href="#">${other.firstName} ${other.lastName}</a></h5><span>Inactive</span></div>
+      requestText = chat.message;
+      actionButtons =
+         `<button class="btn button fr-accept-btn" id="accept-${other.userId}">
+         <i class="material-icons">check</i>
+       </button>
+       <button class="btn button fr-reject-btn" id="reject-${other.userId}">
+         <i class="material-icons">close</i>
+       </button>`;
+   }
 
-                        <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-30">phone_in_talk</i></button>
-                        <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-36">videocam</i></button>
-                        <button class="btn d-md-block disabled d-none" disabled><i class="material-icons md-30">info</i></button>
-
-                        <div class="dropdown">
-                          <button class="btn disabled" data-toggle="dropdown" disabled><i class="material-icons md-30">more_vert</i></button>
-                          <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item"><i class="material-icons">phone_in_talk</i>Voice Call</button>
-                            <button class="dropdown-item"><i class="material-icons">videocam</i>Video Call</button>
-                            <hr>
-                            <button class="dropdown-item"><i class="material-icons">clear</i>Clear History</button>
-                            <button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
-                            <button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="content empty">
-                  <div class="container">
-                    <div class="col-md-12">
-                      <div class="no-messages request">
-                        <a href="#"><img class="avatar-xl" src="${other.profileImage}" data-toggle="tooltip"
-                            data-placement="top" title="${other.firstName}" alt="avatar"></a>
-                        <h5><span>${chat.message}</span></h5>
-                        <div class="options">
-                          <button class="btn button fr-accept-btn" id="accept-${other.userId}"><i class="material-icons">check</i></button>
-                          <button class="btn button fr-reject-btn" id="reject-${other.userId}"><i class="material-icons">close</i></button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
+   const context = `
+       <div class="babble tab-pane fade active show" id="chat-${other.userId}">
+          <div class="chat">
+             <div class="top">
                 <div class="container">
-                  <div class="col-md-12">
-                    <div class="bottom">
+                   <div class="col-md-12">
+                      <div class="inside">
+                         <a href="#"><img class="avatar-md" src="${other.profileImage}" data-toggle="tooltip" title="${other.firstName}"></a>
+                         <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
+                         <div class="data">
+                            <h5>${other.firstName} ${other.lastName}</h5>
+                            <span>Inactive</span>
+                         </div>
+                         <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-30">phone_in_talk</i></button>
+                         <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-36">videocam</i></button>
+                         <button class="btn disabled d-md-block d-none" disabled><i class="material-icons md-30">info</i></button>
+                         <div class="dropdown">
+                            <button class="btn disabled" disabled><i class="material-icons md-30">more_vert</i></button>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="content empty">
+                <div class="container">
+                   <div class="col-md-12">
+                      <div class="no-messages request">
+                         <a href="#"><img class="avatar-xl" src="${other.profileImage}" data-toggle="tooltip" title="${other.firstName}"></a>
+                         <h5><span>${requestText}</span></h5>
+                         <div class="options">${actionButtons}</div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+             <div class="container">
+                <div class="col-md-12">
+                   <div class="bottom">
                       <form class="position-relative w-100">
-                        <textarea class="form-control" placeholder="Messaging unavailable" rows="1" disabled></textarea>
-                        <button class="btn emoticons disabled" disabled><i class="material-icons">insert_emoticon</i></button>
-                        <button class="btn send disabled" disabled><i class="material-icons">send</i></button>
+                         <textarea class="form-control" placeholder="Messaging unavailable" rows="1" disabled></textarea>
+                         <button class="btn emoticons disabled" disabled><i class="material-icons">insert_emoticon</i></button>
+                         <button class="btn send disabled" disabled><i class="material-icons">send</i></button>
                       </form>
                       <label>
-                        <input type="file" disabled>
-                        <span class="btn attach disabled d-sm-block d-none"><i class="material-icons">attach_file</i></span>
+                      <input type="file" disabled>
+                      <span class="btn attach disabled d-sm-block d-none"><i class="material-icons">attach_file</i></span>
                       </label>
-                    </div>
-                  </div>
+                   </div>
                 </div>
-              </div>
-            </div>
-            `;
-   }
-   $('#nav-tabContent').html('');
-   $('#nav-tabContent').append(context);
+             </div>
+          </div>
+       </div>
+       `;
+   $('#nav-tabContent').empty().append(context);
 }
 
-function appendNoChatFoundScreen(data) {
+function loadChatMessages(data) {
    let other = data.otherUser;
+   let chat = data.chat;
    const status = other.isOnline ? 'online' : 'offline';
    const status2 = other.isOnline ? 'Active' : 'Inactive';
+
+   let chatWindow = '';
+   if (chat.length > 0) {
+        let messageContent = '';
+      for (let i = 0; i < chat.length; i++) {
+         if(chat[i].senderId === sessionUserId) {
+            messageContent += `
+            <div class="message me">
+               <div class="text-main">
+                  <div class="text-group me">
+                     <div class="text me">
+                        <p>${chat[i].message}</p>
+                     </div>
+                  </div>
+                  <span>${globalGetChatTimeByTimeStamp(chat[i].createdAt)}</span>
+               </div>
+            </div>
+            `;
+         } else {
+            messageContent += `
+                <div class="message">
+                   <img class="avatar-md" src="${chatOpenProfileImage}" data-toggle="tooltip" data-placement="top" title="${chatOpenFirstName}" alt="avatar">
+                   <div class="text-main">
+                      <div class="text-group">
+                         <div class="text">
+                            <p>${chat[i].message}</p>
+                         </div>
+                      </div>
+                      <span>${globalGetChatTimeByTimeStamp(chat[i].createdAt)}</span>
+                   </div>
+                </div>
+            `;
+         }
+      }
+      chatWindow = `
+        <div class="content">
+           <div class="container">
+              <div class="col-md-12">
+                    ${messageContent}
+              </div>
+           </div>
+        </div>
+      `;
+   } else {
+      chatWindow = `
+        <div class="content empty">
+           <div class="container">
+              <div class="col-md-12">
+                 <div class="no-messages">
+                    <i class="material-icons md-48">forum</i>
+                    <p>Seems people are shy to start the chat. Break the ice send the first message.</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+      `;
+   }
+
    const context = `
     <div class="babble tab-pane fade active show" id="chat-${other.userId}">
       <div class="chat">
@@ -264,18 +250,7 @@ function appendNoChatFoundScreen(data) {
             </div>
           </div>
         </div>
-
-        <div class="content empty">
-          <div class="container">
-            <div class="col-md-12">
-              <div class="no-messages">
-                <i class="material-icons md-48">forum</i>
-                <p>Seems people are shy to start the chat. Break the ice send the first message.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        ${chatWindow}
         <div class="container">
           <div class="col-md-12">
             <div class="bottom">
@@ -319,7 +294,5 @@ function appendNoChatFoundScreen(data) {
       </div>
     </div>
     `;
-
-   $('#nav-tabContent').html('');
-   $('#nav-tabContent').append(context);
+   $('#nav-tabContent').empty().append(context);
 }

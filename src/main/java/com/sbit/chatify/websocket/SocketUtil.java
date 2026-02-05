@@ -13,9 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public final class SocketUtil {
 
-    private SocketUtil() {
-    }
-
     /* ======================= CORE ======================= */
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -139,8 +136,7 @@ public final class SocketUtil {
                     session.sendMessage(new TextMessage(payload));
 
                 } catch (Exception e) {
-                    log.error("Failed to send message | userId={} | sessionId={}",
-                            response.getUserId(), sessionId, e);
+                    log.error("Failed to send message | userId={} | sessionId={}", response.getUserId(), sessionId, e);
                 }
             }
         });
