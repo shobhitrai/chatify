@@ -98,26 +98,6 @@ function appendFriendRequestToChat() {
    $('#chats').prepend(data);
 }
 
-function appendNotification(payload) {
-   if (payload.status === 100) {
-      const noti = payload.data;
-      const text = `
-      <a href="#" class="filterNotifications all ${noti.isRecent ? 'latest' : 'oldest'} notification">
-        <img class="avatar-md" src="${noti.senderProfileImage}" data-toggle="tooltip" data-placement="top"
-            title="${noti.senderFirstName}" alt="avatar">
-        <div class="status"><i class="material-icons online">fiber_manual_record</i></div>
-        <div class="data">
-          <p>${noti.message}</p>
-          <span>${noti.formattedDate}</span>
-        </div>
-      </a>
-      `;
-      $('#alerts').prepend(text);
-   } else {
-      console.error('Failed to append notification: ' + payload.message);
-   }
-}
-
 function updateMainChat(contact) {
     const status = contact.isOnline ? 'online' : 'offline';
     const status2 = contact.isOnline ? 'Active' : 'Inactive';

@@ -5,8 +5,8 @@ import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.model.SocketResponse;
 import com.sbit.chatify.service.NotificationService;
 import com.sbit.chatify.service.SocketService;
+import com.sbit.chatify.utility.ApplicationShutdownState;
 import com.sbit.chatify.websocket.SocketUtil;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +14,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -62,6 +60,9 @@ public class SocketServiceImpl implements SocketService {
 
     @Override
     public void transportError(WebSocketSession session, Throwable exception) {
+        if (ApplicationShutdownState.isShuttingDown())
+            return;
+
         String userId = SocketUtil.getUserIdFromConnection(session);
 
         log.error(
@@ -76,17 +77,15 @@ public class SocketServiceImpl implements SocketService {
     public void closeConnection(WebSocketSession session, CloseStatus status) {
         String userId = SocketUtil.getUserIdFromConnection(session);
 
-        log.info(
-                "WebSocket closing | userId={} | code={} | reason={}",
-                userId, status.getCode(), status.getReason()
-        );
+        log.info("WebSocket closing | userId={} | code={} | reason={}",
+                userId, status.getCode(), status.getReason());
 
         safeClose(session, status);
+        if (ApplicationShutdownState.isShuttingDown()) {
+            log.info("Application is shutting down, skipping offline notification");
+            return;
+        }
         notificationService.sendOfflineNotificationToContacts(userId);
-    }
-
-    private void sendOfflineNotificationToContacts(String userId) {
-
     }
 
     /* ================= INTERNAL ================= */

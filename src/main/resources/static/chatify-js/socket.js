@@ -5,7 +5,8 @@ $(document).ready(function () {
 var webSocket;
 
 function connect() {
-   const socketUrl = 'ws://' + document.location.host + sessionPath + '/chat';
+   const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
+   const socketUrl = protocol + location.host + sessionPath + '/chat';
    console.log("Connecting to socket: " + socketUrl);
 
    try {
@@ -21,8 +22,13 @@ function connect() {
    };
 
    webSocket.onmessage = (event) => {
-      let payload = JSON.parse(event.data);
-      console.log("From socket" + JSON.stringify(payload));
+   let payload = null;
+      try {
+         payload = JSON.parse(event.data);
+         console.log("From socket:", payload);
+      } catch (e) {
+         console.error("Invalid JSON from socket:", event.data);
+      }
       incoming(payload);
    };
 
@@ -57,6 +63,7 @@ function globalSendToSocket(payload) {
 }
 
 function incoming(payload) {
+try {
    switch (payload.type) {
       case "invalidSession":
          alert("Session expired, please login again.");
@@ -109,5 +116,8 @@ function incoming(payload) {
 
       default:
          console.warn("Unknown payload type:", payload.type);
+   }
+   } catch (error) {
+      console.error("Error processing incoming payload:", error);
    }
 }

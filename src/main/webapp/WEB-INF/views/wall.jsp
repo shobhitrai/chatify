@@ -197,6 +197,7 @@
 		<script src="${path}/chatify-js/friend-request-toserver.js"></script>
         <script src="${path}/chatify-js/chat-fromserver.js"></script>
         <script src="${path}/chatify-js/chat-toserver.js"></script>
+        <script src="${path}/chatify-js/notification.js"></script>
 		<script>
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();

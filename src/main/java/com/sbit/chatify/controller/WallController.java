@@ -2,7 +2,6 @@ package com.sbit.chatify.controller;
 
 import com.sbit.chatify.constant.UrlConstant;
 import com.sbit.chatify.service.WallService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

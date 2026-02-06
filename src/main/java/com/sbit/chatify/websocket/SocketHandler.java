@@ -7,7 +7,6 @@ import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.ChatService;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
