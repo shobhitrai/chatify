@@ -51,10 +51,9 @@ public class FriendReqServiceImpl implements FriendReqService {
     @Override
     public void sendFriendRequest(String userId, FriendRequestDto friendRequestDto) {
         try {
-            Contact contact = contactDao.findByUserId(userId);
-            if (Objects.nonNull(contact) && contact.getContacts().stream()
-                    .anyMatch(contactInfo ->
-                            contactInfo.getContactId().equals(friendRequestDto.getReceiverId()))) {
+            List<Contact> contacts = contactDao.findByUserId(userId);
+            if (!contacts.isEmpty() && contacts.stream()
+                    .anyMatch(c -> c.getContactId().equals(friendRequestDto.getReceiverId()))) {
                 var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.FAILURE_CODE)
                         .message(MessageConstant.ALREADY_CONTACT)
                         .type(SocketConstant.ACK_FRIEND_REQUEST).build();
@@ -80,7 +79,8 @@ public class FriendReqServiceImpl implements FriendReqService {
 
             //to sender
             var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST).build();
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST)
+                    .data(SocketUtil.isUserConnected(friendRequestDto.getReceiverId())).build();
             SocketUtil.send(socketResponse);
 
             //to receiver
@@ -174,25 +174,26 @@ public class FriendReqServiceImpl implements FriendReqService {
             friendRequest.setIsActive(false);
             friendRequestDao.save(friendRequest);
 
-            //add receiver to sender's contact list senderContact
-            ContactDto senderContact = saveContact(userId, friendRequestDto.getSenderId());
-            //add sender to receiver's contact list
-            ContactDto receiverContact = saveContact(friendRequestDto.getSenderId(), userId);
+            //add friend request sender to receiver's contact list
+            ContactDto receiverContact = saveContact(userId, friendRequestDto.getSenderId());
+            //add friend request receiver to sender's contact list
+            ContactDto senderContact = saveContact(friendRequestDto.getSenderId(), userId);
+
 
             // send acknowledgement to the one who accepted the request
             socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
                     .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_ACCEPT_FRIEND_REQUEST)
-                    .data(senderContact).build();
+                    .data(receiverContact).build();
             SocketUtil.send(socketResponse);
 
             // notify the sender about acceptance
             if (SocketUtil.isUserConnected(senderContact.getUserId()))
                 socketResponse = SocketResponse.builder().userId(senderContact.getUserId())
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                        .type(SocketConstant.ADD_CONTACT).data(receiverContact).build();
+                        .type(SocketConstant.ADD_CONTACT).data(senderContact).build();
             SocketUtil.send(socketResponse);
 
-            String message = receiverContact.getFirstName() + MessageConstant.ACCEPT_FRIEND_REQUEST;
+            String message = senderContact.getFirstName() + MessageConstant.ACCEPT_FRIEND_REQUEST;
             UserDetail receiverDetail = userDetailDao.findByUserId(receiverContact.getUserId());
             notificationService.sendNotification(receiverDetail, senderContact.getUserId(), message);
 
@@ -264,27 +265,18 @@ public class FriendReqServiceImpl implements FriendReqService {
 
 
     private ContactDto saveContact(String userId, String contactId) {
-        Contact contact = Optional.ofNullable(contactDao.findByUserId(userId))
-                .orElse(Contact.builder().userId(userId).contacts(new ArrayList<>()).build());
-
-        UserDetail userDetails = userDetailDao.findByUserId(contactId);
-        ContactInfo contactInfo = ContactInfo.builder()
-                .contactId(contactId)
-                .contactFirstName(userDetails.getFirstName())
-                .contactLastName(userDetails.getLastName())
-                .createdAt(new Date())
-                .isLastMsgSeen(false)
-                .unreadMsgCount(0)
-                .build();
-        contact.getContacts().add(contactInfo);
+        var contact = Contact.builder().userId(userId).contactId(contactId)
+                .createdAt(new Date()).unreadMsgCount(0).build();
         contactDao.save(contact);
 
-        return ContactDto.builder().userId(userDetails.getUserId())
+        UserDetail userDetails = userDetailDao.findByUserId(contactId);
+
+        return ContactDto.builder().userId(userId)
                 .contactId(contactId)
                 .lastName(userDetails.getLastName())
                 .firstName(userDetails.getFirstName())
                 .profileImage(userDetails.getProfileImage())
-                .createdAt(contactInfo.getCreatedAt())
+                .createdAt(contact.getCreatedAt())
                 .isOnline(SocketUtil.isUserConnected(userDetails.getUserId())).build();
     }
 

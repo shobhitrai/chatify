@@ -1,7 +1,6 @@
 package com.sbit.chatify.entity;
 
 import com.sbit.chatify.constant.CollectionConstant;
-import com.sbit.chatify.model.ContactInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -25,5 +24,7 @@ public class Contact implements Serializable {
     @Id
     private ObjectId id;
     private String userId;
-    private List<ContactInfo> contacts;
+    private String contactId;
+    private Date createdAt;
+    private int unreadMsgCount;
 }

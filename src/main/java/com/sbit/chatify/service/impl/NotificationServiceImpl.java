@@ -6,6 +6,7 @@ import com.sbit.chatify.constant.StatusConstant;
 import com.sbit.chatify.dao.ContactDao;
 import com.sbit.chatify.dao.NotificationDao;
 import com.sbit.chatify.dao.UserDetailDao;
+import com.sbit.chatify.entity.Contact;
 import com.sbit.chatify.entity.Notification;
 import com.sbit.chatify.entity.UserDetail;
 import com.sbit.chatify.model.NotificationDto;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -87,8 +89,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private void sendNotificationToContact(String userId, String status) {
-        var contacts = contactDao.findByUserId(userId);
-        contacts.getContacts().stream()
+        List<Contact> contacts = contactDao.findByUserId(userId);
+        contacts.stream()
                 .filter(c -> SocketUtil.isUserConnected(c.getContactId())).forEach(c -> {
                     var socketResponse = SocketResponse.builder().userId(c.getContactId())
                             .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)

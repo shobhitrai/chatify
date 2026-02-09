@@ -31,6 +31,7 @@ $(document).on('click', '.bottom .send', async function () {
            </div>
            `;
    globalAppendMessage(context);
+   $('#p-' + chatOpenUserId).text(message);
 
    try {
       await sendMessageToSocket(message);

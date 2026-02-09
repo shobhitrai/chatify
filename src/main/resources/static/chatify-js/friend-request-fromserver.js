@@ -71,22 +71,23 @@ function ackFriendRequest(payload) {
    $('#send-frnd-req-btn').prop('disabled', false);
    if (payload.status == 100) {
       $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
-      appendFriendRequestToChat();
+      appendFriendRequestToChat(payload.data);
       resetFriendReq();
    } else {
       $('#friend-req-submit-error').text(payload.message);
    }
 }
 
-function appendFriendRequestToChat() {
+function appendFriendRequestToChat(isOnline) {
    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
    const now2 = new Date();
    const formatted2 = `${months[now2.getMonth()]} ${now2.getDate()}`;
    const chatgroupMessage = "You have send a friend request to " + friendFirstName + ' ' + friendLastName;
+   const onlineStatus = isOnline ? 'online' : 'offline';
    const data = `
    <a id="chatgroup-${friendUserId}" href="#" class="filterDiscussions all unread single">
      <img class="avatar-md" src="${friendProfileImage}" data-toggle="tooltip" data-placement="top" title="${friendFirstName}" alt="avatar">
-     <div class="status"><i class="material-icons offline">fiber_manual_record</i></div>
+     <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
      <div class="new bg-gray"><span>?</span></div>
      <div class="data">
        <h5>${friendFirstName} ${friendLastName}</h5>
@@ -108,7 +109,7 @@ function updateMainChat(contact) {
           <div class="container">
             <div class="col-md-12">
               <div class="inside">
-                <a href="#"><img class="avatar-md" src="${contact.profileImage}" data-toggle="tooltip" data-placement="top" title="Lean" alt="avatar"></a>
+                <a href="#"><img class="avatar-md" src="${contact.profileImage}" data-toggle="tooltip" data-placement="top" title="${contact.firstName}" alt="avatar"></a>
                 <div class="status"><i class="material-icons ${status}">fiber_manual_record</i></div>
                 <div class="data"><h5><a href="#">${contact.firstName} ${contact.lastName}</a></h5><span>${status2}</span></div>
 

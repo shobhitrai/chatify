@@ -1,8 +1,8 @@
 function receivedTextMessage(payload) {
    if (payload.status === 100) {
       const senderId = payload.data.senderId;
+      const message = payload.data.message;
       if (chatOpenUserId === senderId) {
-         const message = payload.data.message;
          const time = globalGetChatTimeByTimeStamp(payload.data.createdAt);
          const context = `
             <div class="message">
@@ -20,6 +20,7 @@ function receivedTextMessage(payload) {
          `;
          globalAppendMessage(context);
       }
+      $('#p-' + senderId).text(message);
    } else {
       console.error("Error receiving text message: " + payload.message);
    }
@@ -49,10 +50,10 @@ function createMainChat(payload) {
 
 function ackGetChat(payload) {
    if (payload.status === 100) {
-      const contact = payload.data.otherUser;
+      const contact = payload.data.contact;
       if (contact.userId === chatOpenUserId) {
          initializeChatVariables(contact);
-         if (payload.data.chat.length === 1 && payload.data.chat[0].type === 'friendRequest') {
+         if (payload.data.chats.length === 1 && payload.data.chats[0].type === 'friendRequest') {
             appendFriendRequestChat(payload.data);
          } else {
             loadChatMessages(payload.data);
@@ -75,8 +76,8 @@ function initializeChatVariables(contact) {
 }
 
 function appendFriendRequestChat(data) {
-   const other = data.otherUser;
-   const chat = data.chat[0];
+   const other = data.contact;
+   const chat = data.chats[0];
    const onlineStatus = other.isOnline ? 'online' : 'offline';
 
    let requestText = '';
@@ -155,8 +156,8 @@ function appendFriendRequestChat(data) {
 }
 
 function loadChatMessages(data) {
-   let other = data.otherUser;
-   let chat = data.chat;
+   const other = data.contact;
+   const chat = data.chats;
    const status = other.isOnline ? 'online' : 'offline';
    const status2 = other.isOnline ? 'Active' : 'Inactive';
 

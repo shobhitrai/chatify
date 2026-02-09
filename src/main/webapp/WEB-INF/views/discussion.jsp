@@ -30,11 +30,13 @@
                </div>
                <div class="data">
                   <h5>${chatGroup.contact.firstName} ${chatGroup.contact.lastName}</h5>
-                  <span>${chatGroup.chat.formattedDate}</span>
+                  <span>${chatGroup.chats[0].formattedDate}</span>
                   <p id="p-${chatGroup.contact.userId}">
-                     ${chatGroup.chat.message}
-                     <c:if test="${sessionScope.userId == chatGroup.chat.senderId}">
-                        ${chatGroup.contact.firstName} ${chatGroup.contact.lastName}
+                     ${chatGroup.chats[0].message}
+                     <c:if test="${not empty chatGroup.chats
+                                  and chatGroup.chats[0].type eq 'friendRequest'
+                                  and sessionScope.userId eq chatGroup.chats[0].senderId}">
+                         ${chatGroup.contact.firstName} ${chatGroup.contact.lastName}
                      </c:if>
                   </p>
                </div>

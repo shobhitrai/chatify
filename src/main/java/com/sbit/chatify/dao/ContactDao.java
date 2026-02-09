@@ -2,10 +2,14 @@ package com.sbit.chatify.dao;
 
 import com.sbit.chatify.entity.Contact;
 
+import java.util.List;
+
 public interface ContactDao {
     Contact save(Contact contact);
 
-    Contact findByUserId(String userId);
+    List<Contact> findByUserId(String userId);
 
     void seenLastMsg(String userId, String contactId);
+
+    boolean isFriend(String userId, String contactId);
 }

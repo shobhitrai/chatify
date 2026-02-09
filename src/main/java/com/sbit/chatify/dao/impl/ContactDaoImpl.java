@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class ContactDaoImpl implements ContactDao {
 
@@ -21,10 +23,10 @@ public class ContactDaoImpl implements ContactDao {
     }
 
     @Override
-    public Contact findByUserId(String userId) {
+    public List<Contact> findByUserId(String userId) {
         var query = new Query();
         query.addCriteria(Criteria.where("userId").is(userId));
-        return mongoTemplate.findOne(query, Contact.class);
+        return mongoTemplate.find(query, Contact.class);
     }
 
     @Override
@@ -35,5 +37,15 @@ public class ContactDaoImpl implements ContactDao {
         Update update = new Update();
         update.set("contacts.$.isLastMsgSeen", true);
         mongoTemplate.updateFirst(query, update, Contact.class);
+    }
+
+    @Override
+    public boolean isFriend(String userId, String contactId) {
+        var query = new Query();
+        query.addCriteria(Criteria.where("userId").is(userId)
+                .and("contactId").is(contactId));
+        return mongoTemplate.exists(query, Contact.class);
+
+
     }
 }

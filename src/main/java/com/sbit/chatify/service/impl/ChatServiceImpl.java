@@ -8,13 +8,9 @@ import com.sbit.chatify.dao.ContactDao;
 import com.sbit.chatify.dao.FriendRequestDao;
 import com.sbit.chatify.dao.UserDetailDao;
 import com.sbit.chatify.entity.Chat;
-import com.sbit.chatify.entity.Contact;
 import com.sbit.chatify.entity.FriendRequest;
 import com.sbit.chatify.entity.UserDetail;
-import com.sbit.chatify.model.ChatDto;
-import com.sbit.chatify.model.ContactDto;
-import com.sbit.chatify.model.SocketResponse;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.ChatService;
 import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
@@ -22,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -53,9 +50,8 @@ public class ChatServiceImpl implements ChatService {
         SocketResponse socketResponse = null;
         try {
             String contactId = contactDto.getContactId();
-            socketResponse = isFriend(userId, contactId)
-                    ? getChatsBetweenUsers(userId, contactId)
-                    : friendRequestChat(userId, contactId);
+            boolean isFriend = isFriend(userId, contactId);
+            socketResponse = isFriend ? getChatsBetweenUsers(userId, contactId) : friendRequestChat(userId, contactId);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,16 +101,14 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private boolean isFriend(String userId, String contactId) {
-        return Optional.ofNullable(contactDao.findByUserId(userId))
-                .map(Contact::getContacts).orElse(Collections.emptyList())
-                .stream().anyMatch(c -> c.getContactId().equals(contactId));
+        return contactDao.isFriend(userId, contactId);
     }
 
     private SocketResponse getChatsBetweenUsers(String userId, String contactId) {
         List<Chat> chats = chatDao.findChatBySenderAndReceiverId(userId, contactId);
         List<ChatDto> chatDtos = chats.stream().map(this::mapToChatDto).toList();
-        Map<String, Object> data = buildData(contactId, chatDtos);
-        return SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE).data(data)
+        ChatGroup chatGroup = ChatGroup.builder().contact(buildUserDto(contactId)).chats(chatDtos).build();
+        return SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE).data(chatGroup)
                 .type(SocketConstant.ACK_GET_CHAT).build();
     }
 
@@ -136,19 +130,14 @@ public class ChatServiceImpl implements ChatService {
                 .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
                 .build();
 
-        Map<String, Object> data = buildData(contactId, List.of(chatDto));
-        return SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE).data(data)
+        ChatGroup chatGroup = ChatGroup.builder().contact(buildUserDto(contactId))
+                .chats(List.of(chatDto)).build();
+
+        return SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE).data(chatGroup)
                 .type(SocketConstant.ACK_GET_CHAT).build();
     }
 
-    private Map<String, Object> buildData(String contactId, List<ChatDto> chats) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("otherUser", buildUserDto(contactId));
-        data.put("chat", chats);
-        return data;
-    }
-
-    private Object buildUserDto(String contactId) {
+    private UserDto buildUserDto(String contactId) {
         UserDetail userDetail = userDetailDao.findByUserId(contactId);
         return UserDto.builder()
                 .userId(userDetail.getUserId())

@@ -4,10 +4,7 @@ import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.PageConstant;
 import com.sbit.chatify.dao.*;
 import com.sbit.chatify.entity.*;
-import com.sbit.chatify.model.ChatDto;
-import com.sbit.chatify.model.ContactDto;
-import com.sbit.chatify.model.NotificationDto;
-import com.sbit.chatify.model.UserDto;
+import com.sbit.chatify.model.*;
 import com.sbit.chatify.service.WallService;
 import com.sbit.chatify.utility.Util;
 import com.sbit.chatify.websocket.SocketUtil;
@@ -50,7 +47,9 @@ public class WallServiceImpl implements WallService {
 
         User user = userDao.findById(new ObjectId(userId));
         UserDto userDto = getUserDetails(user);
-        List<Map<String, Object>> chats = getAllFriendRequest(userId);
+
+        List<ChatGroup> chats = new ArrayList<>(getAllFriendRequest(userId));
+        chats.addAll(getLatestContactsChat(userId));
         List<NotificationDto> notifications = getAllNotifications(userId);
         List<ContactDto> contacts = getAllContacts(userId);
 
@@ -61,7 +60,38 @@ public class WallServiceImpl implements WallService {
         return PageConstant.WALL;
     }
 
-    private List<Map<String, Object>> getAllFriendRequest(String userId) {
+    private List<ChatGroup> getLatestContactsChat(String userId) {
+        List<Contact> contacts = contactDao.findByUserId(userId);
+
+        if (contacts.isEmpty())
+            return Collections.emptyList();
+
+        List<ChatGroup> chatsGroups = new ArrayList<>();
+        contacts.forEach(contact -> {
+            Chat chat = chatDao.findLatestChatBetweenUser(userId, contact.getContactId());
+            if (chat == null) return;
+
+            ChatDto chatDto = ChatDto.builder()
+                    .senderId(chat.getSenderId())
+                    .receiverId(chat.getReceiverId())
+                    .type(chat.getType())
+                    .message(chat.getMessage())
+                    .createdAt(chat.getCreatedAt())
+                    .formattedDate(Util.getChatFormatedDate(chat.getCreatedAt()))
+                    .build();
+
+            ChatGroup chatGroup = ChatGroup.builder()
+                    .contact(buildUserDto(contact.getContactId()))
+                    .chats(List.of(chatDto))
+                    .build();
+            chatsGroups.add(chatGroup);
+        });
+        return chatsGroups.stream()
+                .sorted(Comparator.comparing((ChatGroup cg) -> cg.getChats().get(0).getCreatedAt()).reversed())
+                .toList();
+    }
+
+    private List<ChatGroup> getAllFriendRequest(String userId) {
         List<FriendRequest> friendRequests = friendRequestDao.findActivePendingRequest(userId);
         if (friendRequests.isEmpty()) return Collections.emptyList();
 
@@ -76,14 +106,12 @@ public class WallServiceImpl implements WallService {
                     .createdAt(friendRequest.getCreatedAt())
                     .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
                     .build();
-            Map<String, Object> chatgroup = new HashMap<>();
-            chatgroup.put("contact", buildUserDto(contactId));
-            chatgroup.put("chat", chatDto);
-            return chatgroup;
+            return ChatGroup.builder().contact(buildUserDto(contactId))
+                    .chats(List.of(chatDto)).build();
         }).toList();
     }
 
-    private Object buildUserDto(String contactId) {
+    private UserDto buildUserDto(String contactId) {
         UserDetail userDetail = userDetailDao.findByUserId(contactId);
         return UserDto.builder()
                 .userId(userDetail.getUserId())
@@ -95,11 +123,11 @@ public class WallServiceImpl implements WallService {
     }
 
     private List<ContactDto> getAllContacts(String userId) {
-        Contact contacts = contactDao.findByUserId(userId);
+        List<Contact> contacts = contactDao.findByUserId(userId);
         if (Objects.isNull(contacts))
             return Collections.emptyList();
 
-        return contacts.getContacts().stream().map(contact -> {
+        return contacts.stream().map(contact -> {
                     UserDetail userDetail = userDetailDao.findByUserId(contact.getContactId());
                     return ContactDto.builder()
                             .contactId(contact.getContactId())
@@ -136,39 +164,6 @@ public class WallServiceImpl implements WallService {
                     .build();
         }).toList();
     }
-
-//    private List<ChatGroup> getAllChats(String userId) {
-//        List<FriendRequest> friendRequests = friendRequestDao.findActivePendingRequest(userId);
-//        if (friendRequests.isEmpty())
-//            return Collections.emptyList();
-//
-//        return friendRequests.stream().map(fr -> {
-//            boolean isSender = userId.equals(fr.getSenderId());
-//            String otherUserId = isSender ? fr.getReceiverId() : fr.getSenderId();
-//            UserDetail userDetail = userDetailDao.findByUserId(otherUserId);
-//
-//            ChatMessage chatMessage = ChatMessage.builder()
-//                    .type(isSender ? MessageConstant.SENT_FRIEND_REQUEST
-//                            : MessageConstant.RECEIVED_FRIEND_REQUEST)
-//                    .message(isSender ? MessageConstant.SENT_FRIEND_REQUEST_MESSAGE
-//                            + userDetail.getFirstName() + " " + userDetail.getLastName()
-//                            : fr.getMessage())
-//                    .createdAt(fr.getCreatedAt())
-//                    .formattedDate(Util.getChatFormatedDate(fr.getCreatedAt()))
-//                    .build();
-//
-//            return ChatGroup.builder()
-//                    .senderId(otherUserId)
-//                    .senderFirstName(userDetail.getFirstName())
-//                    .senderLastName(userDetail.getLastName())
-//                    .receiverId(userId)
-//                    .senderProfileImage(userDetail.getProfileImage())
-//                    .chats(List.of(chatMessage))
-//                    .isSenderOnline(SocketUtil.isUserConnected(otherUserId))
-//                    .build();
-//        }).sorted(Comparator.comparing(chatGroup -> chatGroup.getChats().get(0).getCreatedAt(),
-//                Comparator.reverseOrder())).toList();
-//    }
 
     private UserDto getUserDetails(User user) {
         var userDetail = userDetailDao.findByUserId(user.getId().toString());
