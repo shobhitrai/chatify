@@ -25,13 +25,19 @@
                <div class="status">
                   <i class="material-icons ${chatGroup.contact.isOnline ? 'online' : 'offline'}">fiber_manual_record</i>
                </div>
-               <div class="new bg-gray">
-                  <span>?</span>
-               </div>
+               <c:choose>
+                   <c:when test="${not empty chatGroup.chats and chatGroup.chats[0].type eq 'friendRequest'}">
+                       <div class="new bg-gray">
+                           <span>?</span>
+                       </div>
+                   </c:when>
+                   <c:otherwise>
+                   </c:otherwise>
+               </c:choose>
                <div class="data">
                   <h5>${chatGroup.contact.firstName} ${chatGroup.contact.lastName}</h5>
                   <span>${chatGroup.chats[0].formattedDate}</span>
-                  <p id="p-${chatGroup.contact.userId}">
+                  <p>
                      ${chatGroup.chats[0].message}
                      <c:if test="${not empty chatGroup.chats
                                   and chatGroup.chats[0].type eq 'friendRequest'

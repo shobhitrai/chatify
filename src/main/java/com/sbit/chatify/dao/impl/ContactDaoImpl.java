@@ -2,6 +2,7 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.ContactDao;
 import com.sbit.chatify.entity.Contact;
+import com.sbit.chatify.utility.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -45,7 +46,18 @@ public class ContactDaoImpl implements ContactDao {
         query.addCriteria(Criteria.where("userId").is(userId)
                 .and("contactId").is(contactId));
         return mongoTemplate.exists(query, Contact.class);
+    }
 
+    @Override
+    public void incrementUnseenMsg(String senderId, String contactId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(senderId)
+                .and("contactId").is(contactId));
 
+        Update update = new Update();
+        update.set("lastUpdatedAt", Util.getCurrentDateTime());
+        update.inc("unreadMsgCount", 1);
+
+        mongoTemplate.updateFirst(query, update, Contact.class);
     }
 }

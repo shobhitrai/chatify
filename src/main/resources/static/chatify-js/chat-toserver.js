@@ -1,11 +1,13 @@
 $(document).on('click', '.filterDiscussions', function (e) {
    e.preventDefault();
-   chatClicked(this);
+   const contactId = $(this).attr('id').replace('chatgroup-', '');
+   getAllChats(contactId);
 });
 
 $(document).on('click', '.filterMembers', function (e) {
    e.preventDefault();
-   openChat(this);
+   const contactId = $(this).attr('id').replace('contact-', '');
+   getAllChats(contactId)
 });
 
 $(document).on('click', '.bottom .send', async function () {
@@ -16,6 +18,9 @@ $(document).on('click', '.bottom .send', async function () {
    if (!message) return;
    console.log('Message to send:', message);
    $btn.prop('disabled', true);
+
+   globalCreateChatGroupIfNotExists(chatOpenUserId, new Date(), message);
+   $('#chatgroup-' + chatOpenUserId).find('.data p').text(message);
 
    $textarea.val('');
    const context = `
@@ -31,7 +36,8 @@ $(document).on('click', '.bottom .send', async function () {
            </div>
            `;
    globalAppendMessage(context);
-   $('#p-' + chatOpenUserId).text(message);
+
+   $('#chatgroup-' + chatOpenUserId).find('.data p').text(message);
 
    try {
       await sendMessageToSocket(message);
@@ -70,32 +76,18 @@ function sendMessageToSocket(message) {
    return globalSendToSocket(socketReq);
 }
 
-function chatClicked(element) {
-   const contactId = $(element).attr('id').replace('chatgroup-', '');
-   let status = checkIfChatAlreadyOpen(contactId);
-   if (status) {
+function getAllChats(contactId) {
+   if (chatOpenUserId === contactId) {
       return;
    }
    chatOpenUserId = contactId;
-   let color = $('#p-' + contactId).css('color');
+   $('#chatgroup-' + chatOpenUserId).find('div.new').remove();
+   const color = $('#chatgroup-' + chatOpenUserId).find('.data p').css('color');
+   console.log('Current chat preview color:', color);
    if (color === 'rgb(33, 37, 41)') {
-      $('#p-' + contactId).attr('style', 'color: #bdbac2;');
+      $('#chatgroup-' + chatOpenUserId).find('.data p').css('color', '#bdbac2');
    }
    sendPayloadToGetChat(contactId);
-}
-
-function openChat(element) {
-   const contactId = $(element).attr('id').replace('contact-', '');
-   let status = checkIfChatAlreadyOpen(contactId);
-   if (status) {
-      return;
-   }
-   chatOpenUserId = contactId;
-   sendPayloadToGetChat(contactId);
-}
-
-function checkIfChatAlreadyOpen(contactId) {
-   return chatOpenUserId === contactId
 }
 
 function sendPayloadToGetChat(contactId) {

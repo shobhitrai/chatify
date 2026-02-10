@@ -68,8 +68,8 @@ function sendFriendRequest(element) {
         $('#friend-req-submit-error').text('Please enter a message');
         return;
     }
-    if (message.length > 500) {
-        $('#friend-req-submit-error').text('Message cannot exceed 500 characters');
+    if (message.length > 100) {
+        $('#friend-req-submit-error').text('Message cannot exceed 100 characters');
         return;
     }
     $('#send-frnd-req-btn').prop('disabled', true);

@@ -12,4 +12,6 @@ public interface ContactDao {
     void seenLastMsg(String userId, String contactId);
 
     boolean isFriend(String userId, String contactId);
+
+    void incrementUnseenMsg(String userId, String receiverId);
 }

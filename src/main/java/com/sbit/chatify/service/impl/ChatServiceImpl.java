@@ -76,7 +76,7 @@ public class ChatServiceImpl implements ChatService {
             if (!isFriend(userId, receiverId))
                 return;
 
-            Date date = new Date();
+            Date date = Util.getCurrentDateTime();
             ChatDto dataForReceiver = ChatDto.builder().senderId(userId).receiverId(receiverId)
                     .type(MessageConstant.TEXT).message(message).createdAt(date).build();
 
@@ -84,6 +84,8 @@ public class ChatServiceImpl implements ChatService {
                 socketResponse = SocketResponse.builder().userId(receiverId).status(StatusConstant.SUCCESS_CODE)
                         .data(dataForReceiver).type(SocketConstant.RECEIVED_TEXT_MESSAGE).build();
                 SocketUtil.send(socketResponse);
+            } else {
+                contactDao.incrementUnseenMsg(userId, receiverId);
             }
 
             Chat chat = Chat.builder().senderId(userId).receiverId(receiverId).type(MessageConstant.TEXT)

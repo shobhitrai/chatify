@@ -18,7 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -79,8 +81,7 @@ public class FriendReqServiceImpl implements FriendReqService {
 
             //to sender
             var socketResponse = SocketResponse.builder().userId(userId).status(StatusConstant.SUCCESS_CODE)
-                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST)
-                    .data(SocketUtil.isUserConnected(friendRequestDto.getReceiverId())).build();
+                    .message(MessageConstant.SUCCESS).type(SocketConstant.ACK_FRIEND_REQUEST).build();
             SocketUtil.send(socketResponse);
 
             //to receiver
@@ -91,7 +92,6 @@ public class FriendReqServiceImpl implements FriendReqService {
                         .firstName(senderDetail.getFirstName())
                         .lastName(senderDetail.getLastName())
                         .profileImage(senderDetail.getProfileImage())
-                        .isOnline(SocketUtil.isUserConnected(senderDetail.getUserId()))
                         .build();
                 var chatDto = ChatDto.builder()
                         .type(MessageConstant.FRIEND_REQUEST)
@@ -99,12 +99,12 @@ public class FriendReqServiceImpl implements FriendReqService {
                         .createdAt(friendRequest.getCreatedAt())
                         .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
                         .build();
-                Map<String, Object> data = new HashMap<>();
-                data.put("sender", userDto);
-                data.put("chat", chatDto);
+
+                var chatGroup = ChatGroup.builder().chats(List.of(chatDto)).contact(userDto).build();
+
                 socketResponse = SocketResponse.builder().userId(friendRequestDto.getReceiverId())
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
-                        .type(SocketConstant.CREATE_CHAT_GROUP).data(data).build();
+                        .type(SocketConstant.CREATE_CHAT_GROUP).data(chatGroup).build();
                 SocketUtil.send(socketResponse);
             }
             notificationService.sendNotification(senderDetail, friendRequestDto.getReceiverId(),
@@ -187,11 +187,12 @@ public class FriendReqServiceImpl implements FriendReqService {
             SocketUtil.send(socketResponse);
 
             // notify the sender about acceptance
-            if (SocketUtil.isUserConnected(senderContact.getUserId()))
+            if (SocketUtil.isUserConnected(senderContact.getUserId())) {
                 socketResponse = SocketResponse.builder().userId(senderContact.getUserId())
                         .status(StatusConstant.SUCCESS_CODE).message(MessageConstant.SUCCESS)
                         .type(SocketConstant.ADD_CONTACT).data(senderContact).build();
-            SocketUtil.send(socketResponse);
+                SocketUtil.send(socketResponse);
+            }
 
             String message = senderContact.getFirstName() + MessageConstant.ACCEPT_FRIEND_REQUEST;
             UserDetail receiverDetail = userDetailDao.findByUserId(receiverContact.getUserId());

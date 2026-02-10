@@ -1,5 +1,6 @@
 package com.sbit.chatify.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatDto {
     private String senderId;
     private String receiverId;

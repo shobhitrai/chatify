@@ -65,34 +65,42 @@ function addToContactList(contact) {
      <div class="person-add"><i class="material-icons">person</i></div>
    </a>`;
    $('#contacts').prepend(data);
+
+    const $chat = $('#chatgroup-' + contact.contactId);
+    if ($chat.length) {
+      $chat.find('.new.bg-gray').remove();
+      const $statusIcon = $chat.find('.status i');
+      if (contact.isOnline) {
+         $statusIcon.removeClass('offline').addClass('online');
+      }
+    }
 }
 
 function ackFriendRequest(payload) {
    $('#send-frnd-req-btn').prop('disabled', false);
    if (payload.status == 100) {
       $('#friend-req-submit-error').text('Friend request sent successfully to ' + friendName);
-      appendFriendRequestToChat(payload.data);
+      appendFriendRequestToChat();
       resetFriendReq();
    } else {
       $('#friend-req-submit-error').text(payload.message);
    }
 }
 
-function appendFriendRequestToChat(isOnline) {
+function appendFriendRequestToChat() {
    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
    const now2 = new Date();
    const formatted2 = `${months[now2.getMonth()]} ${now2.getDate()}`;
    const chatgroupMessage = "You have send a friend request to " + friendFirstName + ' ' + friendLastName;
-   const onlineStatus = isOnline ? 'online' : 'offline';
    const data = `
    <a id="chatgroup-${friendUserId}" href="#" class="filterDiscussions all unread single">
      <img class="avatar-md" src="${friendProfileImage}" data-toggle="tooltip" data-placement="top" title="${friendFirstName}" alt="avatar">
-     <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
+     <div class="status"><i class="material-icons offline">fiber_manual_record</i></div>
      <div class="new bg-gray"><span>?</span></div>
      <div class="data">
        <h5>${friendFirstName} ${friendLastName}</h5>
        <span>${formatted2}</span>
-       <p id="p-${friendUserId}">${chatgroupMessage}</p>
+       <p>${chatgroupMessage}</p>
      </div>
    </a>
    `;
@@ -188,6 +196,5 @@ function updateMainChat(contact) {
     </div>
     `;
 
-    $('#nav-tabContent').html('');
-    $('#nav-tabContent').append(context);
+    $('#nav-tabContent').empty().append(context);
 }

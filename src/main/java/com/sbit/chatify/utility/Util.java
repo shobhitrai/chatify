@@ -51,4 +51,8 @@ public class Util {
         long oneWeekAgo = currentTime - TimeUnit.DAYS.toMillis(2);
         return givenDate.getTime() > oneWeekAgo;
     }
+
+    public static Date getCurrentDateTime() {
+        return new Date();
+    }
 }

@@ -26,5 +26,6 @@ public class Contact implements Serializable {
     private String userId;
     private String contactId;
     private Date createdAt;
+    private Date lastUpdatedAt;
     private int unreadMsgCount;
 }

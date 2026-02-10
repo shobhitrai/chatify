@@ -2,8 +2,12 @@ function receivedTextMessage(payload) {
    if (payload.status === 100) {
       const senderId = payload.data.senderId;
       const message = payload.data.message;
+      const createdAt = payload.data.createdAt;
+
+      globalCreateChatGroupIfNotExists(senderId, new Date(createdAt), message);
       if (chatOpenUserId === senderId) {
-         const time = globalGetChatTimeByTimeStamp(payload.data.createdAt);
+      $('#chatgroup-' + senderId).find('.data p').text(message);
+         const time = globalGetChatTimeByTimeStamp(createdAt);
          const context = `
             <div class="message">
               <img class="avatar-md" src="${chatOpenProfileImage}" data-toggle="tooltip" data-placement="top"
@@ -19,8 +23,10 @@ function receivedTextMessage(payload) {
             </div>
          `;
          globalAppendMessage(context);
+      } else {
+        $('#chatgroup-' + senderId).find('.data p').text(message).css('color', 'rgb(33, 37, 41)');
+        addUnreadChatCount(senderId);
       }
-      $('#p-' + senderId).text(message);
    } else {
       console.error("Error receiving text message: " + payload.message);
    }
@@ -28,19 +34,18 @@ function receivedTextMessage(payload) {
 
 function createMainChat(payload) {
    if (payload.status === 100) {
-      let sender = payload.data.sender;
-      let chat = payload.data.chat;
-      let onlineStatus = sender.isOnline ? 'online' : 'offline';
+      let sender = payload.data.contact;
+      let chat = payload.data.chats[0];
       const context = `
       <a id="chatgroup-${sender.userId}" href="#" class="filterDiscussions all unread single">
         <img class="avatar-md" src="${sender.profileImage}" data-toggle="tooltip"
             data-placement="top" title="${sender.firstName}" alt="avatar">
-        <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
+        <div class="status"><i class="material-icons offline">fiber_manual_record</i></div>
         <div class="new bg-gray"><span>?</span></div>
         <div class="data">
           <h5>${sender.firstName} ${sender.lastName}</h5>
           <span>${chat.formattedDate}</span>
-          <p id="p-${sender.userId}">${chat.message}</p>
+          <p>${chat.message}</p>
         </div>
       </a>
       `;
@@ -108,7 +113,7 @@ function appendFriendRequestChat(data) {
                    <div class="col-md-12">
                       <div class="inside">
                          <a href="#"><img class="avatar-md" src="${other.profileImage}" data-toggle="tooltip" title="${other.firstName}"></a>
-                         <div class="status"><i class="material-icons ${onlineStatus}">fiber_manual_record</i></div>
+                         <div class="status"><i class="material-icons offline">fiber_manual_record</i></div>
                          <div class="data">
                             <h5>${other.firstName} ${other.lastName}</h5>
                             <span>Inactive</span>
