@@ -60,4 +60,15 @@ public class ContactDaoImpl implements ContactDao {
 
         mongoTemplate.updateFirst(query, update, Contact.class);
     }
+
+    @Override
+    public void resetUnseenMsg(String userId, String contactId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("userId").is(userId)
+                .and("contactId").is(contactId));
+        Update update = new Update();
+        update.set("lastUpdatedAt", Util.getCurrentDateTime());
+        update.set("unreadMsgCount", 0);
+        mongoTemplate.updateFirst(query, update, Contact.class);
+    }
 }

@@ -29,6 +29,14 @@ function updateStatus(contactId, isOnline) {
          .removeClass(statusClassToRemove)
          .addClass(statusClassToAdd);
    }
+
+   let $chat = $('#chatgroup-' + contactId);
+    if ($chat.length) {
+        $chat.find('.status i')
+            .removeClass(statusClassToRemove)
+            .addClass(statusClassToAdd);
+    }
+
 }
 
 

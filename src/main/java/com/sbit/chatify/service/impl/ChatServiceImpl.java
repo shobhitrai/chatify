@@ -52,6 +52,7 @@ public class ChatServiceImpl implements ChatService {
             String contactId = contactDto.getContactId();
             boolean isFriend = isFriend(userId, contactId);
             socketResponse = isFriend ? getChatsBetweenUsers(userId, contactId) : friendRequestChat(userId, contactId);
+            contactDao.resetUnseenMsg(userId, contactId);
 
         } catch (Exception e) {
             e.printStackTrace();
