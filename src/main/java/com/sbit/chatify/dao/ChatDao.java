@@ -9,5 +9,5 @@ public interface ChatDao {
 
     List<Chat> findChatBySenderAndReceiverId(String senderId, String receiverId);
 
-    Chat findLatestChatBetweenUser(String userId, String contactId);
+    List<Chat> findLatestChatsForAllContact(String userId);
 }

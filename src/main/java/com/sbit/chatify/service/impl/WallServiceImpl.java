@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -62,32 +64,40 @@ public class WallServiceImpl implements WallService {
 
     private List<ChatGroup> getLatestContactsChat(String userId) {
         List<Contact> contacts = contactDao.findByUserId(userId);
-
-        if (contacts.isEmpty())
+        if (contacts.isEmpty()) {
             return Collections.emptyList();
+        }
 
-        List<ChatGroup> chatsGroups = new ArrayList<>();
-        contacts.forEach(contact -> {
-            Chat chat = chatDao.findLatestChatBetweenUser(userId, contact.getContactId());
-            if (chat == null) return;
+        Map<String, Chat> latestChatByContact =
+                chatDao.findLatestChatsForAllContact(userId).stream()
+                        .collect(Collectors.toMap(
+                                chat -> chat.getSenderId().equals(userId)
+                                        ? chat.getReceiverId()
+                                        : chat.getSenderId(),
+                                Function.identity()
+                        ));
 
-            ChatDto chatDto = ChatDto.builder()
-                    .senderId(chat.getSenderId())
-                    .receiverId(chat.getReceiverId())
-                    .type(chat.getType())
-                    .message(chat.getMessage())
-                    .createdAt(chat.getCreatedAt())
-                    .formattedDate(Util.getChatFormatedDate(chat.getCreatedAt()))
-                    .build();
+        return contacts.stream().map(contact -> {
+                    Chat chat = latestChatByContact.get(contact.getContactId());
+                    if (chat == null) return null;
 
-            ChatGroup chatGroup = ChatGroup.builder()
-                    .contact(buildUserDto(contact.getContactId()))
-                    .chats(List.of(chatDto))
-                    .build();
-            chatsGroups.add(chatGroup);
-        });
-        return chatsGroups.stream()
-                .sorted(Comparator.comparing((ChatGroup cg) -> cg.getChats().get(0).getCreatedAt()).reversed())
+                    ChatDto chatDto = ChatDto.builder()
+                            .senderId(chat.getSenderId())
+                            .receiverId(chat.getReceiverId())
+                            .type(chat.getType())
+                            .message(chat.getMessage())
+                            .createdAt(chat.getCreatedAt())
+                            .formattedDate(Util.getChatFormatedDate(chat.getCreatedAt()))
+                            .build();
+
+                    return ChatGroup.builder()
+                            .contact(buildUserDto(contact.getContactId()))
+                            .chats(List.of(chatDto))
+                            .build();
+                })
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparing(
+                        (ChatGroup cg) -> cg.getChats().get(0).getCreatedAt()).reversed())
                 .toList();
     }
 

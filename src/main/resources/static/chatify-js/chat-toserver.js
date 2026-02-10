@@ -83,7 +83,6 @@ function getAllChats(contactId) {
    chatOpenUserId = contactId;
    $('#chatgroup-' + chatOpenUserId).find('div.new').remove();
    const color = $('#chatgroup-' + chatOpenUserId).find('.data p').css('color');
-   console.log('Current chat preview color:', color);
    if (color === 'rgb(33, 37, 41)') {
       $('#chatgroup-' + chatOpenUserId).find('.data p').css('color', '#bdbac2');
    }
