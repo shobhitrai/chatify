@@ -36,9 +36,7 @@ function updateStatus(contactId, isOnline) {
             .removeClass(statusClassToRemove)
             .addClass(statusClassToAdd);
     }
-
 }
-
 
 function appendNotification(payload) {
    if (payload.status === 100) {

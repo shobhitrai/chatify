@@ -86,7 +86,7 @@ public class ChatServiceImpl implements ChatService {
                         .data(dataForReceiver).type(SocketConstant.RECEIVED_TEXT_MESSAGE).build();
                 SocketUtil.send(socketResponse);
             } else {
-                contactDao.incrementUnseenMsg(userId, receiverId);
+                contactDao.incrementUnseenMsg(receiverId, userId);
             }
 
             Chat chat = Chat.builder().senderId(userId).receiverId(receiverId).type(MessageConstant.TEXT)

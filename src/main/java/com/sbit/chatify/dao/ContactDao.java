@@ -13,7 +13,7 @@ public interface ContactDao {
 
     boolean isFriend(String userId, String contactId);
 
-    void incrementUnseenMsg(String userId, String receiverId);
+    void incrementUnseenMsg(String userId, String contactId);
 
     void resetUnseenMsg(String userId, String contactId);
 }

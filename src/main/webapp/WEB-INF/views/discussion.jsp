@@ -32,18 +32,25 @@
                        </div>
                    </c:when>
                    <c:otherwise>
+                        <c:if test="${chatGroup.contact.unreadMsgCount gt 0}">
+                            <div class="new bg-green">
+                              <span>${chatGroup.contact.unreadMsgCount}</span>
+                            </div>
+                        </c:if>
                    </c:otherwise>
                </c:choose>
                <div class="data">
                   <h5>${chatGroup.contact.firstName} ${chatGroup.contact.lastName}</h5>
                   <span>${chatGroup.chats[0].formattedDate}</span>
-                  <p>
+                  <p style="color: ${chatGroup.contact.unreadMsgCount gt 0 ? 'rgb(33, 37, 41)' : '#bdbac2'};">
                      ${chatGroup.chats[0].message}
+
                      <c:if test="${not empty chatGroup.chats
                                   and chatGroup.chats[0].type eq 'friendRequest'
                                   and sessionScope.userId eq chatGroup.chats[0].senderId}">
                          ${chatGroup.contact.firstName} ${chatGroup.contact.lastName}
                      </c:if>
+
                   </p>
                </div>
             </a>

@@ -91,7 +91,7 @@ public class WallServiceImpl implements WallService {
                             .build();
 
                     return ChatGroup.builder()
-                            .contact(buildUserDto(contact.getContactId()))
+                            .contact(buildUserDto(contact.getContactId(), contact.getUnreadMsgCount()))
                             .chats(List.of(chatDto))
                             .build();
                 })
@@ -116,12 +116,12 @@ public class WallServiceImpl implements WallService {
                     .createdAt(friendRequest.getCreatedAt())
                     .formattedDate(Util.getChatFormatedDate(friendRequest.getCreatedAt()))
                     .build();
-            return ChatGroup.builder().contact(buildUserDto(contactId))
+            return ChatGroup.builder().contact(buildUserDto(contactId, null))
                     .chats(List.of(chatDto)).build();
         }).toList();
     }
 
-    private UserDto buildUserDto(String contactId) {
+    private UserDto buildUserDto(String contactId, Integer unreadMsgCount) {
         UserDetail userDetail = userDetailDao.findByUserId(contactId);
         return UserDto.builder()
                 .userId(userDetail.getUserId())
@@ -129,6 +129,7 @@ public class WallServiceImpl implements WallService {
                 .lastName(userDetail.getLastName())
                 .profileImage(userDetail.getProfileImage())
                 .isOnline(SocketUtil.isUserConnected(contactId))
+                .unreadMsgCount(unreadMsgCount)
                 .build();
     }
 

@@ -20,4 +20,5 @@ public class UserDto {
     private String password;
     private String profileImage;
     private Boolean isOnline;
+    private Integer unreadMsgCount;
 }
