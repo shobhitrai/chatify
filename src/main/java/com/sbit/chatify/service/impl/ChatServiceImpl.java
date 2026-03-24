@@ -103,6 +103,11 @@ public class ChatServiceImpl implements ChatService {
 
     }
 
+    @Override
+    public void clearChat(String userId, ContactDto contactDto) {
+        chatDao.inactiveChats(userId, contactDto.getContactId());
+    }
+
     private boolean isFriend(String userId, String contactId) {
         return contactDao.isFriend(userId, contactId);
     }

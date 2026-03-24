@@ -9,3 +9,5 @@ var chatOpenProfileImage = null;
 var chatOpenFirstName = null;
 var chatOpenLastName = null;
 var chatOpenFullName = null;
+var chatOpenIsOnline = null;
+var chatOpenIsChatAvailable = null;

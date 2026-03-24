@@ -10,4 +10,6 @@ public interface ChatDao {
     List<Chat> findChatBySenderAndReceiverId(String senderId, String receiverId);
 
     List<Chat> findLatestChatsForAllContact(String userId);
+
+    void inactiveChats(String userId, String contactId);
 }

@@ -24,4 +24,5 @@ public interface SocketConstant {
     String RECEIVED_TEXT_MESSAGE = "receivedTextMessage";
     String OFFLINE_NOTIFICATION = "offlineNotification";
     String ONLINE_NOTIFICATION = "onlineNotification";
+    String CLEAR_CHAT = "clearChat";
 }

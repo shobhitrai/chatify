@@ -108,6 +108,10 @@ public class SocketHandler extends TextWebSocketHandler {
                 chatService.sendTextMessage(userId,
                         mapper.convertValue(socketRequest.getPayload(), ChatDto.class));
                 break;
+            case SocketConstant.CLEAR_CHAT:
+                chatService.clearChat(userId,
+                        mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
+                break;
         }
     }
 

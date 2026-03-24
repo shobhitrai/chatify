@@ -9,4 +9,6 @@ public interface ChatService {
     void getChat(String userId, ContactDto contactDto);
 
     void sendTextMessage(String userId, ChatDto chatDto);
+
+    void clearChat(String userId, ContactDto contactDto);
 }

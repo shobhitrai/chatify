@@ -2,12 +2,15 @@ package com.sbit.chatify.dao.impl;
 
 import com.sbit.chatify.dao.ChatDao;
 import com.sbit.chatify.entity.Chat;
+import com.sbit.chatify.entity.Contact;
+import com.sbit.chatify.utility.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -68,6 +71,18 @@ public class ChatDaoImpl implements ChatDao {
 
         AggregationResults<Chat> results = mongoTemplate.aggregate(aggregation, "Chat", Chat.class);
         return results.getMappedResults();
+    }
+
+    @Override
+    public void inactiveChats(String userId, String contactId) {
+        Query query = new Query();
+        query.addCriteria(new Criteria().orOperator(
+                Criteria.where("senderId").is(userId).and("receiverId").is(contactId),
+                Criteria.where("senderId").is(contactId).and("receiverId").is(userId)));
+        query.addCriteria(Criteria.where("isActive").is(true));
+        Update update = new Update();
+        update.set("isActive", false);
+        mongoTemplate.updateMulti(query, update, Chat.class);
     }
 
 

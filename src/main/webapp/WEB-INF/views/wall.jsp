@@ -195,6 +195,7 @@
 		<script src="${path}/chatify-js/common-function.js"></script>
 		<script src="${path}/chatify-js/friend-request-fromserver.js"></script>
 		<script src="${path}/chatify-js/friend-request-toserver.js"></script>
+		<script src="${path}/chatify-js/chat-common.js"></script>
         <script src="${path}/chatify-js/chat-fromserver.js"></script>
         <script src="${path}/chatify-js/chat-toserver.js"></script>
         <script src="${path}/chatify-js/notification.js"></script>
