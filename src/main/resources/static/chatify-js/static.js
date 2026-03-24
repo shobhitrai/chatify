@@ -3,6 +3,7 @@ $(document).on('click', '.clear-history-btn', function () {
         return;
 
     chatOpenIsChatAvailable = false;
+    $('#chatgroup-' + chatOpenUserId).find('.data p').text('');
     populateChat(displayNoChatScreen(), chatOpenUserId, chatOpenProfileImage, chatOpenFirstName, chatOpenLastName, chatOpenIsOnline);
     sendPayloadToClearChat(chatOpenUserId);
 });
