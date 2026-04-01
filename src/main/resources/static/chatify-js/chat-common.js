@@ -42,7 +42,7 @@ function populateChat(chatWindow, userId, profileImage, firstName, lastName, isO
                         <button class="dropdown-item connect" name="2"><i class="material-icons">videocam</i>Video Call</button>
                         <hr>
                         <button class="dropdown-item clear-history-btn"><i class="material-icons">clear</i>Clear History</button>
-                        <button class="dropdown-item"><i class="material-icons">block</i>Block Contact</button>
+                        <button class="dropdown-item block-contact-btn"><i class="material-icons">block</i>Block Contact</button>
                         <button class="dropdown-item"><i class="material-icons">delete</i>Delete Contact</button>
                       </div>
                     </div>

@@ -267,7 +267,7 @@ public class FriendReqServiceImpl implements FriendReqService {
 
     private ContactDto saveContact(String userId, String contactId) {
         var contact = Contact.builder().userId(userId).contactId(contactId)
-                .createdAt(new Date()).unreadMsgCount(0).build();
+                .createdAt(new Date()).unreadMsgCount(0).isBlocked(false).build();
         contactDao.save(contact);
 
         UserDetail userDetails = userDetailDao.findByUserId(contactId);
@@ -278,6 +278,7 @@ public class FriendReqServiceImpl implements FriendReqService {
                 .firstName(userDetails.getFirstName())
                 .profileImage(userDetails.getProfileImage())
                 .createdAt(contact.getCreatedAt())
+                .isBlocked(contact.getIsBlocked())
                 .isOnline(SocketUtil.isUserConnected(userDetails.getUserId())).build();
     }
 

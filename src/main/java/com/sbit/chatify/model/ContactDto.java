@@ -22,4 +22,5 @@ public class ContactDto {
     private String userId;
     private String profileImage;
     private Boolean isOnline;
+    private Boolean isBlocked;
 }
