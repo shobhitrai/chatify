@@ -20,6 +20,7 @@ function populateChat(chatWindow, userId, profileImage, firstName, lastName, isO
     const context = `
         <div class="babble tab-pane fade active show" id="chat-${userId}">
           <div class="chat">
+          <audio id="remoteAudio" autoplay playsinline style="display:none;"></audio>
             <div class="top">
               <div class="container">
                 <div class="col-md-12">
@@ -29,8 +30,8 @@ function populateChat(chatWindow, userId, profileImage, firstName, lastName, isO
                     <div class="status"><i class="material-icons ${status}">fiber_manual_record</i></div>
                     <div class="data"><h5><a href="#">${firstName} ${lastName}</a></h5><span>${status2}</span></div>
 
-                    <button class="btn connect d-md-block d-none" name="2"><i class="material-icons md-30">phone_in_talk</i></button>
-                    <button class="btn connect d-md-block d-none" name="2"><i class="material-icons md-36">videocam</i></button>
+                    <button class="btn connect d-md-block d-none audio" name="2"><i class="material-icons md-30">phone_in_talk</i></button>
+                    <button class="btn connect d-md-block d-none video" name="2"><i class="material-icons md-36">videocam</i></button>
                     <button class="btn d-md-block d-none"><i class="material-icons md-30">info</i></button>
 
                     <div class="dropdown">
@@ -38,8 +39,8 @@ function populateChat(chatWindow, userId, profileImage, firstName, lastName, isO
                         <i class="material-icons md-30">more_vert</i>
                       </button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <button class="dropdown-item connect" name="2"><i class="material-icons">phone_in_talk</i>Voice Call</button>
-                        <button class="dropdown-item connect" name="2"><i class="material-icons">videocam</i>Video Call</button>
+                        <button class="dropdown-item connect audio" name="2"><i class="material-icons">phone_in_talk</i>Voice Call</button>
+                        <button class="dropdown-item connect video" name="2"><i class="material-icons">videocam</i>Video Call</button>
                         <hr>
                         <button class="dropdown-item clear-history-btn"><i class="material-icons">clear</i>Clear History</button>
                         <button class="dropdown-item block-contact-btn"><i class="material-icons">block</i>Block Contact</button>
@@ -68,7 +69,7 @@ function populateChat(chatWindow, userId, profileImage, firstName, lastName, isO
             </div>
           </div>
 
-          <div class="call" id="call2">
+          <div class="call">
             <div class="content">
               <div class="container">
                 <div class="col-md-12">
@@ -81,11 +82,13 @@ function populateChat(chatWindow, userId, profileImage, firstName, lastName, isO
                       <div class="options">
                         <button class="btn option"><i class="material-icons md-30">mic</i></button>
                         <button class="btn option"><i class="material-icons md-30">videocam</i></button>
-                        <button class="btn option call-end"><i class="material-icons md-30">call_end</i></button>
+                        <button class="btn option call-end call-receive" style="background-color: #28a745;">
+                            <i class="material-icons md-30">call_end</i></button>
+                        <button class="btn option call-end call-deny"><i class="material-icons md-30">call_end</i></button>
                         <button class="btn option"><i class="material-icons md-30">person_add</i></button>
                         <button class="btn option"><i class="material-icons md-30">volume_up</i></button>
                       </div>
-                      <button class="btn back" name="2"><i class="material-icons md-24">chat</i></button>
+                      <button class="btn back"><i class="material-icons md-24">chat</i></button>
                     </div>
                   </div>
                 </div>

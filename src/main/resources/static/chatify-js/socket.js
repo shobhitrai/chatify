@@ -3,6 +3,12 @@ $(document).ready(function () {
 });
 
 var webSocket;
+var pc;
+var localStream;
+var remoteStream;
+const iceServers = {
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+};
 
 function connect() {
    const protocol = location.protocol === 'https:' ? 'wss://' : 'ws://';
@@ -112,6 +118,14 @@ try {
 
       case "offlineNotification":
          offlineNotification(payload);
+         break;
+
+      case "ackCallRequest":
+         ackCallRequest(payload);
+         break;
+
+      case "callAcceptDeny":
+         callAcceptDeny(payload);
          break;
 
       default:

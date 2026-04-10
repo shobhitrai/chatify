@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sbit.chatify.constant.MessageConstant;
 import com.sbit.chatify.constant.SocketConstant;
 import com.sbit.chatify.model.*;
+import com.sbit.chatify.service.AudioService;
 import com.sbit.chatify.service.ChatService;
 import com.sbit.chatify.service.FriendReqService;
 import com.sbit.chatify.service.SocketService;
@@ -32,6 +33,9 @@ public class SocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private ChatService chatService;
+
+    @Autowired
+    private AudioService audioService;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
@@ -110,6 +114,10 @@ public class SocketHandler extends TextWebSocketHandler {
                 break;
             case SocketConstant.CLEAR_CHAT:
                 chatService.clearChat(userId,
+                        mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
+                break;
+            case SocketConstant.CALL_REQUEST:
+                audioService.callRequest(userId,
                         mapper.convertValue(socketRequest.getPayload(), ContactDto.class));
                 break;
         }

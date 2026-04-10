@@ -23,4 +23,5 @@ public class ContactDto {
     private String profileImage;
     private Boolean isOnline;
     private Boolean isBlocked;
+    private Boolean isDeleted;
 }

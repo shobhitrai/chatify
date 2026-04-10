@@ -74,6 +74,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             userDetails.setUserId(user.getId().toString());
             userDetails.setFirstName(userDto.getFirstName());
             userDetails.setLastName(userDto.getLastName());
+            userDetails.setIsOnCall(false);
             userDetails.setProfileImage(ServicesConstant.DEFAULT_PROFILE_IMAGE);
 
             userDetailDao.save(userDetails);

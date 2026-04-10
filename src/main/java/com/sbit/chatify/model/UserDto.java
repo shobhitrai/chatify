@@ -21,4 +21,5 @@ public class UserDto {
     private String profileImage;
     private Boolean isOnline;
     private Integer unreadMsgCount;
+    private Integer isOnCall;
 }

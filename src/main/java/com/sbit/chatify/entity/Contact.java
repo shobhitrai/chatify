@@ -29,4 +29,5 @@ public class Contact implements Serializable {
     private Date lastUpdatedAt;
     private int unreadMsgCount;
     private Boolean isBlocked;
+    private Boolean isDeleted;
 }

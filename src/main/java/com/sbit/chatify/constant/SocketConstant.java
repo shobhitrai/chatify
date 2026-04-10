@@ -25,4 +25,7 @@ public interface SocketConstant {
     String OFFLINE_NOTIFICATION = "offlineNotification";
     String ONLINE_NOTIFICATION = "onlineNotification";
     String CLEAR_CHAT = "clearChat";
+    String CALL_REQUEST = "callRequest";
+    String ACK_CALL_REQUEST = "ackCallRequest";
+    String CALL_ACCEPT_DENY = "callAcceptDeny";
 }

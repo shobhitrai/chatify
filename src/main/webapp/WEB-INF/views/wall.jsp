@@ -200,7 +200,8 @@
         <script src="${path}/chatify-js/chat-toserver.js"></script>
         <script src="${path}/chatify-js/notification.js"></script>
         <script src="${path}/chatify-js/static.js"></script>
-
+        <script src="${path}/chatify-js/audio-fromserver.js"></script>
+        <script src="${path}/chatify-js/audio-toserver.js"></script>
 		<script>
             $(document).ready(function () {
                 $('[data-toggle="tooltip"]').tooltip();

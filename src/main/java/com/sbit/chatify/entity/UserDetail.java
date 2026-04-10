@@ -28,4 +28,5 @@ public class UserDetail implements Serializable {
     private String lastName;
     private String userId;
     private String profileImage;
+    private Boolean isOnCall;
 }

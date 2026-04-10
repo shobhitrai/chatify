@@ -34,4 +34,6 @@ public interface MessageConstant {
     String NO_CHAT_FOUND = "No chat found between users";
     String SOMETHING_WENT_WRONG = "Something went wrong";
     String TEXT = "text";
+    String YOU_ARE_ALREADY_ON_A_CALL = "You are already on a call";
+    String IS_ON_ANOTHER_CALL = " is on another call";
 }
